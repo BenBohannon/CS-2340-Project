@@ -8,9 +8,6 @@
 ## Directory-based project format:
 .idea/*
 
-# include run configurations
-!/.idea/runConfigurations
-
 # if you remove the above rule, at least ignore the following:
 # User-specific stuff:
 # .idea/workspace.xml
