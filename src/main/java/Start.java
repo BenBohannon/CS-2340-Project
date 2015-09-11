@@ -20,7 +20,8 @@ public class Start extends Application {
     public void start(Stage stage) {
         Parent root = null;
         try {
-            root = new FXMLLoader().load(getClass().getResource("/player_config.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/config_screen.fxml"));
+//            root = FXMLLoader.load(getClass().getResource("/player_config.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
