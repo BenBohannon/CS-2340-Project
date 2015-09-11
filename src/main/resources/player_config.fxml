@@ -20,21 +20,16 @@
     <Label text="Color" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
     <CheckBox mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
-      <children>
-        <RadioButton mnemonicParsing="false" text="Dale Earnhardt Jr." GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <RadioButton mnemonicParsing="false" text="Danica Patrick" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <RadioButton mnemonicParsing="false" text="Jimmie Jonson" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-      </children>
-      <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-      </columnConstraints>
-      <rowConstraints>
-        <RowConstraints maxHeight="16.0" prefHeight="16.0" />
-        <RowConstraints maxHeight="16.0" prefHeight="16.0" />
-        <RowConstraints maxHeight="16.0" prefHeight="16.0" />
-      </rowConstraints>
-    </GridPane>
+      <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+          <fx:define>
+              <ToggleGroup fx:id="myToggleGroup"/>
+          </fx:define>
+          <children>
+              <RadioButton text="A" toggleGroup="$myToggleGroup"/>
+              <RadioButton text="B" toggleGroup="$myToggleGroup"/>
+              <RadioButton text="C" toggleGroup="$myToggleGroup"/>
+          </children>
+      </VBox>
     <ColorPicker GridPane.columnIndex="1" GridPane.rowIndex="4" />
     <Button mnemonicParsing="false" text="Finish" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" onAction="#handleFinishButtonAction"/>
   </children>
