@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label text="Difficulty:" />
+      <VBox>
+         <children>
+            <RadioButton mnemonicParsing="false" text="Easy" />
+            <RadioButton mnemonicParsing="false" text="Medium" />
+            <RadioButton mnemonicParsing="false" text="Hard" />
+         </children>
+      </VBox>
+      <Region prefHeight="39.0" prefWidth="600.0" />
+      <Label text="Map Type:" />
+      <VBox>
+         <children>
+            <RadioButton mnemonicParsing="false" text="Map Type 1" />
+            <RadioButton mnemonicParsing="false" text="Map Type 2" />
+            <RadioButton mnemonicParsing="false" text="Map Type 3" />
+            <Region prefHeight="29.0" prefWidth="600.0" />
+         </children>
+      </VBox>
+      <HBox prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label text="Number of Players:" />
+            <Slider />
+         </children>
+      </HBox>
+   </children>
+</VBox>
