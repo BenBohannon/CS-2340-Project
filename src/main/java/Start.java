@@ -20,12 +20,14 @@ public class Start extends Application {
     public void start(Stage stage) {
         Parent root = null;
         try {
-            root = new FXMLLoader().load(getClass().getResource("/home_screen.fxml"));
+            root = new FXMLLoader().load(getClass().getResource("/player_config.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Scene scene = new Scene(root, 300, 300);
+        Scene scene = new Scene(root, 800, 800);
+
+
 
         stage.setTitle("MULE");
         stage.setScene(scene);
