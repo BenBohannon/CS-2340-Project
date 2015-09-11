@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Start extends Application {
 
@@ -20,17 +21,38 @@ public class Start extends Application {
     public void start(Stage stage) {
         Parent root = null;
         try {
-            root = new FXMLLoader().load(getClass().getResource("/player_config.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/home_screen.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Scene scene = new Scene(root, 800, 800);
-
-
+        Scene titleScene = new Scene(root, 800, 800);
 
         stage.setTitle("MULE");
-        stage.setScene(scene);
+        stage.setScene(titleScene);
+
         stage.show();
+
+        Scanner in = new Scanner(System.in);
+        in.next();
+        in.close();
+        //user pressed enter//
+
+        Parent gameConfig = null;
+        ConfigController configController = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/config_screen.fxml"));
+            gameConfig = loader.load();
+            configController = loader.getController();
+            configController.registerCaller(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage.setScene(new Scene(gameConfig, 800, 800));
+        stage.show();
+
     }
+
+
 }
