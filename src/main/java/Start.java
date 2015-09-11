@@ -22,6 +22,7 @@ public class Start extends Application {
         Parent root = null;
         try {
             root = FXMLLoader.load(getClass().getResource("/home_screen.fxml"));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
