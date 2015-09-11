@@ -34,25 +34,7 @@ public class Start extends Application {
 
         stage.show();
 
-        Scanner in = new Scanner(System.in);
-        in.next();
-        in.close();
         //user pressed enter//
-
-        Parent gameConfig = null;
-        ConfigController configController = null;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/config_screen.fxml"));
-            gameConfig = loader.load();
-            configController = loader.getController();
-            configController.registerCaller(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        stage.setScene(new Scene(gameConfig, 800, 800));
-        stage.show();
-
     }
 
 

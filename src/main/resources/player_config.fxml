@@ -22,12 +22,12 @@
     <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
           <fx:define>
-              <ToggleGroup fx:id="myToggleGroup"/>
+              <ToggleGroup fx:id="group"/>
           </fx:define>
           <children>
-              <RadioButton text="A" toggleGroup="$myToggleGroup"/>
-              <RadioButton text="B" toggleGroup="$myToggleGroup"/>
-              <RadioButton text="C" toggleGroup="$myToggleGroup"/>
+              <RadioButton text="A" toggleGroup="$group"/>
+              <RadioButton text="B" toggleGroup="$group"/>
+              <RadioButton text="C" toggleGroup="$group"/>
           </children>
       </VBox>
     <ColorPicker GridPane.columnIndex="1" GridPane.rowIndex="4" />

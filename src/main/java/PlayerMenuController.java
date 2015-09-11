@@ -21,7 +21,7 @@ public class PlayerMenuController {
     protected void handleFinishButtonAction(ActionEvent event) {
         Stage stage = (Stage) grid.getScene().getWindow();
 
-        if (numPlayersLeft < 0) {
+        if (numPlayersLeft > 0) {
                 Parent root = null;
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/player_config.fxml"));
@@ -35,6 +35,20 @@ public class PlayerMenuController {
 
                 stage.setScene(playerConfigScene);
                 stage.show();
+        }
+        else {
+            Parent root = null;
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/temp.fxml"));
+                root = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Scene playerConfigScene = new Scene(root, 800, 800);
+
+            stage.setScene(playerConfigScene);
+            stage.show();
         }
     }
 
