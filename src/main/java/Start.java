@@ -2,6 +2,10 @@
  * Created by brian on 9/10/15.
  */
 
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,10 +23,13 @@ public class Start extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        final Injector injector = Guice.createInjector();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/home_screen.fxml"));
+        loader.setControllerFactory(injector::getInstance);
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("/home_screen.fxml"));
-
+            root = loader.<Parent>load();
         } catch (IOException e) {
             e.printStackTrace();
         }

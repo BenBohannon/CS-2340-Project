@@ -1,3 +1,4 @@
+import com.google.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,8 +18,12 @@ public class StartController {
     @FXML
     GridPane grid;
 
+    @Inject
+    DependencyInjected di;
+
     @FXML
     protected void handleStartEvent(ActionEvent event) {
+        System.out.println(di.getCountAtInst());
         Stage stage = (Stage) grid.getScene().getWindow();
         Parent gameConfig = null;
         try {
