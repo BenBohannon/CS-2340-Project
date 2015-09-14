@@ -1,5 +1,8 @@
 package map;
 
+import com.google.inject.Inject;
+
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,7 +20,7 @@ public class Map {
 
     private LocationDatasource datasource;
 
-    //@Inject
+    @Inject
     public Map(LocationDatasource lds) {
         datasource = lds;
         int rows = 10;
@@ -32,7 +35,8 @@ public class Map {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 locationGrid[i][j] = new Location(i, j, this);
-                for (Locatable e : datasource.get(i, j)) {
+                Collection<Locatable> occupants = datasource.get(i, j);
+                for (Locatable e : occupants) {
                     add(e, i, j);
                 }
             }
@@ -197,7 +201,9 @@ public class Map {
         public <T extends Locatable> T[] getOccupants(Class<T> type) {
             return occupants.stream()
                     .filter(type::isInstance)
-                    .toArray(size -> (T[]) new Object[size]);
+                    .toArray(size -> {
+                        return (T[]) Array.newInstance(type, size);
+                    });
         }
 
         /**
