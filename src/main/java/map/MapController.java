@@ -8,7 +8,6 @@ import com.google.inject.Inject;
  */
 public class MapController {
 
-    @Inject
     Map map;
 
     /**
