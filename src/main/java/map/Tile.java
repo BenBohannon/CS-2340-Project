@@ -9,8 +9,10 @@ public class Tile implements Locatable {
     TileType type;
 
     public Tile(TileType type) {
-        this.type = type
+        this.type = type;
     }
+
+
 
 }
 

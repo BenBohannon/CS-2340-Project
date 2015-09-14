@@ -39,7 +39,7 @@ public class PlayerMenuController {
         else {
             Parent root = null;
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/temp.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/map_grid.fxml"));
                 root = loader.load();
             } catch (IOException e) {
                 e.printStackTrace();
