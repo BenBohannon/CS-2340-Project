@@ -19,6 +19,8 @@ dependencies {
 jar {
     manifest {
         attributes("Implementation-Title": "MULE",
-                "Implementation-Version": version)
+                "Implementation-Version": version,
+                'Main-Class': 'Start')
+
     }
 }
