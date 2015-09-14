@@ -18,12 +18,8 @@ public class StartController {
     @FXML
     GridPane grid;
 
-    @Inject
-    DependencyInjected di;
-
     @FXML
     protected void handleStartEvent(ActionEvent event) {
-        System.out.println(di.getCountAtInst());
         Stage stage = (Stage) grid.getScene().getWindow();
         Parent gameConfig = null;
         try {
