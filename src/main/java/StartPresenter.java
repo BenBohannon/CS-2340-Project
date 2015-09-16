@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * Created by brian on 9/10/15.
  */
-public class StartController {
+public class StartPresenter {
 
     @FXML
     GridPane grid;

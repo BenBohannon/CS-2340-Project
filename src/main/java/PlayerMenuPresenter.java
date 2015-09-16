@@ -6,13 +6,12 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.IOException;
 
 /**
  * Created by brian on 9/10/15.
  */
-public class PlayerMenuController {
+public class PlayerMenuPresenter {
     @FXML
     GridPane grid;
     private int numPlayersLeft;
@@ -26,7 +25,7 @@ public class PlayerMenuController {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/player_config.fxml"));
                     root = loader.load();
-                    ((PlayerMenuController)loader.getController()).setNumPlayersLeft(--numPlayersLeft);
+                    ((PlayerMenuPresenter)loader.getController()).setNumPlayersLeft(--numPlayersLeft);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
