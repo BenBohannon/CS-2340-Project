@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class Start extends Application {
 
@@ -21,7 +20,7 @@ public class Start extends Application {
     public void start(Stage stage) {
         Parent root = null;
         try {
-            root = FXMLLoader.load(getClass().getResource("/home_screen.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/presenters/home_screen.fxml"));
 
         } catch (IOException e) {
             e.printStackTrace();

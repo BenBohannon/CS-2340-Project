@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="CENTER" prefHeight="180.0" prefWidth="183.0" xmlns:fx="http://javafx.com/fxml/1" fx:id="grid" xmlns="http://javafx.com/javafx/2.2" fx:controller="StartPresenter">
+<GridPane alignment="CENTER" prefHeight="180.0" prefWidth="183.0" xmlns:fx="http://javafx.com/fxml/1" fx:id="grid" xmlns="http://javafx.com/javafx/2.2" fx:controller="presenters.StartPresenter">
   <children>
     <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="165.0" text="MULE" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <font>

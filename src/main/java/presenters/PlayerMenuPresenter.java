@@ -1,3 +1,5 @@
+package presenters;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +25,7 @@ public class PlayerMenuPresenter {
         if (numPlayersLeft > 0) {
                 Parent root = null;
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/player_config.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/presenters/player_config.fxml"));
                     root = loader.load();
                     ((PlayerMenuPresenter)loader.getController()).setNumPlayersLeft(--numPlayersLeft);
                 } catch (IOException e) {
@@ -38,7 +40,7 @@ public class PlayerMenuPresenter {
         else {
             Parent root = null;
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/temp.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/presenters/temp.fxml"));
                 root = loader.load();
             } catch (IOException e) {
                 e.printStackTrace();

@@ -1,3 +1,5 @@
+package presenters;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +24,7 @@ public class StartPresenter {
         Stage stage = (Stage) grid.getScene().getWindow();
         Parent gameConfig = null;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/config_screen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/presenters/config_screen.fxml"));
             gameConfig = loader.load();
         } catch (IOException e) {
             e.printStackTrace();

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.text.*?>
 
-<GridPane hgap="20.0" vgap="50.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:id="grid" fx:controller="ConfigScreenPresenter">
+<GridPane hgap="20.0" vgap="50.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:id="grid" fx:controller="presenters.ConfigScreenPresenter">
    <children>
       <Label text="Player Configuration" GridPane.columnIndex="0" GridPane.rowIndex="0">
          <font>
