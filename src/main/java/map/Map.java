@@ -20,6 +20,23 @@ public class Map {
 
     private LocationDatasource datasource;
 
+    /**
+     * Default Constructor for an empty Map.
+     */
+    @Inject
+    public Map() {
+        int rows = 10;
+        int cols = 10;
+
+        locationGrid = new Location[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                locationGrid[i][j] = new Location(i, j, this);
+            }
+        }
+    }
+
     @Inject
     public Map(LocationDatasource lds) {
         datasource = lds;
@@ -160,7 +177,7 @@ public class Map {
             this.row = row;
             this.col = col;
             this.map = map;
-            occupants = new LinkedList<Locatable>();
+            occupants = new LinkedList<>();
         }
 
         /**
@@ -201,9 +218,7 @@ public class Map {
         public <T extends Locatable> T[] getOccupants(Class<T> type) {
             return occupants.stream()
                     .filter(type::isInstance)
-                    .toArray(size -> {
-                        return (T[]) Array.newInstance(type, size);
-                    });
+                    .toArray(size -> (T[]) Array.newInstance(type, size));
         }
 
         /**
