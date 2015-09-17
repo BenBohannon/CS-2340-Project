@@ -85,10 +85,3 @@ public class Tile implements Locatable {
 
 
 }
-
-enum TileType {
-    RIVER,
-    MOUNTAIN,
-    PLAIN,
-    TOWN
-}

@@ -5,14 +5,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-
 import java.io.IOException;
+import map.*;
 
 
 /**
  * Created by Ben 9/14/2015
  */
-public class MapPresenter {
+public class MapPresenter extends Presenter {
 
     private Map map;
 
@@ -35,7 +35,7 @@ public class MapPresenter {
         //Create a map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
-                Tile temp;
+                map.Tile temp;
 
                 if (i == 4) {
                     if (j == 2) {

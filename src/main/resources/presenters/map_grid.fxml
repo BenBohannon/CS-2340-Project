@@ -3,7 +3,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="grid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="map.MapController">
+<GridPane fx:id="grid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presenters.MapPresenter">
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
         <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
