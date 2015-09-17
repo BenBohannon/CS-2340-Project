@@ -45,9 +45,10 @@ public class PlayerMenuController {
                 e.printStackTrace();
             }
 
-            Scene playerConfigScene = new Scene(root, 800, 800);
+            Scene playerConfigScene = new Scene(root, 890, 490);
 
             stage.setScene(playerConfigScene);
+            stage.setResizable(false);
             stage.show();
         }
     }

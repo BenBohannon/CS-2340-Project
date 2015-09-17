@@ -25,13 +25,13 @@ public class Map {
      */
     @Inject
     public Map() {
-        int rows = 10;
-        int cols = 10;
+        int rows = 5;
+        int cols = 9;
 
-        locationGrid = new Location[rows][cols];
+        locationGrid = new Location[cols][rows];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
                 locationGrid[i][j] = new Location(i, j, this);
             }
         }
@@ -40,17 +40,17 @@ public class Map {
     @Inject
     public Map(LocationDatasource lds) {
         datasource = lds;
-        int rows = 10;
-        int cols = 10;
+        int rows = 5;
+        int cols = 9;
 
         if (rows < 1 || cols < 1) {
             throw new IllegalArgumentException("map must have positive integer rows and columns");
         }
 
-        locationGrid = new Location[rows][cols];
+        locationGrid = new Location[cols][rows];
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
                 locationGrid[i][j] = new Location(i, j, this);
                 Collection<Locatable> occupants = datasource.get(i, j);
                 for (Locatable e : occupants) {
