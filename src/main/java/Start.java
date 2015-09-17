@@ -3,13 +3,8 @@
  */
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.Scanner;
+import presenters.PresenterContext;
 
 public class Start extends Application {
 
@@ -19,22 +14,13 @@ public class Start extends Application {
 
     @Override
     public void start(Stage stage) {
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("/home_screen.fxml"));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //This module doesn't need to bind anything yet//
+        PresenterContext context = new PresenterContext((binder) -> {
+            return;
+        }, stage);
 
-        Scene titleScene = new Scene(root, 800, 800);
-
-        stage.setTitle("MULE");
-        stage.setScene(titleScene);
-
-        stage.show();
-
-        //user pressed enter//
+        context.showScreen("home_screen.fxml");
     }
 
 
