@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="grid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presenters.MapPresenter">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
+        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
+        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
+        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
+        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
+    </rowConstraints>
+</GridPane>

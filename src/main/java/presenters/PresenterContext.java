@@ -67,4 +67,25 @@ public class PresenterContext {
 
         return loader.getController();
     }
+
+    public Presenter showScreen(String fxmlFileName, int length, int height, boolean isResizable) {
+        //create fxml loader for this fxml file//
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
+
+        //set our injector to generate the Presenter; it will inject this PresenterContext//
+        loader.setControllerFactory(guiceInjector::getInstance);
+        Parent root = null;
+
+        try {
+            root = loader.<Parent>load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage.setScene(new Scene(root, length, height));
+        stage.setResizable(isResizable);
+        stage.show();
+
+        return loader.getController();
+    }
 }
