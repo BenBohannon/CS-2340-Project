@@ -14,24 +14,11 @@ import java.io.IOException;
 /**
  * Created by brian on 9/10/15.
  */
-public class StartPresenter {
-
-    @FXML
-    GridPane grid;
+public class StartPresenter extends Presenter {
 
     @FXML
     protected void handleStartEvent(ActionEvent event) {
-        Stage stage = (Stage) grid.getScene().getWindow();
-        Parent gameConfig = null;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/presenters/config_screen.fxml"));
-            gameConfig = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        stage.setScene(new Scene(gameConfig, 800, 800));
-        stage.show();
-
+        context.showScreen("config_screen.fxml");
+        //this presenter's view will now be removed, and the config_screen's started//
     }
 }

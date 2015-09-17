@@ -13,43 +13,16 @@ import java.io.IOException;
 /**
  * Created by brian on 9/10/15.
  */
-public class PlayerMenuPresenter {
-    @FXML
-    GridPane grid;
+public class PlayerMenuPresenter extends Presenter {
     private int numPlayersLeft;
 
     @FXML
     protected void handleFinishButtonAction(ActionEvent event) {
-        Stage stage = (Stage) grid.getScene().getWindow();
-
         if (numPlayersLeft > 0) {
-                Parent root = null;
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/presenters/player_config.fxml"));
-                    root = loader.load();
-                    ((PlayerMenuPresenter)loader.getController()).setNumPlayersLeft(--numPlayersLeft);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Scene playerConfigScene = new Scene(root, 800, 800);
-
-                stage.setScene(playerConfigScene);
-                stage.show();
-        }
-        else {
-            Parent root = null;
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/presenters/temp.fxml"));
-                root = loader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            Scene playerConfigScene = new Scene(root, 800, 800);
-
-            stage.setScene(playerConfigScene);
-            stage.show();
+            PlayerMenuPresenter nextPresenter = (PlayerMenuPresenter) context.showScreen("player_config.fxml");
+            nextPresenter.setNumPlayersLeft(--numPlayersLeft);
+        } else {
+            context.showScreen("temp.fxml");
         }
     }
 

@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import presenters.PresenterContext;
 
 import java.io.IOException;
 
@@ -18,22 +19,11 @@ public class Start extends Application {
 
     @Override
     public void start(Stage stage) {
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("/presenters/home_screen.fxml"));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Scene titleScene = new Scene(root, 800, 800);
-
-        stage.setTitle("MULE");
-        stage.setScene(titleScene);
-
-        stage.show();
-
-        //user pressed enter//
+        PresenterContext context = new PresenterContext((binder) -> {
+            return;
+        }, stage);
+        context.showScreen("home_screen.fxml");
     }
 
 
