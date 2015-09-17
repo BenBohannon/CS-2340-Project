@@ -3,13 +3,8 @@
  */
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import presenters.PresenterContext;
-
-import java.io.IOException;
 
 public class Start extends Application {
 
@@ -20,9 +15,11 @@ public class Start extends Application {
     @Override
     public void start(Stage stage) {
 
+        //This module doesn't need to bind anything yet//
         PresenterContext context = new PresenterContext((binder) -> {
             return;
         }, stage);
+
         context.showScreen("home_screen.fxml");
     }
 

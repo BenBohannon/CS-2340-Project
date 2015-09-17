@@ -1,12 +1,6 @@
 package presenters;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-
-import java.io.IOException;
 
 /**
  * Created by brian on 9/16/15.

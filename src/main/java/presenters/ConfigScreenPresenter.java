@@ -2,16 +2,8 @@ package presenters;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
-import presenters.PlayerMenuPresenter;
-
-import java.io.IOException;
 
 /**
  * Created by brian on 9/10/15.
