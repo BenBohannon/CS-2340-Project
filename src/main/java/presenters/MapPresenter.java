@@ -1,4 +1,4 @@
-package map;
+package presenters;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by Ben 9/14/2015
  */
-public class MapController {
+public class MapPresenter {
 
     private Map map;
 
