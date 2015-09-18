@@ -4,6 +4,7 @@
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import map.Map;
 import presenters.PresenterContext;
 
 public class Start extends Application {
@@ -15,9 +16,11 @@ public class Start extends Application {
     @Override
     public void start(Stage stage) {
 
+        Map map = new Map();
+
         //This module doesn't need to bind anything yet//
         PresenterContext context = new PresenterContext((binder) -> {
-            return;
+            binder.bind(Map.class).toInstance(map);
         }, stage);
 
         context.showScreen("home_screen.fxml");

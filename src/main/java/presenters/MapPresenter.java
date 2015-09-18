@@ -1,5 +1,6 @@
 package presenters;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,7 +15,8 @@ import map.*;
  */
 public class MapPresenter extends Presenter {
 
-    private Map map;
+    @Inject
+    public Map map;
 
     @FXML
     private GridPane grid;
