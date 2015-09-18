@@ -42,10 +42,10 @@ public class TownPresenter extends Presenter {
 
     /**
      * helper method for logging the unimplemented behavior of returning to the map
+     * UPDATE: now returns to map
      */
     private void returnToMap() {
-        System.out.println("Would return to map; not yet implemented.");
-        //context.showScreen("map.fxml");
+        context.showScreen("map_grid.fxml");
     }
 
     public void handlePubClick(ActionEvent event) {
