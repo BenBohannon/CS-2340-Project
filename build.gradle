@@ -3,6 +3,7 @@ version '1.0'
 
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'idea'
 
 mainClassName = 'Start'
 
@@ -16,6 +17,7 @@ dependencies {
 }
 
 jar {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
         attributes("Implementation-Title": "MULE",
                 "Implementation-Version": version,
