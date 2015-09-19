@@ -1,11 +1,9 @@
 package presenters;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import java.io.IOException;
 import map.*;
 
 
@@ -14,7 +12,8 @@ import map.*;
  */
 public class MapPresenter extends Presenter {
 
-    private Map map;
+    @Inject
+    Map map;
 
     @FXML
     private GridPane grid;
@@ -24,13 +23,6 @@ public class MapPresenter extends Presenter {
      */
     @FXML
     public void initialize() {
-
-        //If there's already an instance of map, don't overwrite it.
-        if (map != null) {
-            return;
-        }
-
-        map = new Map();
 
         //Create a map.
         for (int i = 0; i < 9; i++) {
