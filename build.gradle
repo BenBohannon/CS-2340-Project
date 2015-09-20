@@ -3,20 +3,21 @@ version '1.0'
 
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'idea'
 
-mainClassName = 'Main'
+mainClassName = 'Start'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'com.h2database:h2:1.3.148'
-    compile 'com.google.inject:guice:3.0'
+    compile 'com.h2database:h2:1.3.148', 'com.google.inject:guice:3.0'
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
 jar {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
         attributes("Implementation-Title": "MULE",
                 "Implementation-Version": version,
