@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import map.Locatable;
 import map.LocationDatasource;
 import presenters.PresenterContext;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,16 @@ public class TestMVP extends Application {
             @Override
             public Collection<Locatable> get(int row, int col) {
                 return new ArrayList<>(0);
+            }
+
+            @Override
+            public void save(int row, int col, Locatable locatable) {
+                throw new NotImplementedException();
+            }
+
+            @Override
+            public void saveAll(int row, int col, Collection<Locatable> locatables) {
+                throw new NotImplementedException();
             }
         };
 
