@@ -3,23 +3,28 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="grid" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presenters.MapPresenter">
-    <columnConstraints>
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-        <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="80.0" />
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
-        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
-        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
-        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
-        <RowConstraints minHeight="100.0" prefHeight="80.0" vgrow="NEVER" />
-    </rowConstraints>
-</GridPane>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="490" minWidth="890" prefHeight="490.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/8" fx:id="pane" fx:controller="presenters.MapPresenter" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane layoutX="-4.0" layoutY="-5.0" prefHeight="490.0" prefWidth="890.0" fx:id="grid">
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+          <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+          <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+          <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+          <RowConstraints minHeight="100.0" prefHeight="100.0" vgrow="NEVER" />
+        </rowConstraints>
+      </GridPane>
+   </children>
+</Pane>
