@@ -8,6 +8,6 @@ import java.util.Collection;
 public interface Repository <T> {
     public Collection<T> getAll();
     public T get(Object id);
-    public T update(T entity);
+    public T save(T entity);
     public T delete(Object id);
 }

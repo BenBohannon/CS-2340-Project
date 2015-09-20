@@ -8,8 +8,15 @@ import data.TestPlayerRepository;
 import data.TurnInfoHolder;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import map.Locatable;
+import map.LocationDatasource;
+import map.Map;
 import model.Player;
 import presenters.PresenterContext;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class TestTownStart extends Application {
 
@@ -45,9 +52,27 @@ public class TestTownStart extends Application {
             }
         };
 
+        final LocationDatasource lds = new LocationDatasource() {
+            @Override
+            public Collection<Locatable> get(int row, int col) {
+                return new ArrayList<>();
+            }
+
+            @Override
+            public void save(int row, int col, Locatable locatable) {
+                throw new NotImplementedException();
+            }
+
+            @Override
+            public void saveAll(int row, int col, Collection<Locatable> locatables) {
+                throw new NotImplementedException();
+            }
+        };
+
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(new TypeLiteral<Repository<Player>>(){}).to(TestPlayerRepository.class);
             binder.bind(TurnInfoHolder.class).toInstance(testTurnInfoHolder);
+            binder.bind(LocationDatasource.class).toInstance(lds);
         }, stage);
 
         context.showScreen("town.fxml");

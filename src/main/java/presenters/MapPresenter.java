@@ -27,12 +27,6 @@ public class MapPresenter extends Presenter {
     @FXML
     public void initialize() {
 
-        //If there's already an instance of map, don't overwrite it.
-        if (map != null) {
-            return;
-        }
-
-        map = new Map();
         int mountainLimit = 6;
         int mountains = 0;
 
