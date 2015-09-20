@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import view.View;
 
 import java.io.IOException;
 
@@ -16,13 +17,13 @@ import java.io.IOException;
  * Singleton object that is injected into each presenter to allow facilitate
  * simple functions such as Scene swapping while using the same dependency
  * injector.
- * The PresenterContext should receive the dependency injector bindings and Stage from
- * the entry point, which should make for easier testing. A test entry point could
- * simply supply a different module to change the behavior of the program.
- * An instance of PresenterContext additionally binds itself to be injected as a
- * singleton into each {@link Presenter} it generates. This is so that the same
- * dependency injector configuration can be used for every new Presenter generated
- * for an fxml view.
+ * The PresenterContext should receive as constructor params the dependency injector
+ * bindings and Stage from the entry point, which should make for easier testing. A
+ * test entry point could simply supply a different module to change the behavior
+ * of the program. An instance of PresenterContext additionally binds itself to be
+ * injected as a singleton into each {@link Presenter} it generates. This is so that
+ * the same dependency injector configuration can be used for every new Presenter
+ * generated for an fxml view.
  */
 public class PresenterContext {
     private Injector guiceInjector;
@@ -44,16 +45,20 @@ public class PresenterContext {
      * Creates a new {@link Scene} from the fxml file indicated, and sets it as
      * the active Scene in the Stage. If a {@link Presenter} is defined in the FXML, the
      * Presenter is created by the dependency injector and returned.
-     * @param fxmlFileName name of the desired fxml pile, relative to the resources/presenters
+     * If a View is designated, the injected Presenter is given a reference to the {@link View}
+     * and the presenter is returned
+     * @param fxmlFileName name of the desired fxml file, relative to the resources/presenters
      *                     directory. For example: "home_screen.fxml"
-     * @return The presenter defined in the fxml file, or null if none defined.
+     * @return The presenter defined in the fxml file, or in the View
      */
     public Presenter showScreen(String fxmlFileName) {
         //create fxml loader for this fxml file//
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
 
-        //set our injector to generate the Presenter; it will inject this PresenterContext//
+        //tell javafx to use our injector to generate controllers//
+        //it will inject this PresenterContext and other dependencies//
         loader.setControllerFactory(guiceInjector::getInstance);
+
         Parent root = null;
 
         try {
@@ -65,9 +70,30 @@ public class PresenterContext {
         stage.setScene(new Scene(root, 800, 800));
         stage.show();
 
-        return loader.getController();
+        //Can optionally use View and Presenter or just Presenter//
+        //depending on what was specified in the fxml//
+        Object handler = loader.getController();
+
+        if (handler instanceof View) {
+            //If fxml designated a view, give injected presenter a ref to the view//
+            View view = (View) handler;
+            view.presenter.view = view;
+            return view.presenter;
+        } else {
+            //If fxml designated a Presenter, simply return it//
+            return (Presenter) handler;
+        }
     }
 
+    /**
+     * @deprecated the other showScreen method can produce Views. Let's just standardize the screen size
+     * so that this isn't necessary.
+     * @param fxmlFileName
+     * @param length
+     * @param height
+     * @param isResizable
+     * @return
+     */
     public Presenter showScreen(String fxmlFileName, int length, int height, boolean isResizable) {
         //create fxml loader for this fxml file//
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
