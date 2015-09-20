@@ -1,18 +1,17 @@
 /**
- * Created by brian on 9/10/15.
+ * Created by brian on 9/19/15.
  */
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 import map.Locatable;
 import map.LocationDatasource;
-import map.Map;
 import presenters.PresenterContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Start extends Application {
+public class TestMVP extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -20,21 +19,21 @@ public class Start extends Application {
 
     @Override
     public void start(Stage stage) {
-
-        //empty datasource for map//
+        //an empty data source for the map//
         LocationDatasource lds = new LocationDatasource() {
             @Override
             public Collection<Locatable> get(int row, int col) {
-                return new ArrayList<>();
+                return new ArrayList<>(0);
             }
         };
 
+        //Bind LocationDatasource to our instance//
+        //it will be insert wherever a class injects LocationDatasource//
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
         }, stage);
 
-        context.showScreen("home_screen.fxml");
+        context.showScreen("test_view.fxml");
     }
-
 
 }

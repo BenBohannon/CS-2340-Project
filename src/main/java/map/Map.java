@@ -20,22 +20,22 @@ public class Map {
 
     private LocationDatasource datasource;
 
-    /**
-     * Default Constructor for an empty Map.
-     */
-    @Inject
-    public Map() {
-        int rows = 5;
-        int cols = 9;
-
-        locationGrid = new Location[cols][rows];
-
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++) {
-                locationGrid[i][j] = new Location(i, j, this);
-            }
-        }
-    }
+//    /**
+//     * Default Constructor for an empty Map.
+//     */
+//    @Inject
+//    public Map() {
+//        int rows = 5;
+//        int cols = 9;
+//
+//        locationGrid = new Location[cols][rows];
+//
+//        for (int i = 0; i < cols; i++) {
+//            for (int j = 0; j < rows; j++) {
+//                locationGrid[i][j] = new Location(i, j, this);
+//            }
+//        }
+//    }
 
     @Inject
     public Map(LocationDatasource lds) {

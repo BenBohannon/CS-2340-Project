@@ -1,8 +1,7 @@
 package presenters;
 
+import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import java.io.IOException;
@@ -16,7 +15,8 @@ import map.*;
  */
 public class MapPresenter extends Presenter {
 
-    private Map map;
+    @Inject
+    Map map;
 
     @FXML
     private GridPane grid;
