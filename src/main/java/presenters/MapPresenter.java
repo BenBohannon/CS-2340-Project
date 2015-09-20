@@ -16,7 +16,7 @@ import map.*;
 public class MapPresenter extends Presenter {
 
     @Inject
-    Map map;
+    public Map map;
 
     @FXML
     private GridPane grid;

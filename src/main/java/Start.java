@@ -6,7 +6,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import map.Locatable;
 import map.LocationDatasource;
-import map.Map;
 import presenters.PresenterContext;
 
 import java.util.ArrayList;
