@@ -21,8 +21,8 @@ public class TestPlayerRepository implements Repository<Player> {
     }
 
     @Override
-    public Player update(Player entity) {
-        System.out.println("update()");
+    public Player save(Player entity) {
+        System.out.println("save()");
         return null;
     }
 

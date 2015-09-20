@@ -2,6 +2,8 @@ package map;
 
 import javafx.scene.image.Image;
 
+import java.util.Random;
+
 /**
  * Created by Ben 9/14/15.
  * Holds the data of each Tile on the Map.
@@ -10,9 +12,15 @@ public class Tile implements Locatable {
 
     TileType type = TileType.PLAIN;
     Map.Location loc;
+    int numOfMountains = 0;
 
     public Tile(TileType type) {
         this.type = type;
+
+        if (type == TileType.MOUNTAIN) {
+            Random rand = new Random();
+            numOfMountains = rand.nextInt(3) + 1;
+        }
     }
 
     /**
@@ -40,7 +48,13 @@ public class Tile implements Locatable {
                 img = new Image("/tiles/plain.png");
                 break;
             case MOUNTAIN:
-                img = new Image("/tiles/mountain.png");
+                if (numOfMountains == 1) {
+                    img = new Image("/tiles/1mountain.png");
+                } else if (numOfMountains == 2) {
+                    img = new Image("/tiles/2mountains.png");
+                } else {
+                    img = new Image("/tiles/3mountains.png");
+                }
                 break;
             case RIVER:
                 img = new Image("/tiles/river.png");
@@ -68,7 +82,13 @@ public class Tile implements Locatable {
                 img = new Image("/tiles/plain.png", width, height, false, false);
                 break;
             case MOUNTAIN:
-                img = new Image("/tiles/mountain.png",  width, height, false, false);
+                if (numOfMountains == 1) {
+                    img = new Image("/tiles/1mountain.png", width, height, false, false);
+                } else if (numOfMountains == 2) {
+                    img = new Image("/tiles/2mountains.png", width, height, false, false);
+                } else {
+                    img = new Image("/tiles/3mountains.png", width, height, false, false);
+                }
                 break;
             case RIVER:
                 img = new Image("/tiles/river.png",  width, height, false, false);

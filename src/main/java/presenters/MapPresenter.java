@@ -4,6 +4,9 @@ import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import java.io.IOException;
+import java.util.Random;
+
 import map.*;
 
 
@@ -13,7 +16,7 @@ import map.*;
 public class MapPresenter extends Presenter {
 
     @Inject
-    Map map;
+    public Map map;
 
     @FXML
     private GridPane grid;
@@ -24,10 +27,14 @@ public class MapPresenter extends Presenter {
     @FXML
     public void initialize() {
 
+        int mountainLimit = 6;
+        int mountains = 0;
+
         //Create a map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
                 map.Tile temp;
+                Random rand = new Random();
 
                 if (i == 4) {
                     if (j == 2) {
@@ -39,8 +46,12 @@ public class MapPresenter extends Presenter {
                         temp = new Tile(TileType.RIVER);
                     }
                 } else {
-                    //TODO: Make plains or mountains, randomly.
-                    temp = new Tile(TileType.PLAIN);
+                    if (mountains < mountainLimit && rand.nextInt(6) == 0) {
+                        temp = new Tile(TileType.MOUNTAIN);
+                        mountains++;
+                    } else {
+                        temp = new Tile(TileType.PLAIN);
+                    }
                 }
                 //Add tiles to the map.
                 map.add(temp, i, j);
