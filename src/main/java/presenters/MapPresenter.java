@@ -104,9 +104,7 @@ public class MapPresenter extends Presenter {
         //If the player is on the town tile, enter the town.
         Point temp = getCharacterTile();
         if (temp.getX() == 4 && temp.getY() == 2) {
-            Platform.runLater(() -> {
-                enterCity();
-            });
+            Platform.runLater(() -> enterCity());
         }
     }
 
@@ -203,7 +201,7 @@ public class MapPresenter extends Presenter {
     }
 
     /**
-     * Places the chracter outside of the city, and restarts movement.
+     * Places the character outside of the city, and restarts movement.
      */
     public void exitCity() {
         character.setX(340);
