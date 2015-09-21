@@ -2,9 +2,7 @@
  * Created by brian on 9/10/15.
  */
 
-import com.google.inject.TypeLiteral;
-import data.Repository;
-import data.TurnInfoHolder;
+import service.TurnService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import map.Locatable;
@@ -43,13 +41,13 @@ public class Start extends Application {
             }
         };
 
-        //TurnInfoHolder from the test class.
-        final TurnInfoHolder turnInfoHolder = new TurnInfoHolder() {
+        //TurnService from the test class.
+        final TurnService turnService = new TurnService() {
             model.Player player;
 
             @Override
             public Player getCurrentPlayer() {
-                System.out.println("TurnInfoHolder#getCurrentPlayer()");
+                System.out.println("TurnService#getCurrentPlayer()");
                 if (player == null) {
                     player = new Player();
                 }
@@ -58,20 +56,20 @@ public class Start extends Application {
 
             @Override
             public int getRoundNumber() {
-                System.out.println("TurnInfoHolder#getRoundNumber()");
+                System.out.println("TurnService#getRoundNumber()");
                 return 1;
             }
 
             @Override
             public int getTimeLeftInTurn() {
-                System.out.println("TurnInfoHolder#getTimeLeftInTurn");
+                System.out.println("TurnService#getTimeLeftInTurn");
                 return 50;
             }
         };
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
-            binder.bind(TurnInfoHolder.class).toInstance(turnInfoHolder);
+            binder.bind(TurnService.class).toInstance(turnService);
         }, stage);
 
         context.showScreen("home_screen.fxml");

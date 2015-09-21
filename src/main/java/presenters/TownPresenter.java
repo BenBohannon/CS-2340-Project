@@ -1,7 +1,7 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.TurnInfoHolder;
+import service.TurnService;
 import javafx.event.ActionEvent;
 import model.Mule;
 import model.MuleType;
@@ -12,25 +12,25 @@ import model.MuleType;
 public class TownPresenter extends Presenter {
 
     @Inject
-    TurnInfoHolder turnInfoHolder;
+    TurnService turnService;
 
     public void handleEnergyClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addMule(new Mule(MuleType.Energy));
+        turnService.getCurrentPlayer().addMule(new Mule(MuleType.Energy));
         returnToMap();
     }
 
     public void handleSmithoreClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addMule(new Mule(MuleType.Smithore));
+        turnService.getCurrentPlayer().addMule(new Mule(MuleType.Smithore));
         returnToMap();
     }
 
     public void handleFoodClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addMule(new Mule(MuleType.Food));
+        turnService.getCurrentPlayer().addMule(new Mule(MuleType.Food));
         returnToMap();
     }
 
     public void handleCrystiteClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addMule(new Mule(MuleType.Crysite));
+        turnService.getCurrentPlayer().addMule(new Mule(MuleType.Crysite));
         returnToMap();
     }
 
@@ -48,13 +48,13 @@ public class TownPresenter extends Presenter {
 
     public void handlePubClick(ActionEvent event) {
         int amountToAdd;
-        if (turnInfoHolder.getRoundNumber() < 3) {
+        if (turnService.getRoundNumber() < 3) {
             amountToAdd = 50;
-        } else if (turnInfoHolder.getRoundNumber() > 6) {
+        } else if (turnService.getRoundNumber() > 6) {
             amountToAdd = 100;
         } else {
             amountToAdd = 150;
         }
-        turnInfoHolder.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnInfoHolder.getTimeLeftInTurn()));
+        turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
     }
 }
