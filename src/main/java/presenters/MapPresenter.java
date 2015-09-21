@@ -46,11 +46,15 @@ public class MapPresenter extends Presenter {
 
         character = new ImageView(new Image("/races/Character.png", 25, 25, true, false));
         pane.getChildren().add(character);
+        character.setX(340);
+        character.setY(235);
 
         pane.setOnMouseMoved(event -> {
             mouseX = event.getX();
             mouseY = event.getY();
         });
+
+        pane.setOnMousePressed(event -> onClick());
 
         startMovement();
 
@@ -95,6 +99,27 @@ public class MapPresenter extends Presenter {
      * Moves the player's character towards the mouse.
      */
     private void update() {
+        moveCharacter(80);
+
+        //If the player is on the town tile, enter the town.
+        Point temp = getCharacterTile();
+        if (temp.getX() == 4 && temp.getY() == 2) {
+            Platform.runLater(() -> enterCity());
+        }
+    }
+
+    /**
+     * Called every time the player clicks on the map screen.
+     */
+    private void onClick() {
+
+    }
+
+    /**
+     * Moves the character towards the cursor at a speed of the input number of pixels per second.
+     * @param pixelsPerSecond Speed at which the character moves.
+     */
+    private void moveCharacter(double pixelsPerSecond) {
         if (character != null) {
             double deltaX = mouseX - (character.getX() + character.getImage().getWidth()/2);
             double deltaY = mouseY - (character.getY() + character.getImage().getHeight()/2);
@@ -109,11 +134,11 @@ public class MapPresenter extends Presenter {
             final double newDeltaX = deltaX / mag;
             final double newDeltaY = deltaY / mag;
 
-            double pixelsPerSecond = 60 * 0.016;
+            final double newPixelsPerSecond = pixelsPerSecond * 0.016;
 
             Platform.runLater(() -> {
-                character.setX(character.getX() + newDeltaX * pixelsPerSecond);
-                character.setY(character.getY() + newDeltaY * pixelsPerSecond);
+                character.setX(character.getX() + newDeltaX * newPixelsPerSecond);
+                character.setY(character.getY() + newDeltaY * newPixelsPerSecond);
             });
         }
     }
@@ -121,7 +146,7 @@ public class MapPresenter extends Presenter {
     /**
      * Starts the scheduled task of moving the current player towards the mouse.
      */
-    public void startMovement() {
+    private void startMovement() {
         if (timer == null) {
             long updateTime = 16L;
             timer = new Timer(true);
@@ -132,18 +157,26 @@ public class MapPresenter extends Presenter {
                                    update();
                                }
                            },
-                    1L, updateTime);
+                    1000L, updateTime);
         }
     }
 
     /**
      * Stops the scheduled task of moving the current player towards the mouse.
      */
-    public void stopMovement() {
+    private void stopMovement() {
         if (timer != null) {
             timer.cancel();
             timer = null;
         }
+    }
+
+    /**
+     * Returns the tile which the character is currently over.
+     */
+    private Point getCharacterTile() {
+        return new Point(((int) (character.getX() + character.getImage().getWidth()/2) )/100,
+                ((int) (character.getY() + character.getImage().getHeight()/2))/100);
     }
 
     /**
@@ -156,6 +189,25 @@ public class MapPresenter extends Presenter {
         }
 
         character.setImage(img);
+    }
+
+    /**
+     * Turns control over to the TownPresenter, and stops character movement.
+     */
+    public void enterCity() {
+        stopMovement();
+
+        context.showScreen("town.fxml");
+    }
+
+    /**
+     * Places the character outside of the city, and restarts movement.
+     */
+    public void exitCity() {
+        character.setX(340);
+        character.setY(235);
+
+        startMovement();
     }
 
 }
