@@ -31,6 +31,99 @@ public class Player {
         mules.add(mule);
     }
 
+
+    public int getMoney() {
+        return money;
+    }
+
+    /**
+     * Adds the amount passed in to the players money
+     * @param amount Amount to be added
+     */
+    public void addMoney(int amount) {
+        money = money + amount;
+    }
+
+    /**
+     * Adds the amount passed in to the players smithore
+     * @param smithore Amount to be added
+     */
+    public void addSmithore(int smithore) {
+        this.smithore += smithore;
+    }
+
+    /**
+     * Gets the player's smithore
+     * @return The smithore
+     */
+    public int getSmithore() {
+        return smithore;
+    }
+
+    /**
+     * Adds the amount passed in to the players crystite
+     * @param crystite Amount to be added
+     */
+    public void addCrystite(int crystite) {
+        this.crystite += crystite;
+    }
+
+    /**
+     * Gets the player's crystite
+     * @return The crystite
+     */
+    public int getCrystite() {
+        return crystite;
+    }
+
+    /**
+     * Adds the amount passed in to the players food
+     * @param food Amount to be added
+     */
+    public void addFood(int food) {
+        this.food += food;
+    }
+
+    /**
+     * Gets the player's food
+     * @return The food
+     */
+    public int getFood() {
+        return food;
+    }
+
+    /**
+     * Adds the amount passed in to the players energy
+     * @param energy Amount to be added
+     */
+    public void addEnergy(int energy) {
+        this.energy += energy;
+    }
+
+    /**
+     * Gets the player's energy
+     * @return The energy
+     */
+    public int getEnergy() {
+        return energy;
+    }
+
+    /**
+     * Adds the amount passed in to the players score
+     * @param score Amount to be added
+     */
+    public void addScore(int score) {
+        this.score += score;
+    }
+
+    /**
+     * Gets the player's score
+     * @return The score
+     */
+    public int getScore() {
+        return score;
+    }
+
     /**
      * Constructs player that owns the lands passed in
      * @param ownedProperties The properties the player owns
@@ -73,14 +166,6 @@ public class Player {
      */
     public boolean ownsProperty(Tile property) {
         return ownedProperties.contains(property);
-    }
-
-    public int getMoney() {
-        return money;
-    }
-
-    public void addMoney(int amount) {
-        money = money + amount;
     }
 
     //TODO implement ownership of land
