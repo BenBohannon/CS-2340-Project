@@ -5,7 +5,6 @@
 import com.google.inject.TypeLiteral;
 import data.Repository;
 import data.TestPlayerRepository;
-import service.TurnService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import map.Locatable;
@@ -26,31 +25,6 @@ public class TestTownStart extends Application {
     @Override
     public void start(Stage stage) {
 
-        final TurnService testTurnService = new TurnService() {
-            Player player;
-
-            @Override
-            public Player getCurrentPlayer() {
-                System.out.println("TurnService#getCurrentPlayer()");
-                if (player == null) {
-                    player = new Player();
-                }
-                return player;
-            }
-
-            @Override
-            public int getRoundNumber() {
-                System.out.println("TurnService#getRoundNumber()");
-                return 1;
-            }
-
-            @Override
-            public int getTimeLeftInTurn() {
-                System.out.println("TurnService#getTimeLeftInTurn");
-                return 50;
-            }
-        };
-
         final LocationDatasource lds = new LocationDatasource() {
             @Override
             public Collection<Locatable> get(int row, int col) {
@@ -70,7 +44,6 @@ public class TestTownStart extends Application {
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(new TypeLiteral<Repository<Player>>(){}).to(TestPlayerRepository.class);
-            binder.bind(TurnService.class).toInstance(testTurnService);
             binder.bind(LocationDatasource.class).toInstance(lds);
         }, stage);
 

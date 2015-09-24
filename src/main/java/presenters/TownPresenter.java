@@ -1,7 +1,7 @@
 package presenters;
 
 import com.google.inject.Inject;
-import service.TurnService;
+import service.DefaultTurnService;
 import javafx.event.ActionEvent;
 import model.Mule;
 import model.MuleType;
@@ -12,7 +12,7 @@ import model.MuleType;
 public class TownPresenter extends Presenter {
 
     @Inject
-    TurnService turnService;
+    DefaultTurnService turnService;
 
     public void handleEnergyClick(ActionEvent event) {
         turnService.getCurrentPlayer().addMule(new Mule(MuleType.Energy));
