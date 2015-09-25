@@ -181,7 +181,8 @@ public class Player {
      */
     public void buyProperty(Tile property, int price) {
         if (money - price < 0) {
-            throw new RuntimeException("Cannot buy.");
+            //Label l = new Label("Cannot buy, insufficient funds");
+            throw new RuntimeException("Cannot buy, insufficient funds.");
         }
         money = money - price;
         ownedProperties.add(property);
