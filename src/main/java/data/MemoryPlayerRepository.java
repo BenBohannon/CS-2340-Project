@@ -4,6 +4,7 @@ import model.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by brian on 9/24/15.
@@ -19,7 +20,7 @@ public class MemoryPlayerRepository implements Repository<Player> {
     }
 
     @Override
-    public Collection<Player> getAll() {
+    public List<Player> getAll() {
         return players;
     }
 

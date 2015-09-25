@@ -3,13 +3,14 @@ package data;
 import model.Player;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by brian on 9/17/15.
  */
 public class TestPlayerRepository implements Repository<Player> {
     @Override
-    public Collection<Player> getAll() {
+    public List<Player> getAll() {
         System.out.println("getAll()");
         return null;
     }
