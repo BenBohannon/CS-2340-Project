@@ -1,21 +1,23 @@
 package presenters;
 
 import com.google.inject.Inject;
+import data.MemoryPlayerRepository;
+import data.Repository;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javafx.scene.layout.Pane;
 import map.*;
+import model.Player;
 
 
 /**
@@ -37,6 +39,11 @@ public class MapPresenter extends Presenter {
     private double mouseX;
     private double mouseY;
 
+    private static boolean isLandSelectPhase = true;
+    @Inject
+    private Repository<Player> repo;
+    private int currentPlayer = 0;
+    private List<Player> players;
 
     /**
      * Constructor which sets up the default map.
@@ -55,6 +62,11 @@ public class MapPresenter extends Presenter {
         });
 
         pane.setOnMousePressed(event -> onClick());
+
+        if (isLandSelectPhase) {
+            //Ready the first player to choose his land.
+            players = repo.getAll();
+        }
 
         startMovement();
 
@@ -103,7 +115,7 @@ public class MapPresenter extends Presenter {
 
         //If the player is on the town tile, enter the town.
         Point temp = getCharacterTile();
-        if (temp.getX() == 4 && temp.getY() == 2) {
+        if (temp.getX() == 4 && temp.getY() == 2 && !isLandSelectPhase) {
             Platform.runLater(() -> enterCity());
         }
     }
@@ -112,7 +124,20 @@ public class MapPresenter extends Presenter {
      * Called every time the player clicks on the map screen.
      */
     private void onClick() {
+        if (isLandSelectPhase) {
+            //Check to see if this tile isn't already owned, give it to this player, and move to the next.
+            players.get(currentPlayer); //TODO: Add the player's tile to his "owned tiles" here!
 
+            //Let the next player select his land, if anyone left.
+            currentPlayer++;
+            if (currentPlayer >= players.size()) {
+                isLandSelectPhase = false;
+            } else {
+                //Setup the player (who goes first) for his turn.
+            }
+            character.setX(340);
+            character.setY(235);
+        }
     }
 
     /**
@@ -201,13 +226,11 @@ public class MapPresenter extends Presenter {
     }
 
     /**
-     * Places the character outside of the city, and restarts movement.
+     * Prepares the Map to start a land selection phase the next time it's shown.
      */
-    public void exitCity() {
-        character.setX(340);
-        character.setY(235);
-
-        startMovement();
+    public static void readyLandSelectPhase() {
+        isLandSelectPhase = true;
     }
+
 
 }
