@@ -1,7 +1,6 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.MemoryPlayerRepository;
 import data.Repository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

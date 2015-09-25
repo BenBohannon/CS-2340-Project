@@ -2,20 +2,19 @@ package presenters;
 
 import com.google.inject.Inject;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import map.Map;
+import map.Tile;
+import map.TileType;
 
 import java.awt.*;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javafx.scene.layout.Pane;
-import map.*;
 
 
 /**
@@ -37,6 +36,7 @@ public class MapPresenter extends Presenter {
     private double mouseX;
     private double mouseY;
 
+    private int numPlayersLeft;
 
     /**
      * Constructor which sets up the default map.
@@ -58,6 +58,7 @@ public class MapPresenter extends Presenter {
 
         startMovement();
 
+
         int mountainLimit = 6;
         int mountains = 0;
 
@@ -71,7 +72,6 @@ public class MapPresenter extends Presenter {
                     if (j == 2) {
                         //Make a town
                         temp = new Tile(TileType.TOWN);
-
                     } else {
                         //Make a river
                         temp = new Tile(TileType.RIVER);
@@ -86,12 +86,12 @@ public class MapPresenter extends Presenter {
                 }
                 //Add tiles to the map.
                 map.add(temp, i, j);
+                ImageView imageView = new ImageView(temp.getImage(100, 100));
 
                 //Add tile images to the gridPane
-                grid.add(new ImageView(temp.getImage(100, 100)), i, j);
+                grid.add(imageView, i, j);
             }
         }
-
     }
 
     /**
