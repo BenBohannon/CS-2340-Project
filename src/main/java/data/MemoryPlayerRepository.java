@@ -3,7 +3,6 @@ package data;
 import model.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**

@@ -1,9 +1,8 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.MemoryPlayerRepository;
-import data.Repository;
 import data.MapInfoHolder;
+import data.Repository;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -13,15 +12,12 @@ import javafx.scene.layout.Pane;
 import map.Map;
 import map.Tile;
 import map.TileType;
+import model.Player;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import map.*;
-import model.Player;
 
 /**
  * Created by Ben 9/14/2015
@@ -46,7 +42,7 @@ public class MapPresenter extends Presenter {
 
     private static boolean isLandSelectPhase = true;
     @Inject
-    private Repository<Player> repo;
+    private Repository<Player> playerRepository;
     private int currentPlayer = 0;
     private List<Player> players;
 
@@ -67,11 +63,6 @@ public class MapPresenter extends Presenter {
         });
 
         pane.setOnMousePressed(event -> onClick());
-
-        if (isLandSelectPhase) {
-            //Ready the first player to choose his land.
-            players = repo.getAll();
-        }
 
         startMovement();
 
