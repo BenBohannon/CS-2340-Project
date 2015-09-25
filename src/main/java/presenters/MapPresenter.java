@@ -1,22 +1,26 @@
 package presenters;
 
 import com.google.inject.Inject;
+import data.MemoryPlayerRepository;
+import data.Repository;
+import data.MapInfoHolder;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import map.Map;
+import map.Tile;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javafx.scene.layout.Pane;
 import map.*;
-
+import model.Player;
 
 /**
  * Created by Ben 9/14/2015
@@ -25,6 +29,8 @@ public class MapPresenter extends Presenter {
 
     @Inject
     public Map map;
+    @Inject
+    MapInfoHolder mapInfo;
 
     @FXML
     private GridPane grid;
@@ -37,6 +43,11 @@ public class MapPresenter extends Presenter {
     private double mouseX;
     private double mouseY;
 
+    private static boolean isLandSelectPhase = true;
+    @Inject
+    private Repository<Player> repo;
+    private int currentPlayer = 0;
+    private List<Player> players;
 
     /**
      * Constructor which sets up the default map.
@@ -56,6 +67,11 @@ public class MapPresenter extends Presenter {
 
         pane.setOnMousePressed(event -> onClick());
 
+        if (isLandSelectPhase) {
+            //Ready the first player to choose his land.
+            players = repo.getAll();
+        }
+
         startMovement();
 
         int mountainLimit = 6;
@@ -64,31 +80,12 @@ public class MapPresenter extends Presenter {
         //Create a map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
-                map.Tile temp;
-                Random rand = new Random();
-
-                if (i == 4) {
-                    if (j == 2) {
-                        //Make a town
-                        temp = new Tile(TileType.TOWN);
-
-                    } else {
-                        //Make a river
-                        temp = new Tile(TileType.RIVER);
-                    }
-                } else {
-                    if (mountains < mountainLimit && rand.nextInt(6) == 0) {
-                        temp = new Tile(TileType.MOUNTAIN);
-                        mountains++;
-                    } else {
-                        temp = new Tile(TileType.PLAIN);
-                    }
-                }
+                Tile tile = new Tile(mapInfo.getTileType(j, i));
                 //Add tiles to the map.
-                map.add(temp, i, j);
+                map.add(tile, i, j);
 
                 //Add tile images to the gridPane
-                grid.add(new ImageView(temp.getImage(100, 100)), i, j);
+                grid.add(new ImageView(tile.getImage(100, 100)), i, j);
             }
         }
 
@@ -103,7 +100,7 @@ public class MapPresenter extends Presenter {
 
         //If the player is on the town tile, enter the town.
         Point temp = getCharacterTile();
-        if (temp.getX() == 4 && temp.getY() == 2) {
+        if (temp.getX() == 4 && temp.getY() == 2 && !isLandSelectPhase) {
             Platform.runLater(() -> enterCity());
         }
     }
@@ -112,7 +109,52 @@ public class MapPresenter extends Presenter {
      * Called every time the player clicks on the map screen.
      */
     private void onClick() {
+        if (isLandSelectPhase) {
+            //Check to see if this tile isn't already owned, give it to this player, and move to the next.
+            Point temp = getCharacterTile();
+            Tile tile = map.getOccupants(temp.x, temp.y, Tile.class)[0];
 
+            boolean isOwnedTile = false;
+            for (Player p : players) {
+                if (p.ownsProperty(tile)) {
+                    isOwnedTile = true;
+                    break;
+                }
+            }
+            //If the player is on an owned Tile, do nothing. If on the City, pass their turn.
+            if (isOwnedTile) {
+                return;
+            } else if (tile.getTileType() != TileType.TOWN) {
+                Player player = players.get(currentPlayer);
+
+                if (player.getOwnedProperties().size() < 3) {
+                    //Give the player this property.
+                    player.addProperty(tile);
+                    //TODO: Change the Tile's color to have the Player's color.
+                } else if (player.getMoney() >= 300) {
+                    player.addProperty(tile);
+                    player.addMoney(-300);
+                    //TODO: Change the Tile's color to have the Player's color.
+                } else {
+                    //Else, the player can't afford the property, so do nothing.
+                    return;
+                }
+            }
+
+            //Let the next player select his land, if anyone left.
+            currentPlayer++;
+            if (currentPlayer >= players.size()) {
+                isLandSelectPhase = false;
+            } else {
+                //Setup the player (who goes first) for his turn.
+            }
+            character.setX(340);
+            character.setY(235);
+
+            //Create the pause between turns.
+            stopMovement();
+            startMovement();
+        }
     }
 
     /**
@@ -201,13 +243,10 @@ public class MapPresenter extends Presenter {
     }
 
     /**
-     * Places the character outside of the city, and restarts movement.
+     * Prepares the Map to start a land selection phase the next time it's shown.
      */
-    public void exitCity() {
-        character.setX(340);
-        character.setY(235);
-
-        startMovement();
+    public static void readyLandSelectPhase() {
+        isLandSelectPhase = true;
     }
 
 }
