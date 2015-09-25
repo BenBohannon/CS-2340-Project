@@ -111,7 +111,24 @@ public class MapPresenter extends Presenter {
     private void onClick() {
         if (isLandSelectPhase) {
             //Check to see if this tile isn't already owned, give it to this player, and move to the next.
-            players.get(currentPlayer); //TODO: Add the player's tile to his "owned tiles" here!
+            Point temp = getCharacterTile();
+            Tile tile = map.getOccupants(temp.x, temp.y, Tile.class)[0];
+
+            boolean isOwnedTile = false;
+            for (Player p : players) {
+                if (p.ownsProperty(tile)) {
+                    isOwnedTile = true;
+                    break;
+                }
+            }
+            //If the player is on the City or an owned Tile, do nothing.
+            if (tile.getTileType() == TileType.TOWN || isOwnedTile) {
+                return;
+            }
+
+            //Give the player this property.
+            players.get(currentPlayer).addProperty(tile);
+            //TODO: Change the Tile's color to have the Player's color.
 
             //Let the next player select his land, if anyone left.
             currentPlayer++;
@@ -122,6 +139,10 @@ public class MapPresenter extends Presenter {
             }
             character.setX(340);
             character.setY(235);
+
+            //Create the pause between turns.
+            stopMovement();
+            startMovement();
         }
     }
 

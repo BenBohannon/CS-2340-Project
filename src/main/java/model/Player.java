@@ -19,7 +19,7 @@ public class Player {
     private int score;
     private int id;
     private Color color;
-    private ArrayList<Tile> ownedProperties;
+    private ArrayList<Tile> ownedProperties = new ArrayList<>();
 
     public Collection<Mule> mules;
 
