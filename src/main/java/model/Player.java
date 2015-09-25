@@ -163,6 +163,7 @@ public class Player {
             throw new java.lang.IllegalArgumentException("Property cannot be null.");
         }
         ownedProperties.add(property);
+        property.setOwner(this);
     }
 
     /**
@@ -171,6 +172,7 @@ public class Player {
      */
     public void removeProperty(Tile property) {
         ownedProperties.remove(property);
+        property.setOwner(null);
     }
 
     /**
@@ -184,8 +186,12 @@ public class Player {
             //Label l = new Label("Cannot buy, insufficient funds");
             throw new RuntimeException("Cannot buy, insufficient funds.");
         }
+        if (property.ownedBy() != null) {
+            throw new RuntimeException("Cannot buy, already owned");
+        }
         money = money - price;
         ownedProperties.add(property);
+        property.setOwner(this);
     }
 
     /**
@@ -196,6 +202,7 @@ public class Player {
     public void sellProperty(Tile property, int price) {
         money += price;
         removeProperty(property);
+        property.setOwner(null);
     }
 
     /**

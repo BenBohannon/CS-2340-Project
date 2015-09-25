@@ -1,6 +1,7 @@
 package map;
 
 import javafx.scene.image.Image;
+import model.Player;
 
 import java.util.Random;
 
@@ -14,6 +15,8 @@ public class Tile implements Locatable {
     Map.Location loc;
     int numOfMountains = 0;
 
+    private Player owner;
+
     public Tile(TileType type) {
         this.type = type;
 
@@ -21,6 +24,10 @@ public class Tile implements Locatable {
             Random rand = new Random();
             numOfMountains = rand.nextInt(3) + 1;
         }
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 
     public TileType getTileType() {
@@ -107,5 +114,8 @@ public class Tile implements Locatable {
         return img;
     }
 
+    public Player ownedBy() {
+        return owner;
+    }
 
 }
