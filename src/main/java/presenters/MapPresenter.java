@@ -6,15 +6,21 @@ import data.Repository;
 import data.MapInfoHolder;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 import map.Map;
 import map.Tile;
 import map.TileType;
 
 import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
@@ -46,7 +52,7 @@ public class MapPresenter extends Presenter {
 
     private static boolean isLandSelectPhase = true;
     @Inject
-    private Repository<Player> repo;
+    private Repository<Player> playerRepository;
     private int currentPlayer = 0;
     private List<Player> players;
 
@@ -68,11 +74,6 @@ public class MapPresenter extends Presenter {
 
         pane.setOnMousePressed(event -> onClick());
 
-        if (isLandSelectPhase) {
-            //Ready the first player to choose his land.
-            players = repo.getAll();
-        }
-
         startMovement();
 
         int mountainLimit = 6;
@@ -87,6 +88,16 @@ public class MapPresenter extends Presenter {
 
                 //Add tile images to the gridPane
                 grid.add(new ImageView(tile.getImage(100, 100)), i, j);
+            }
+        }
+
+        for (Player player : playerRepository.getAll()) {
+            for (Tile tile : player.getOwnedProperties()) {
+                Group border = createBorder(player.getColor());
+                pane.getChildren().add(border);
+                Point location = getPixelOffset(tile.getLocation().getRow(), tile.getLocation().getCol());
+                border.setLayoutX(location.getX());
+                border.setLayoutY(location.getY());
             }
         }
 
@@ -223,6 +234,13 @@ public class MapPresenter extends Presenter {
     }
 
     /**
+     * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
+     */
+    private Point getPixelOffset(int row, int col) {
+        return new Point(col * 100, row * 100);
+    }
+
+    /**
      * Sets the character's image on the map to be the input image. (For switching races)
      * @param img Image to set.
      */
@@ -248,6 +266,21 @@ public class MapPresenter extends Presenter {
      */
     public static void readyLandSelectPhase() {
         isLandSelectPhase = true;
+    }
+
+    private Group createBorder(Color color) {
+        Group border = new Group();
+        javafx.scene.shape.Rectangle top = new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle bottom = new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle right = new javafx.scene.shape.Rectangle(100, 10);
+        javafx.scene.shape.Rectangle left = new javafx.scene.shape.Rectangle(100, 10);
+        bottom.setTranslateX(90);
+        right.setTranslateY(90);
+        border.getChildren().addAll(top, bottom, right, left);
+        border.getChildren().stream()
+                .map(node -> ((javafx.scene.shape.Shape) node))
+                .forEach(shape -> shape.setFill(color));
+        return border;
     }
 
 }

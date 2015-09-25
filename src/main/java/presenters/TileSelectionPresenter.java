@@ -44,7 +44,7 @@ public class TileSelectionPresenter extends Presenter {
     private Timer timer;
     private double mouseX;
     private double mouseY;
-    private int tileID;
+    private volatile int tileID;
 
 
     /**
