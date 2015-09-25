@@ -57,7 +57,7 @@ public class TileSelectionPresenter extends Presenter {
         });
 
         pane.setOnMousePressed(event -> onClick());
-        
+
         int mountainLimit = 6;
         int mountains = 0;
 

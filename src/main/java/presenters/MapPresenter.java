@@ -1,6 +1,8 @@
 package presenters;
 
 import com.google.inject.Inject;
+import data.MemoryPlayerRepository;
+import data.Repository;
 import data.MapInfoHolder;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -13,10 +15,13 @@ import map.Tile;
 import map.TileType;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import map.*;
+import model.Player;
 
 /**
  * Created by Ben 9/14/2015
@@ -39,6 +44,11 @@ public class MapPresenter extends Presenter {
     private double mouseX;
     private double mouseY;
 
+    private static boolean isLandSelectPhase = true;
+    @Inject
+    private Repository<Player> repo;
+    private int currentPlayer = 0;
+    private List<Player> players;
 
     /**
      * Constructor which sets up the default map.
@@ -57,6 +67,11 @@ public class MapPresenter extends Presenter {
         });
 
         pane.setOnMousePressed(event -> onClick());
+
+        if (isLandSelectPhase) {
+            //Ready the first player to choose his land.
+            players = repo.getAll();
+        }
 
         startMovement();
 
@@ -86,7 +101,7 @@ public class MapPresenter extends Presenter {
 
         //If the player is on the town tile, enter the town.
         Point temp = getCharacterTile();
-        if (temp.getX() == 4 && temp.getY() == 2) {
+        if (temp.getX() == 4 && temp.getY() == 2 && !isLandSelectPhase) {
             Platform.runLater(() -> enterCity());
         }
     }
@@ -95,7 +110,41 @@ public class MapPresenter extends Presenter {
      * Called every time the player clicks on the map screen.
      */
     private void onClick() {
+        if (isLandSelectPhase) {
+            //Check to see if this tile isn't already owned, give it to this player, and move to the next.
+            Point temp = getCharacterTile();
+            Tile tile = map.getOccupants(temp.x, temp.y, Tile.class)[0];
 
+            boolean isOwnedTile = false;
+            for (Player p : players) {
+                if (p.ownsProperty(tile)) {
+                    isOwnedTile = true;
+                    break;
+                }
+            }
+            //If the player is on the City or an owned Tile, do nothing.
+            if (tile.getTileType() == TileType.TOWN || isOwnedTile) {
+                return;
+            }
+
+            //Give the player this property.
+            players.get(currentPlayer).addProperty(tile);
+            //TODO: Change the Tile's color to have the Player's color.
+
+            //Let the next player select his land, if anyone left.
+            currentPlayer++;
+            if (currentPlayer >= players.size()) {
+                isLandSelectPhase = false;
+            } else {
+                //Setup the player (who goes first) for his turn.
+            }
+            character.setX(340);
+            character.setY(235);
+
+            //Create the pause between turns.
+            stopMovement();
+            startMovement();
+        }
     }
 
     /**
@@ -184,13 +233,10 @@ public class MapPresenter extends Presenter {
     }
 
     /**
-     * Places the character outside of the city, and restarts movement.
+     * Prepares the Map to start a land selection phase the next time it's shown.
      */
-    public void exitCity() {
-        character.setX(340);
-        character.setY(235);
-
-        startMovement();
+    public static void readyLandSelectPhase() {
+        isLandSelectPhase = true;
     }
 
 }
