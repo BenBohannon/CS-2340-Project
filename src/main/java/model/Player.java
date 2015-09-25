@@ -1,5 +1,6 @@
 package model;
 
+import javafx.scene.paint.Color;
 import map.Tile;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ public class Player {
     private int energy;
     private int money;
     private int score;
+    private int id;
+    private Color color;
     private ArrayList<Tile> ownedProperties;
 
     public Collection<Mule> mules;
@@ -31,17 +34,28 @@ public class Player {
         mules.add(mule);
     }
 
-
     public int getMoney() {
         return money;
     }
 
-    /**
-     * Adds the amount passed in to the players money
-     * @param amount Amount to be added
-     */
     public void addMoney(int amount) {
         money = money + amount;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**
@@ -157,6 +171,30 @@ public class Player {
      */
     public void removeProperty(Tile property) {
         ownedProperties.remove(property);
+    }
+
+    /**
+     * Buys the property if the player has sufficient funds
+     * @param property The property to be bought
+     * @param price The price of the property
+     * @throws RuntimeException if the player does not have enough money
+     */
+    public void buyProperty(Tile property, int price) {
+        if (money - price < 0) {
+            throw new RuntimeException("Cannot buy.");
+        }
+        money = money - price;
+        ownedProperties.add(property);
+    }
+
+    /**
+     * Sells the property for the given price
+     * @param property The property being sold
+     * @param price The price it is being sold for
+     */
+    public void sellProperty(Tile property, int price) {
+        money += price;
+        removeProperty(property);
     }
 
     /**
