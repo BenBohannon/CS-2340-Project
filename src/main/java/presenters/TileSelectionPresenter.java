@@ -40,11 +40,12 @@ public class TileSelectionPresenter extends Presenter {
     private Pane pane;
 
 
-    final private Group border = new Group();
+    final private Group border = createBorder(0, 0, Color.WHITE);
     private Timer timer;
     private double mouseX;
     private double mouseY;
     private volatile int tileID;
+    private boolean[] playerHasChosen = new boolean[4];
 
 
     /**
@@ -53,18 +54,6 @@ public class TileSelectionPresenter extends Presenter {
     @FXML
     public void initialize() {
 
-        Rectangle top = new Rectangle(10, 100);
-        Rectangle bottom = new Rectangle(10, 100);
-        Rectangle right = new Rectangle(100, 10);
-        Rectangle left = new Rectangle(100, 10);
-        bottom.setTranslateX(90);
-        right.setTranslateY(90);
-        border.getChildren().addAll(top, bottom, right, left);
-        border.getChildren().stream()
-            .map(node -> ((Shape) node))
-                .forEach(shape -> shape.setFill(Color.WHITE));
-//        border.setTranslateX(border.getTranslateX() - 5);
-//        border.setTranslateY(border.getTranslateY() - 5);
         pane.getChildren().add(border);
         pane.setOnMouseMoved(event -> {
             mouseX = event.getX();
@@ -76,24 +65,33 @@ public class TileSelectionPresenter extends Presenter {
             public void handle(KeyEvent event) {
                 switch (event.getCode()) {
                     case A:
-                        border.getChildren().stream()
-                                .map(node -> ((Shape) node))
-                                .forEach(shape -> shape.setFill(Color.GREEN));
+                        if (!playerHasChosen[0]) { // && if tile is free && if player exists
+                            Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(0).getColor());
+                            pane.getChildren().add(border1);
+                            playerHasChosen[0] = true;
+                            // assign tile to player
+                        }
                         break;
                     case S:
-                        border.getChildren().stream()
-                                .map(node -> ((Shape) node))
-                                .forEach(shape -> shape.setFill(Color.RED));
+                        if (!playerHasChosen[1]) {
+                            Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(0).getColor());
+                            pane.getChildren().add(border2);
+                            playerHasChosen[1] = true;
+                        }
                         break;
                     case D:
-                        border.getChildren().stream()
-                                .map(node -> ((Shape) node))
-                                .forEach(shape -> shape.setFill(Color.BLUE));
+                        if (!playerHasChosen[2]) {
+                            Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(0).getColor());
+                            pane.getChildren().add(border3);
+                            playerHasChosen[2] = true;
+                        }
                         break;
                     case F:
-                        border.getChildren().stream()
-                                .map(node -> ((Shape) node))
-                                .forEach(shape -> shape.setFill(Color.YELLOW));
+                        if (!playerHasChosen[3]) {
+                            Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(0).getColor());
+                            pane.getChildren().add(border4);
+                            playerHasChosen[3] = true;
+                        }
                         break;
                 }
             }
@@ -168,4 +166,27 @@ public class TileSelectionPresenter extends Presenter {
             timer = null;
         }
     }
+
+    public Group createBorder(double x, double y, Color color) {
+        Rectangle top = new Rectangle(10, 100);
+        Rectangle bottom = new Rectangle(10, 100);
+        Rectangle right = new Rectangle(100, 10);
+        Rectangle left = new Rectangle(100, 10);
+        top.setTranslateX(x);
+        top.setTranslateY(y);
+        bottom.setTranslateX(90 + x);
+        bottom.setTranslateY(y);
+        right.setTranslateX(x);
+        right.setTranslateY(90 + y);
+        left.setTranslateX(x);
+        left.setTranslateY(y);
+        Group tempBorder = new Group();
+        tempBorder.getChildren().addAll(top, bottom, right, left);
+        tempBorder.getChildren().stream()
+                .map(node -> ((Shape) node))
+                .forEach(shape -> shape.setFill(color));
+        return tempBorder;
+    }
+
+
 }

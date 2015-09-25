@@ -1,9 +1,8 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.MemoryPlayerRepository;
-import data.Repository;
 import data.MapInfoHolder;
+import data.Repository;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -17,17 +16,14 @@ import javafx.scene.shape.*;
 import map.Map;
 import map.Tile;
 import map.TileType;
+import model.Player;
 
 import java.awt.*;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import map.*;
-import model.Player;
 
 /**
  * Created by Ben 9/14/2015
