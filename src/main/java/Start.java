@@ -2,8 +2,6 @@
  * Created by brian on 9/10/15.
  */
 
-import com.google.inject.TypeLiteral;
-import data.Repository;
 import data.TurnInfoHolder;
 import javafx.application.Application;
 import javafx.stage.Stage;

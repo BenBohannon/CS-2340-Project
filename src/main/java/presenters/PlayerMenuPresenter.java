@@ -15,7 +15,7 @@ public class PlayerMenuPresenter extends Presenter {
             PlayerMenuPresenter nextPresenter = (PlayerMenuPresenter) context.showScreen("player_config.fxml");
             nextPresenter.setNumPlayersLeft(--numPlayersLeft);
         } else {
-            context.showScreen("map_grid.fxml", 890, 490, false);
+            context.showScreen("map_grid_tile_select.fxml");
         }
     }
 

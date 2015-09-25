@@ -67,7 +67,7 @@ public class PresenterContext {
             e.printStackTrace();
         }
 
-        stage.setScene(new Scene(root, 800, 800));
+        stage.setScene(new Scene(root, 890, 490));
         stage.show();
 
         //Can optionally use View and Presenter or just Presenter//
@@ -94,24 +94,24 @@ public class PresenterContext {
      * @param isResizable
      * @return
      */
-    public Presenter showScreen(String fxmlFileName, int length, int height, boolean isResizable) {
-        //create fxml loader for this fxml file//
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
-
-        //set our injector to generate the Presenter; it will inject this PresenterContext//
-        loader.setControllerFactory(guiceInjector::getInstance);
-        Parent root = null;
-
-        try {
-            root = loader.<Parent>load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        stage.setScene(new Scene(root, length, height));
-        stage.setResizable(isResizable);
-        stage.show();
-
-        return loader.getController();
-    }
+//    public Presenter showScreen(String fxmlFileName, int length, int height, boolean isResizable) {
+//        //create fxml loader for this fxml file//
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
+//
+//        //set our injector to generate the Presenter; it will inject this PresenterContext//
+//        loader.setControllerFactory(guiceInjector::getInstance);
+//        Parent root = null;
+//
+//        try {
+//            root = loader.<Parent>load();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        stage.setScene(new Scene(root, length, height));
+//        stage.setResizable(isResizable);
+//        stage.show();
+//
+//        return loader.getController();
+//    }
 }

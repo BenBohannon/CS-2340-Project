@@ -2,20 +2,19 @@ package presenters;
 
 import com.google.inject.Inject;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import map.Map;
+import map.Tile;
+import map.TileType;
 
 import java.awt.*;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javafx.scene.layout.Pane;
-import map.*;
 
 
 /**
@@ -131,8 +130,8 @@ public class MapPresenter extends Presenter {
 
             double mag = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-            final double newDeltaX = deltaX / mag;
-            final double newDeltaY = deltaY / mag;
+            final double newDeltaX = deltaX / (5 * mag) + deltaX / 20;
+            final double newDeltaY = deltaY / (5 * mag) + deltaY / 20;
 
             final double newPixelsPerSecond = pixelsPerSecond * 0.016;
 
