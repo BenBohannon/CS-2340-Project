@@ -68,7 +68,7 @@ public class MapPresenter extends Presenter {
             mouseY = event.getY();
         });
 
-        pane.setOnMousePressed(event -> onClick());
+//        pane.setOnMousePressed(event -> onClick());
 
         startMovement();
 
@@ -78,9 +78,9 @@ public class MapPresenter extends Presenter {
         //Create a map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
-                Tile tile = new Tile(mapInfo.getTileType(j, i));
+                Tile tile = map.getOccupants(i, j, Tile.class)[0];
                 //Add tiles to the map.
-                map.add(tile, i, j);
+                //map.add(tile, i, j);
 
                 //Add tile images to the gridPane
                 grid.add(new ImageView(tile.getImage(100, 100)), i, j);
@@ -91,7 +91,7 @@ public class MapPresenter extends Presenter {
             for (Tile tile : player.getOwnedProperties()) {
                 Group border = createBorder(player.getColor());
                 pane.getChildren().add(border);
-                Point location = getPixelOffset(tile.getLocation().getRow(), tile.getLocation().getCol());
+                Point location = getPixelOffset(tile.getLocation().getCol(), tile.getLocation().getRow());
                 border.setLayoutX(location.getX());
                 border.setLayoutY(location.getY());
             }
@@ -108,7 +108,7 @@ public class MapPresenter extends Presenter {
 
         //If the player is on the town tile, enter the town.
         Point temp = getCharacterTile();
-        if (temp.getX() == 4 && temp.getY() == 2 && !isLandSelectPhase) {
+        if (temp.getX() == 4 && temp.getY() == 2) { //&& !isLandSelectPhase) {
             Platform.runLater(() -> enterCity());
         }
     }
@@ -225,6 +225,8 @@ public class MapPresenter extends Presenter {
      * Returns the tile which the character is currently over.
      */
     private Point getCharacterTile() {
+        int x = (int)(character.getX() + character.getImage().getWidth()/2);
+        int y = (int)(character.getY() + character.getImage().getWidth()/2);
         return new Point(((int) (character.getX() + character.getImage().getWidth()/2) )/100,
                 ((int) (character.getY() + character.getImage().getHeight()/2))/100);
     }

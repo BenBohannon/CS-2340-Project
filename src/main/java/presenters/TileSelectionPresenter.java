@@ -18,6 +18,7 @@ import map.Map;
 import map.Tile;
 import model.Player;
 
+import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,13 +40,14 @@ public class TileSelectionPresenter extends Presenter {
     @FXML
     private Pane pane;
 
-
     final private Group border = createBorder(0, 0, Color.WHITE);
     private Timer timer;
     private double mouseX;
     private double mouseY;
     private volatile int tileID;
     private boolean[] playerHasChosen = new boolean[4];
+
+    private int selectionRound = 0;
 
 
     /**
@@ -63,44 +65,69 @@ public class TileSelectionPresenter extends Presenter {
         pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                switch (event.getCode()) {
-                    case A:
-                        if (!playerHasChosen[0]) { // && if tile is free && if player exists
-                            Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(0).getColor());
-                            pane.getChildren().add(border1);
-                            playerHasChosen[0] = true;
-                            // assign tile to player
-                        }
-                        break;
-                    case S:
-                        if (!playerHasChosen[1]) {
-                            Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(1).getColor());
-                            pane.getChildren().add(border2);
-                            playerHasChosen[1] = true;
-                        }
-                        break;
-                    case D:
-                        if (!playerHasChosen[2]) {
-                            Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(2).getColor());
-                            pane.getChildren().add(border3);
-                            playerHasChosen[2] = true;
-                        }
-                        break;
-                    case F:
-                        if (!playerHasChosen[3]) {
-                            Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(3).getColor());
-                            pane.getChildren().add(border4);
-                            playerHasChosen[3] = true;
-                        }
-                        break;
+                Player player = null;
+                Point location = getCoords(border.getTranslateX(), border.getTranslateY());
+                Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
+                boolean tileIsOwned = playerRepository.getAll().stream()
+                        .anyMatch(p -> p.getOwnedProperties().contains(tile));
+                if (!tileIsOwned) {
+                    switch (event.getCode()) {
+                        case A:
+                            player = playerRepository.get(0);
+                            if (!playerHasChosen[0]) { // && if tile is free && if player exists
+                                player = playerRepository.get(0);
+                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                                if (selectionRound > 1) {
+                                    System.out.println("money -= 300 player " + player.getId());
+                                }
+                                Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                                pane.getChildren().add(border1);
+                                playerHasChosen[0] = true;
+                                // assign tile to player
+                            }
+                            break;
+                        case S:
+                            if (!playerHasChosen[1]) {
+                                player = playerRepository.get(1);
+                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                                if (selectionRound > 1) {
+                                    System.out.println("money -= 300 player " + player.getId());
+                                }
+                                Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                                pane.getChildren().add(border2);
+                                playerHasChosen[1] = true;
+                            }
+                            break;
+                        case D:
+                            if (!playerHasChosen[2]) {
+                                player = playerRepository.get(2);
+                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                                if (selectionRound > 1) {
+                                    System.out.println("money -= 300 player " + player.getId());
+                                }
+                                Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                                pane.getChildren().add(border3);
+                                playerHasChosen[2] = true;
+                            }
+                            break;
+                        case F:
+                            if (!playerHasChosen[3]) {
+                                player = playerRepository.get(3);
+                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                                if (selectionRound > 1) {
+                                    System.out.println("money -= 300 player " + player.getId());
+                                }
+                                Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                                pane.getChildren().add(border4);
+                                playerHasChosen[3] = true;
+                            }
+                            break;
+                    }
                 }
             }
         });
 
         pane.setOnMousePressed(event -> onClick());
-
-        int mountainLimit = 6;
-        int mountains = 0;
 
         //Start iterating through tiles to select
         iterateTiles();
@@ -116,7 +143,6 @@ public class TileSelectionPresenter extends Presenter {
                 grid.add(new ImageView(tile.getImage(100, 100)), i, j);
             }
         }
-
     }
 
     private void iterateTiles() {
@@ -145,9 +171,6 @@ public class TileSelectionPresenter extends Presenter {
     private void update() {
         // jump to the next grid tile
         Platform.runLater(() -> {
-            if (doneSelecting()) {
-                context.showScreen("map_grid.fxml");
-            }
             tileID ++;
             if (tileID != 1 && tileID % 9 == 0) {
                 border.setTranslateX(border.getTranslateX() - 900);
@@ -155,6 +178,14 @@ public class TileSelectionPresenter extends Presenter {
             }
             if (tileID % 45 == 0) {
                 border.setTranslateY(border.getTranslateY() - 500);
+                if (noneSelected()) {
+                    stopMovement();
+                    context.showScreen("map_grid.fxml");
+                }
+                for (int i = 0; i < playerRepository.getAll().size(); i++) {
+                    playerHasChosen[i] = false;
+                }
+                selectionRound++;
             }
             border.setTranslateX(border.getTranslateX() + 100);
         });
@@ -191,11 +222,24 @@ public class TileSelectionPresenter extends Presenter {
         return tempBorder;
     }
 
-    private boolean doneSelecting() {
+    private boolean allSelected() {
         for (int i = 0; i < playerRepository.getAll().size(); i++) {
             if (!playerHasChosen[i]) { return false; }
         }
         return true;
+    }
+
+    private boolean noneSelected() {
+        for (int i = 0; i < playerRepository.getAll().size(); i++) {
+            if (playerHasChosen[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Point getCoords(double x, double y) {
+        return new Point((int)(y/100),(int) (x/100));
     }
 
 }
