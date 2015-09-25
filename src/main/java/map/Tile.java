@@ -26,8 +26,20 @@ public class Tile implements Locatable {
         }
     }
 
+    /**
+     * Sets the owner of the tile
+     * @param owner The new owner of the tile
+     */
     public void setOwner(Player owner) {
         this.owner = owner;
+    }
+
+    /**
+     * Returns the owner if the tile is owned, and null if it is not
+     * @return The owner of the tile
+     */
+    public Player ownedBy() {
+        return owner;
     }
 
     public TileType getTileType() {
@@ -113,9 +125,4 @@ public class Tile implements Locatable {
 
         return img;
     }
-
-    public Player ownedBy() {
-        return owner;
-    }
-
 }
