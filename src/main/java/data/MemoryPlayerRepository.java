@@ -10,7 +10,13 @@ import java.util.Collection;
  */
 public class MemoryPlayerRepository implements Repository<Player> {
 
+    private static int nextPlayerId = 0;
+
     private ArrayList<Player> players;
+
+    public MemoryPlayerRepository() {
+        players = new ArrayList<>();
+    }
 
     @Override
     public Collection<Player> getAll() {
@@ -31,7 +37,12 @@ public class MemoryPlayerRepository implements Repository<Player> {
 
     @Override
     public Player save(Player entity) {
-        players.add(entity);
+        if (players.contains(entity)) {
+            //no action needed in memory//
+        } else {
+            entity.setId(nextPlayerId++);
+            players.add(entity);
+        }
         return entity;
     }
 

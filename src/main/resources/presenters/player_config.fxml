@@ -30,7 +30,7 @@
               <RadioButton text="C" toggleGroup="$group"/>
           </children>
       </VBox>
-    <ColorPicker GridPane.columnIndex="1" GridPane.rowIndex="4" />
+    <ColorPicker fx:id="colorPicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
     <Button mnemonicParsing="false" text="Finish" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" onAction="#handleFinishButtonAction"/>
   </children>
   <columnConstraints>
