@@ -2,6 +2,9 @@
  * Created by brian on 9/10/15.
  */
 
+import com.google.inject.TypeLiteral;
+import data.MemoryPlayerRepository;
+import data.Repository;
 import data.TurnInfoHolder;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -67,9 +70,12 @@ public class Start extends Application {
             }
         };
 
+        final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
+
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
             binder.bind(TurnInfoHolder.class).toInstance(turnInfoHolder);
+            binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
         }, stage);
 
         context.showScreen("home_screen.fxml");

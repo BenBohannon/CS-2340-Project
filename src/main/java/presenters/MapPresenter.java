@@ -1,6 +1,7 @@
 package presenters;
 
 import com.google.inject.Inject;
+import data.MapInfoHolder;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -24,6 +25,8 @@ public class MapPresenter extends Presenter {
 
     @Inject
     public Map map;
+    @Inject
+    MapInfoHolder mapInfo;
 
     @FXML
     private GridPane grid;
@@ -63,31 +66,12 @@ public class MapPresenter extends Presenter {
         //Create a map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
-                map.Tile temp;
-                Random rand = new Random();
-
-                if (i == 4) {
-                    if (j == 2) {
-                        //Make a town
-                        temp = new Tile(TileType.TOWN);
-
-                    } else {
-                        //Make a river
-                        temp = new Tile(TileType.RIVER);
-                    }
-                } else {
-                    if (mountains < mountainLimit && rand.nextInt(6) == 0) {
-                        temp = new Tile(TileType.MOUNTAIN);
-                        mountains++;
-                    } else {
-                        temp = new Tile(TileType.PLAIN);
-                    }
-                }
+                Tile tile = new Tile(mapInfo.getTileType(j, i));
                 //Add tiles to the map.
-                map.add(temp, i, j);
+                map.add(tile, i, j);
 
                 //Add tile images to the gridPane
-                grid.add(new ImageView(temp.getImage(100, 100)), i, j);
+                grid.add(new ImageView(tile.getImage(100, 100)), i, j);
             }
         }
 

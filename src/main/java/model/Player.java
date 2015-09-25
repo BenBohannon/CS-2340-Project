@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.paint.Color;
+
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -13,6 +15,8 @@ public class Player {
     private int energy;
     private int money;
     private int score;
+    private int id;
+    private Color color;
 
     public Collection<Mule> mules;
 
@@ -33,6 +37,22 @@ public class Player {
 
     public void addMoney(int amount) {
         money = money + amount;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     //TODO implement ownership of land
