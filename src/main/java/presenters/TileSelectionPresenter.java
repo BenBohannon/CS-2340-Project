@@ -146,6 +146,7 @@ public class TileSelectionPresenter extends Presenter {
         // jump to the next grid tile
         Platform.runLater(() -> {
             if (doneSelecting()) {
+                stopMovement();
                 context.showScreen("map_grid.fxml");
             }
             tileID ++;

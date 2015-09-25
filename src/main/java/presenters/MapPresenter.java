@@ -62,7 +62,7 @@ public class MapPresenter extends Presenter {
             mouseY = event.getY();
         });
 
-        pane.setOnMousePressed(event -> onClick());
+//        pane.setOnMousePressed(event -> onClick());
 
         startMovement();
 
