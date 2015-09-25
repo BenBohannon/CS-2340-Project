@@ -3,29 +3,24 @@ package data;
 import map.TileType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.Random;
-
 /**
  * Created by brian on 9/24/15.
+ * this class is a temporary implementation of a system to keep a consistent map. This
+ * is a stopgap for preventing the map from randomizing each time the MapPresenter is
+ * instantiated.
  */
 public class MapInfoHolder {
-    public TileType getTileType(int row, int col) {
-        Random rand = new Random();
-        if (col == 4) {
-            if (row == 2) {
-                //Make a town
-                return TileType.TOWN;
 
-            } else {
-                //Make a river
-                return TileType.RIVER;
-            }
-        } else {
-            if (rand.nextInt(6) == 0) {
-                return TileType.MOUNTAIN;
-            } else {
-                return TileType.PLAIN;
-            }
-        }
+    private static TileType[][] TILE_GRID = {
+            {TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN, TileType.RIVER, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN},
+            {TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.PLAIN, TileType.PLAIN, TileType.MOUNTAIN, TileType.PLAIN},
+            {TileType.MOUNTAIN, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.TOWN, TileType.PLAIN, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN},
+            {TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN},
+            {TileType.PLAIN, TileType.MOUNTAIN, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN},
+
+    };
+
+    public TileType getTileType(int row, int col) {
+        return TILE_GRID[row][col];
     }
 }
