@@ -122,14 +122,25 @@ public class MapPresenter extends Presenter {
                     break;
                 }
             }
-            //If the player is on the City or an owned Tile, do nothing.
-            if (tile.getTileType() == TileType.TOWN || isOwnedTile) {
+            //If the player is on an owned Tile, do nothing. If on the City, pass their turn.
+            if (isOwnedTile) {
                 return;
-            }
+            } else if (tile.getTileType() != TileType.TOWN) {
+                Player player = players.get(currentPlayer);
 
-            //Give the player this property.
-            players.get(currentPlayer).addProperty(tile);
-            //TODO: Change the Tile's color to have the Player's color.
+                if (player.getOwnedProperties().size() < 3) {
+                    //Give the player this property.
+                    player.addProperty(tile);
+                    //TODO: Change the Tile's color to have the Player's color.
+                } else if (player.getMoney() >= 300) {
+                    player.addProperty(tile);
+                    player.addMoney(-300);
+                    //TODO: Change the Tile's color to have the Player's color.
+                } else {
+                    //Else, the player can't afford the property, so do nothing.
+                    return;
+                }
+            }
 
             //Let the next player select his land, if anyone left.
             currentPlayer++;
