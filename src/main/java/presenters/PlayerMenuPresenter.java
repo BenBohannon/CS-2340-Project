@@ -1,7 +1,6 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.MemoryPlayerRepository;
 import data.Repository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,7 +30,7 @@ public class PlayerMenuPresenter extends Presenter {
             PlayerMenuPresenter nextPresenter = (PlayerMenuPresenter) context.showScreen("player_config.fxml");
             nextPresenter.setNumPlayersLeft(--numPlayersLeft);
         } else {
-            context.showScreen("map_grid_tile_select.fxml");
+            context.showScreen("map_grid.fxml");
         }
     }
 
