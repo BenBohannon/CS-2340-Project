@@ -5,16 +5,22 @@ import data.MapInfoHolder;
 import data.Repository;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 import map.Map;
 import map.Tile;
 import map.TileType;
 import model.Player;
 
 import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -72,12 +78,22 @@ public class MapPresenter extends Presenter {
         //Create a map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
-                Tile tile = new Tile(mapInfo.getTileType(j, i));
+                Tile tile = map.getOccupants(i, j, Tile.class)[0];
                 //Add tiles to the map.
-                map.add(tile, i, j);
+                //map.add(tile, i, j);
 
                 //Add tile images to the gridPane
                 grid.add(new ImageView(tile.getImage(100, 100)), i, j);
+            }
+        }
+
+        for (Player player : playerRepository.getAll()) {
+            for (Tile tile : player.getOwnedProperties()) {
+                Group border = createBorder(player.getColor());
+                pane.getChildren().add(border);
+                Point location = getPixelOffset(tile.getLocation().getCol(), tile.getLocation().getRow());
+                border.setLayoutX(location.getX());
+                border.setLayoutY(location.getY());
             }
         }
 
@@ -92,7 +108,7 @@ public class MapPresenter extends Presenter {
 
         //If the player is on the town tile, enter the town.
         Point temp = getCharacterTile();
-        if (temp.getX() == 4 && temp.getY() == 2 && !isLandSelectPhase) {
+        if (temp.getX() == 4 && temp.getY() == 2) { //&& !isLandSelectPhase) {
             Platform.runLater(() -> enterCity());
         }
     }
@@ -209,8 +225,17 @@ public class MapPresenter extends Presenter {
      * Returns the tile which the character is currently over.
      */
     private Point getCharacterTile() {
+        int x = (int)(character.getX() + character.getImage().getWidth()/2);
+        int y = (int)(character.getY() + character.getImage().getWidth()/2);
         return new Point(((int) (character.getX() + character.getImage().getWidth()/2) )/100,
                 ((int) (character.getY() + character.getImage().getHeight()/2))/100);
+    }
+
+    /**
+     * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
+     */
+    private Point getPixelOffset(int row, int col) {
+        return new Point(col * 100, row * 100);
     }
 
     /**
@@ -239,6 +264,21 @@ public class MapPresenter extends Presenter {
      */
     public static void readyLandSelectPhase() {
         isLandSelectPhase = true;
+    }
+
+    private Group createBorder(Color color) {
+        Group border = new Group();
+        javafx.scene.shape.Rectangle top = new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle bottom = new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle right = new javafx.scene.shape.Rectangle(100, 10);
+        javafx.scene.shape.Rectangle left = new javafx.scene.shape.Rectangle(100, 10);
+        bottom.setTranslateX(90);
+        right.setTranslateY(90);
+        border.getChildren().addAll(top, bottom, right, left);
+        border.getChildren().stream()
+                .map(node -> ((javafx.scene.shape.Shape) node))
+                .forEach(shape -> shape.setFill(color));
+        return border;
     }
 
 }
