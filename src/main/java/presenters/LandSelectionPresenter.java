@@ -2,19 +2,15 @@ package presenters;
 
 import com.google.inject.Inject;
 import data.MapInfoHolder;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import map.Map;
 import map.Tile;
-import map.TileType;
 
 import java.awt.event.ActionEvent;
-import java.util.Random;
 
 /**
  * Created by connor on 9/24/15.
@@ -26,6 +22,8 @@ public class LandSelectionPresenter extends Presenter {
     public Map map;
     @Inject
     MapInfoHolder mapInfo;
+//    @Inject
+//    Repository<Player> playerRepository;
     @FXML
     private GridPane grid;
     @FXML
@@ -36,25 +34,6 @@ public class LandSelectionPresenter extends Presenter {
 
     @FXML
     public void initialize() {
-        pane.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                switch (event.getCode()) {
-                    case A:
-                        playerRepository.get(0).buyProperty(//tile);
-                        break;
-                    case F:
-                        goSouth = true;
-                        break;
-                    case J:
-                        goWest = true;
-                        break;
-                    case SEMICOLON:
-                        goEast = true;
-                        break;
-                }
-            }
-        });
 
 
         //Create a map.

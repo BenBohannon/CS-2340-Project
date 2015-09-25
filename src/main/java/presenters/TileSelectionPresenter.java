@@ -2,10 +2,13 @@ package presenters;
 
 import com.google.inject.Inject;
 import data.MapInfoHolder;
+import data.Repository;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -13,6 +16,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import map.Map;
 import map.Tile;
+import model.Player;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,6 +31,8 @@ public class TileSelectionPresenter extends Presenter {
     public Map map;
     @Inject
     MapInfoHolder mapInfo;
+    @Inject
+    Repository<Player> playerRepository;
 
     @FXML
     private GridPane grid;
@@ -63,6 +69,34 @@ public class TileSelectionPresenter extends Presenter {
         pane.setOnMouseMoved(event -> {
             mouseX = event.getX();
             mouseY = event.getY();
+        });
+
+        pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()) {
+                    case A:
+                        border.getChildren().stream()
+                                .map(node -> ((Shape) node))
+                                .forEach(shape -> shape.setFill(Color.GREEN));
+                        break;
+                    case S:
+                        border.getChildren().stream()
+                                .map(node -> ((Shape) node))
+                                .forEach(shape -> shape.setFill(Color.RED));
+                        break;
+                    case D:
+                        border.getChildren().stream()
+                                .map(node -> ((Shape) node))
+                                .forEach(shape -> shape.setFill(Color.BLUE));
+                        break;
+                    case F:
+                        border.getChildren().stream()
+                                .map(node -> ((Shape) node))
+                                .forEach(shape -> shape.setFill(Color.YELLOW));
+                        break;
+                }
+            }
         });
 
         pane.setOnMousePressed(event -> onClick());
@@ -107,7 +141,7 @@ public class TileSelectionPresenter extends Presenter {
      * Called every time the player clicks on the map screen.
      */
     private void onClick() {
-        
+
     }
 
     private void update() {
