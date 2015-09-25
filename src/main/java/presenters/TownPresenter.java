@@ -56,5 +56,10 @@ public class TownPresenter extends Presenter {
             amountToAdd = 150;
         }
         turnInfoHolder.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnInfoHolder.getTimeLeftInTurn()));
+        // if (allplayershavegone)
+        context.showScreen("map_grid_tile_select.fxml");
+        // else
+        // context.showScreen("map_grid.fxml");
+        // iterate player id and reset to zero at appropriate times
     }
 }

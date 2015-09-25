@@ -56,11 +56,20 @@ public class TileSelectionPresenter extends Presenter {
     @FXML
     public void initialize() {
 
+        tileID = 0;
         pane.getChildren().add(border);
         pane.setOnMouseMoved(event -> {
             mouseX = event.getX();
             mouseY = event.getY();
         });
+
+        for (Player player : playerRepository.getAll()) {
+            for (Tile tile : player.getOwnedProperties()) {
+                Point location = getPixelOffset(tile.getLocation().getCol(), tile.getLocation().getRow());
+                Group border = createBorder(location.getX(), location.getY(), player.getColor());
+                pane.getChildren().add(border);
+            }
+        }
 
         pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -70,7 +79,7 @@ public class TileSelectionPresenter extends Presenter {
                 Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
                 boolean tileIsOwned = playerRepository.getAll().stream()
                         .anyMatch(p -> p.getOwnedProperties().contains(tile));
-                if (!tileIsOwned) {
+                if (!tileIsOwned && tileID != 22) {
                     switch (event.getCode()) {
                         case A:
                             player = playerRepository.get(0);
@@ -87,7 +96,7 @@ public class TileSelectionPresenter extends Presenter {
                             }
                             break;
                         case S:
-                            if (!playerHasChosen[1]) {
+                            if (playerRepository.getAll().size() > 1 && !playerHasChosen[1]) {
                                 player = playerRepository.get(1);
                                 player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
                                 if (selectionRound > 1) {
@@ -99,7 +108,7 @@ public class TileSelectionPresenter extends Presenter {
                             }
                             break;
                         case D:
-                            if (!playerHasChosen[2]) {
+                            if (playerRepository.getAll().size() > 2 && !playerHasChosen[2]) {
                                 player = playerRepository.get(2);
                                 player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
                                 if (selectionRound > 1) {
@@ -111,7 +120,7 @@ public class TileSelectionPresenter extends Presenter {
                             }
                             break;
                         case F:
-                            if (!playerHasChosen[3]) {
+                            if (playerRepository.getAll().size() > 3 && !playerHasChosen[3]) {
                                 player = playerRepository.get(3);
                                 player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
                                 if (selectionRound > 1) {
@@ -171,7 +180,7 @@ public class TileSelectionPresenter extends Presenter {
     private void update() {
         // jump to the next grid tile
         Platform.runLater(() -> {
-            if (doneSelecting()) {
+            if (tileID >= 44) {
                 stopMovement();
                 context.showScreen("map_grid.fxml");
             }
@@ -244,6 +253,10 @@ public class TileSelectionPresenter extends Presenter {
 
     private Point getCoords(double x, double y) {
         return new Point((int)(y/100),(int) (x/100));
+    }
+
+    private Point getPixelOffset(int row, int col) {
+        return new Point(col * 100, row * 100);
     }
 
 }
