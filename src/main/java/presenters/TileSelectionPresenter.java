@@ -226,7 +226,7 @@ public class TileSelectionPresenter extends Presenter {
         return tempBorder;
     }
 
-    private boolean allSelected() {
+    private boolean doneSelecting() {
         for (int i = 0; i < playerRepository.getAll().size(); i++) {
             if (!playerHasChosen[i]) { return false; }
         }
