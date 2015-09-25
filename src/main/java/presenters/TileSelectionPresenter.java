@@ -74,21 +74,21 @@ public class TileSelectionPresenter extends Presenter {
                         break;
                     case S:
                         if (!playerHasChosen[1]) {
-                            Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(0).getColor());
+                            Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(1).getColor());
                             pane.getChildren().add(border2);
                             playerHasChosen[1] = true;
                         }
                         break;
                     case D:
                         if (!playerHasChosen[2]) {
-                            Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(0).getColor());
+                            Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(2).getColor());
                             pane.getChildren().add(border3);
                             playerHasChosen[2] = true;
                         }
                         break;
                     case F:
                         if (!playerHasChosen[3]) {
-                            Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(0).getColor());
+                            Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), playerRepository.get(3).getColor());
                             pane.getChildren().add(border4);
                             playerHasChosen[3] = true;
                         }
@@ -145,6 +145,9 @@ public class TileSelectionPresenter extends Presenter {
     private void update() {
         // jump to the next grid tile
         Platform.runLater(() -> {
+            if (doneSelecting()) {
+                context.showScreen("map_grid.fxml");
+            }
             tileID ++;
             if (tileID != 1 && tileID % 9 == 0) {
                 border.setTranslateX(border.getTranslateX() - 900);
@@ -188,5 +191,11 @@ public class TileSelectionPresenter extends Presenter {
         return tempBorder;
     }
 
+    private boolean doneSelecting() {
+        for (int i = 0; i < playerRepository.getAll().size(); i++) {
+            if (!playerHasChosen[i]) { return false; }
+        }
+        return true;
+    }
 
 }
