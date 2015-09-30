@@ -34,6 +34,10 @@ public class TownPresenter extends Presenter {
         returnToMap();
     }
 
+    public void handleStoreClick(ActionEvent event) {
+        context.showScreen("store.fxml");
+    }
+
     public void handleMapClick(ActionEvent event) {
         returnToMap();
     }

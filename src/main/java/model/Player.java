@@ -42,6 +42,10 @@ public class Player {
         money = money + amount;
     }
 
+    public void removeMoney(int amount) {
+        money = money - amount;
+    }
+
     public int getId() {
         return id;
     }
@@ -66,6 +70,10 @@ public class Player {
         this.smithore += smithore;
     }
 
+    public void removeSmithore(int smithore) {
+        this.smithore -= smithore;
+    }
+
     /**
      * Gets the player's smithore
      * @return The smithore
@@ -80,6 +88,10 @@ public class Player {
      */
     public void addCrystite(int crystite) {
         this.crystite += crystite;
+    }
+
+    public void removeCrystite(int crystite) {
+        this.crystite -= crystite;
     }
 
     /**
@@ -98,6 +110,10 @@ public class Player {
         this.food += food;
     }
 
+    public void removeFood(int food) {
+        this.food -= food;
+    }
+
     /**
      * Gets the player's food
      * @return The food
@@ -114,6 +130,10 @@ public class Player {
         this.energy += energy;
     }
 
+    public void removeEnergy(int energy) {
+        this.energy -= energy;
+    }
+
     /**
      * Gets the player's energy
      * @return The energy
@@ -128,6 +148,10 @@ public class Player {
      */
     public void addScore(int score) {
         this.score += score;
+    }
+
+    public void lowerScore(int score) {
+        this.score -= score;
     }
 
     /**
