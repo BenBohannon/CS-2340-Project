@@ -5,13 +5,18 @@ import data.MapInfoHolder;
 import data.Repository;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import map.Map;
 import map.Tile;
-import map.TileType;
 import model.Player;
 
 import java.awt.*;
@@ -42,7 +47,7 @@ public class MapPresenter extends Presenter {
 
     private static boolean isLandSelectPhase = true;
     @Inject
-    private Repository<Player> repo;
+    private Repository<Player> playerRepository;
     private int currentPlayer = 0;
     private List<Player> players;
 
@@ -53,21 +58,19 @@ public class MapPresenter extends Presenter {
     public void initialize() {
 
         character = new ImageView(new Image("/races/Character.png", 25, 25, true, false));
-        pane.getChildren().add(character);
         character.setX(340);
         character.setY(235);
+        ColorAdjust monochrome = new ColorAdjust();
+        monochrome.setSaturation(-1.0);
+        Blend blush = new Blend(BlendMode.MULTIPLY, monochrome,
+                new ColorInput(0, 0, character.getImage().getWidth(), character.getImage().getHeight(), Color.RED));
 
         pane.setOnMouseMoved(event -> {
             mouseX = event.getX();
             mouseY = event.getY();
         });
 
-        pane.setOnMousePressed(event -> onClick());
-
-        if (isLandSelectPhase) {
-            //Ready the first player to choose his land.
-            players = repo.getAll();
-        }
+//        pane.setOnMousePressed(event -> onClick());
 
         startMovement();
 
@@ -77,14 +80,26 @@ public class MapPresenter extends Presenter {
         //Create a map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
-                Tile tile = new Tile(mapInfo.getTileType(j, i));
+                Tile tile = map.getOccupants(i, j, Tile.class)[0];
                 //Add tiles to the map.
-                map.add(tile, i, j);
+                //map.add(tile, i, j);
 
                 //Add tile images to the gridPane
                 grid.add(new ImageView(tile.getImage(100, 100)), i, j);
             }
         }
+
+        for (Player player : playerRepository.getAll()) {
+            for (Tile tile : player.getOwnedProperties()) {
+                Group border = createBorder(player.getColor());
+                pane.getChildren().add(border);
+                Point location = getPixelOffset(tile.getLocation().getCol(), tile.getLocation().getRow());
+                border.setLayoutX(location.getX());
+                border.setLayoutY(location.getY());
+            }
+        }
+
+        pane.getChildren().add(character);
 
     }
 
@@ -97,7 +112,7 @@ public class MapPresenter extends Presenter {
 
         //If the player is on the town tile, enter the town.
         Point temp = getCharacterTile();
-        if (temp.getX() == 4 && temp.getY() == 2 && !isLandSelectPhase) {
+        if (temp.getX() == 4 && temp.getY() == 2) { //&& !isLandSelectPhase) {
             Platform.runLater(() -> enterCity());
         }
     }
@@ -106,53 +121,52 @@ public class MapPresenter extends Presenter {
      * Called every time the player clicks on the map screen.
      */
     private void onClick() {
-        if (isLandSelectPhase) {
-            //Check to see if this tile isn't already owned, give it to this player, and move to the next.
-            Point temp = getCharacterTile();
-            Tile tile = map.getOccupants(temp.x, temp.y, Tile.class)[0];
-
-            boolean isOwnedTile = false;
-            for (Player p : players) {
-                if (p.ownsProperty(tile)) {
-                    isOwnedTile = true;
-                    break;
-                }
-            }
-            //If the player is on an owned Tile, do nothing. If on the City, pass their turn.
-            if (isOwnedTile) {
-                return;
-            } else if (tile.getTileType() != TileType.TOWN) {
-                Player player = players.get(currentPlayer);
-
-                if (player.getOwnedProperties().size() < 3) {
-                    //Give the player this property.
-                    player.addProperty(tile);
-
-                    //TODO: Change the Tile's color to have the Player's color.
-                } else if (player.getMoney() >= 300) {
-                    player.addProperty(tile);
-                    player.addMoney(-300);
-                    //TODO: Change the Tile's color to have the Player's color.
-                } else {
-                    //Else, the player can't afford the property, so do nothing.
-                    return;
-                }
-            }
-
-            //Let the next player select his land, if anyone left.
-            currentPlayer++;
-            if (currentPlayer >= players.size()) {
-                isLandSelectPhase = false;
-            } else {
-                //Setup the player (who goes first) for his turn.
-            }
-            character.setX(340);
-            character.setY(235);
-
-            //Create the pause between turns.
-            stopMovement();
-            startMovement();
-        }
+//        if (isLandSelectPhase) {
+//            //Check to see if this tile isn't already owned, give it to this player, and move to the next.
+//            Point temp = getCharacterTile();
+//            Tile tile = map.getOccupants(temp.x, temp.y, Tile.class)[0];
+//
+//            boolean isOwnedTile = false;
+//            for (Player p : players) {
+//                if (p.ownsProperty(tile)) {
+//                    isOwnedTile = true;
+//                    break;
+//                }
+//            }
+//            //If the player is on an owned Tile, do nothing. If on the City, pass their turn.
+//            if (isOwnedTile) {
+//                return;
+//            } else if (tile.getTileType() != TileType.TOWN) {
+//                Player player = players.get(currentPlayer);
+//
+//                if (player.getOwnedProperties().size() < 3) {
+//                    //Give the player this property.
+//                    player.addProperty(tile);
+//                    //TODO: Change the Tile's color to have the Player's color.
+//                } else if (player.getMoney() >= 300) {
+//                    player.addProperty(tile);
+//                    player.addMoney(-300);
+//                    //TODO: Change the Tile's color to have the Player's color.
+//                } else {
+//                    //Else, the player can't afford the property, so do nothing.
+//                    return;
+//                }
+//            }
+//
+//            //Let the next player select his land, if anyone left.
+//            currentPlayer++;
+//            if (currentPlayer >= players.size()) {
+//                isLandSelectPhase = false;
+//            } else {
+//                //Setup the player (who goes first) for his turn.
+//            }
+//            character.setX(340);
+//            character.setY(235);
+//
+//            //Create the pause between turns.
+//            stopMovement();
+//            startMovement();
+//        }
     }
 
     /**
@@ -171,8 +185,8 @@ public class MapPresenter extends Presenter {
 
             double mag = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-            final double newDeltaX = deltaX / mag;
-            final double newDeltaY = deltaY / mag;
+            final double newDeltaX = deltaX / (5 * mag) + deltaX / 20;
+            final double newDeltaY = deltaY / (5 * mag) + deltaY / 20;
 
             final double newPixelsPerSecond = pixelsPerSecond * 0.016;
 
@@ -215,8 +229,17 @@ public class MapPresenter extends Presenter {
      * Returns the tile which the character is currently over.
      */
     private Point getCharacterTile() {
+        int x = (int)(character.getX() + character.getImage().getWidth()/2);
+        int y = (int)(character.getY() + character.getImage().getWidth()/2);
         return new Point(((int) (character.getX() + character.getImage().getWidth()/2) )/100,
                 ((int) (character.getY() + character.getImage().getHeight()/2))/100);
+    }
+
+    /**
+     * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
+     */
+    private Point getPixelOffset(int row, int col) {
+        return new Point(col * 100, row * 100);
     }
 
     /**
@@ -245,6 +268,28 @@ public class MapPresenter extends Presenter {
      */
     public static void readyLandSelectPhase() {
         isLandSelectPhase = true;
+    }
+
+    private Group createBorder(Color color) {
+        Group border = new Group();
+        javafx.scene.shape.Rectangle top = new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle bottom = new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle right = new javafx.scene.shape.Rectangle(100, 10);
+        javafx.scene.shape.Rectangle left = new javafx.scene.shape.Rectangle(100, 10);
+        bottom.setTranslateX(90);
+        right.setTranslateY(90);
+        border.getChildren().addAll(top, bottom, right, left);
+        border.getChildren().stream()
+                .map(node -> ((javafx.scene.shape.Shape) node))
+                .forEach(shape -> shape.setFill(color));
+        return border;
+    }
+
+    public boolean isRoundOver() {
+        if (currentPlayer >= players.size()) {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -229,11 +229,11 @@ public class Map {
             return getOccupants(Locatable.class);
         }
 
-        public int getRowCount() {
+        public int getRow() {
             return row;
         }
 
-        public int getColCount() {
+        public int getCol() {
             return col;
         }
 

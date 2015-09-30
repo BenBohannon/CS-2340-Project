@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import map.Locatable;
 import map.LocationDatasource;
+import map.Map;
 import model.Player;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -71,11 +72,15 @@ public class Start extends Application {
         };
 
         final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
+        final Map map = new Map(lds);
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
             binder.bind(TurnInfoHolder.class).toInstance(turnInfoHolder);
             binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
+
+            //temp
+            binder.bind(Map.class).toInstance(map);
         }, stage);
 
         context.showScreen("home_screen.fxml");
