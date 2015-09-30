@@ -43,7 +43,9 @@ public class Player {
     }
 
     public void removeMoney(int amount) {
-        money = money - amount;
+        if (money - amount >= 0) {
+            money = money - amount;
+        }
     }
 
     public int getId() {
@@ -66,12 +68,18 @@ public class Player {
      * Adds the amount passed in to the players smithore
      * @param smithore Amount to be added
      */
-    public void addSmithore(int smithore) {
-        this.smithore += smithore;
+    public void buySmithore(int smithore, int price) {
+        if (this.money - price >= 0) {
+            this.smithore += smithore;
+            removeMoney(price);
+        }
     }
 
-    public void removeSmithore(int smithore) {
-        this.smithore -= smithore;
+    public void sellSmithore(int smithore, int price) {
+        if (this.smithore - smithore >= 0) {
+            this.smithore -= smithore;
+            addMoney(price);
+        }
     }
 
     /**
@@ -86,12 +94,18 @@ public class Player {
      * Adds the amount passed in to the players crystite
      * @param crystite Amount to be added
      */
-    public void addCrystite(int crystite) {
-        this.crystite += crystite;
+    public void buyCrystite(int crystite, int price) {
+        if (this.money - price >= 0) {
+            this.crystite += crystite;
+            removeMoney(price);
+        }
     }
 
-    public void removeCrystite(int crystite) {
-        this.crystite -= crystite;
+    public void sellCrystite(int crystite, int price) {
+        if (this.crystite - crystite >= 0) {
+            this.crystite -= crystite;
+            addMoney(price);
+        }
     }
 
     /**
@@ -106,12 +120,18 @@ public class Player {
      * Adds the amount passed in to the players food
      * @param food Amount to be added
      */
-    public void addFood(int food) {
-        this.food += food;
+    public void buyFood(int food, int price) {
+        if (this.money - price >= 0) {
+            removeMoney(price);
+            this.food += food;
+        }
     }
 
-    public void removeFood(int food) {
-        this.food -= food;
+    public void sellFood(int food, int price) {
+        if (this.food - food >= 0) {
+            this.food -= food;
+            addMoney(price);
+        }
     }
 
     /**

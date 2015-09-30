@@ -14,33 +14,27 @@ public class StorePresenter extends Presenter {
     TurnInfoHolder turnInfoHolder;
 
     public void handleSmithoreBuyClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addSmithore(1);
-        turnInfoHolder.getCurrentPlayer().removeMoney(10);                  //temp price values
+        turnInfoHolder.getCurrentPlayer().buySmithore(1, 10);               //temp price values
     }
 
     public void handleSmithoreSellClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().removeSmithore(1);
-        turnInfoHolder.getCurrentPlayer().addMoney(10);
+        turnInfoHolder.getCurrentPlayer().sellSmithore(1, 10);
     }
 
     public void handleCrystiteBuyClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addCrystite(1);
-        turnInfoHolder.getCurrentPlayer().removeMoney(15);
+        turnInfoHolder.getCurrentPlayer().buyCrystite(1, 20);
     }
 
     public void handleCrystiteSellClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().removeCrystite(1);
-        turnInfoHolder.getCurrentPlayer().addMoney(15);
+        turnInfoHolder.getCurrentPlayer().sellCrystite(1,20);
     }
 
     public void handleFoodBuyClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addFood(1);
-        turnInfoHolder.getCurrentPlayer().removeMoney(5);
+        turnInfoHolder.getCurrentPlayer().buyFood(1, 5);
     }
 
     public void handleFoodSellClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().removeFood(1);
-        turnInfoHolder.getCurrentPlayer().addMoney(5);
+        turnInfoHolder.getCurrentPlayer().sellFood(1, 5);
     }
 
     public void handleExitClick(ActionEvent event) {
