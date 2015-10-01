@@ -73,6 +73,7 @@ public class Player {
         if (this.money - price >= 0) {
             this.smithore += smithore;
             removeMoney(price);
+            System.out.println(money);
         }
     }
 
@@ -85,6 +86,7 @@ public class Player {
         if (this.smithore - smithore >= 0) {
             this.smithore -= smithore;
             addMoney(price);
+            System.out.println(money);
         }
     }
 
@@ -105,6 +107,7 @@ public class Player {
         if (this.money - price >= 0) {
             this.crystite += crystite;
             removeMoney(price);
+            System.out.println(money);
         }
     }
 
@@ -117,6 +120,7 @@ public class Player {
         if (this.crystite - crystite >= 0) {
             this.crystite -= crystite;
             addMoney(price);
+            System.out.println(money);
         }
     }
 
@@ -137,6 +141,7 @@ public class Player {
         if (this.money - price >= 0) {
             removeMoney(price);
             this.food += food;
+            System.out.println(money);
         }
     }
 
@@ -149,6 +154,7 @@ public class Player {
         if (this.food - food >= 0) {
             this.food -= food;
             addMoney(price);
+            System.out.println(money);
         }
     }
 
