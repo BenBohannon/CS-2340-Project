@@ -4,8 +4,8 @@
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import map.Locatable;
-import map.LocationDatasource;
+import model.map.Locatable;
+import model.map.LocationDatasource;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -20,7 +20,7 @@ public class TestMVP extends Application {
 
     @Override
     public void start(Stage stage) {
-        //an empty data source for the map//
+        //an empty data source for the model.map//
         LocationDatasource lds = new LocationDatasource() {
             @Override
             public Collection<Locatable> get(int row, int col) {

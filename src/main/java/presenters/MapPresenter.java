@@ -16,15 +16,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import map.Map;
-import map.Tile;
-import model.Player;
 import view.MapView;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import model.entity.Player;
+import model.map.*;
+
 
 /**
  * Created by Ben 9/14/2015
@@ -54,7 +55,7 @@ public class MapPresenter extends Presenter<MapView> {
     private List<Player> players;
 
     /**
-     * Constructor which sets up the default map.
+     * Constructor which sets up the default model.map.
      */
     @FXML
     public void initialize() {
@@ -79,7 +80,7 @@ public class MapPresenter extends Presenter<MapView> {
         int mountainLimit = 6;
         int mountains = 0;
 
-        //Create a map.
+        //Create a model.map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
                 Tile tile = map.getOccupants(i, j, Tile.class)[0];
@@ -123,7 +124,7 @@ public class MapPresenter extends Presenter<MapView> {
     }
 
     /**
-     * Called every time the player clicks on the map screen.
+     * Called every time the player clicks on the model.map screen.
      */
     private void onClick() {
 //        if (isLandSelectPhase) {
@@ -241,6 +242,9 @@ public class MapPresenter extends Presenter<MapView> {
     }
 
     /**
+<<<<<<< HEAD
+     * Sets the character's image on the model.map to be the input image. (For switching races)
+=======
      * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
      */
     private Point getPixelOffset(int row, int col) {
@@ -249,6 +253,7 @@ public class MapPresenter extends Presenter<MapView> {
 
     /**
      * Sets the character's image on the map to be the input image. (For switching races)
+>>>>>>> 0e19cd327a0081d1f64cdcf956002bde284163c7
      * @param img Image to set.
      */
     public void setCharacterImage(Image img) {
@@ -290,11 +295,5 @@ public class MapPresenter extends Presenter<MapView> {
         return border;
     }
 
-    public boolean isRoundOver() {
-        if (currentPlayer >= players.size()) {
-            return true;
-        }
-        return false;
-    }
 
 }
