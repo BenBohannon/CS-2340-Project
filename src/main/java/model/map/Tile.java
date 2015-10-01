@@ -23,6 +23,10 @@ public class Tile implements Locatable {
         }
     }
 
+    public TileType getTileType() {
+        return type;
+    }
+
     /**
      * @see Locatable
      */

@@ -9,7 +9,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import model.map.Locatable;
 import model.map.LocationDatasource;
-import model.Entity.Player;
+import model.entity.Player;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 

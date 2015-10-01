@@ -3,8 +3,8 @@ package presenters;
 import com.google.inject.Inject;
 import model.service.DefaultTurnService;
 import javafx.event.ActionEvent;
-import model.Entity.Mule;
-import model.Entity.MuleType;
+import model.entity.Mule;
+import model.entity.MuleType;
 
 /**
  * Created by brian on 9/17/15.
@@ -55,6 +55,13 @@ public class TownPresenter extends Presenter {
         } else {
             amountToAdd = 150;
         }
+
         turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+        // if (allplayershavegone)
+        context.showScreen("map_grid_tile_select.fxml");
+        // else
+        // context.showScreen("map_grid.fxml");
+        // iterate player id and reset to zero at appropriate times
+
     }
 }

@@ -1,6 +1,6 @@
 package data;
 
-import model.Entity.Player;
+import model.entity.Player;
 
 /**
  * Created by brian on 9/21/15.

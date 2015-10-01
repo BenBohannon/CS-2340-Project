@@ -5,7 +5,7 @@ import data.GameInfo;
 import data.Repository;
 import data.StoreInfoHolder;
 import data.TurnEndListener;
-import model.Entity.Player;
+import model.entity.Player;
 
 import java.util.*;
 import java.util.stream.Stream;

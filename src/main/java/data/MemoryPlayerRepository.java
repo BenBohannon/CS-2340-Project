@@ -1,19 +1,26 @@
 package data;
 
-import model.Entity.Player;
+import model.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
+
+import java.util.List;
 
 /**
  * Created by brian on 9/24/15.
  */
 public class MemoryPlayerRepository implements Repository<Player> {
 
+    private static int nextPlayerId = 0;
+
     private ArrayList<Player> players;
 
+    public MemoryPlayerRepository() {
+        players = new ArrayList<>();
+    }
+
     @Override
-    public Collection<Player> getAll() {
+    public List<Player> getAll() {
         return players;
     }
 
@@ -31,7 +38,14 @@ public class MemoryPlayerRepository implements Repository<Player> {
 
     @Override
     public Player save(Player entity) {
-        players.add(entity);
+        if (entity.getId() == -1) {
+            entity.setId(nextPlayerId++);
+        }
+        if (players.contains(entity)) {
+            //no action needed in memory//
+        } else {
+            players.add(entity);
+        }
         return entity;
     }
 

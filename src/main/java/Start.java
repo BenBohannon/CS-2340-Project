@@ -2,10 +2,15 @@
  * Created by brian on 9/10/15.
  */
 
+import com.google.inject.TypeLiteral;
+import data.Repository;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import model.entity.Player;
 import model.map.Locatable;
 import model.map.LocationDatasource;
+import data.MemoryPlayerRepository;
+import model.map.Map;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -41,8 +46,15 @@ public class Start extends Application {
 
 
 
+        final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
+        final Map map = new Map(lds);
+
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
+            binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
+
+            //temp
+            binder.bind(Map.class).toInstance(map);
         }, stage);
 
         context.showScreen("home_screen.fxml");
