@@ -1,4 +1,4 @@
-package model;
+package model.Entity;
 
 import java.util.Collection;
 import java.util.LinkedList;

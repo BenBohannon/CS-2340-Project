@@ -1,4 +1,4 @@
-package map;
+package model.map;
 
 /**
  * Created by Benjamin on 9/17/2015.

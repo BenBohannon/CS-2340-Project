@@ -1,11 +1,11 @@
-package service;
+package model.service;
 
 import com.google.inject.Inject;
 import data.GameInfo;
 import data.Repository;
 import data.StoreInfoHolder;
 import data.TurnEndListener;
-import model.Player;
+import model.Entity.Player;
 
 import java.util.*;
 import java.util.stream.Stream;

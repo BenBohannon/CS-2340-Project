@@ -2,11 +2,9 @@ package presenters;
 
 import com.google.inject.Inject;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 import java.awt.*;
@@ -15,7 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javafx.scene.layout.Pane;
-import map.*;
+import model.map.*;
 
 
 /**
@@ -39,7 +37,7 @@ public class MapPresenter extends Presenter {
 
 
     /**
-     * Constructor which sets up the default map.
+     * Constructor which sets up the default model.map.
      */
     @FXML
     public void initialize() {
@@ -61,10 +59,10 @@ public class MapPresenter extends Presenter {
         int mountainLimit = 6;
         int mountains = 0;
 
-        //Create a map.
+        //Create a model.map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
-                map.Tile temp;
+                model.map.Tile temp;
                 Random rand = new Random();
 
                 if (i == 4) {
@@ -84,7 +82,7 @@ public class MapPresenter extends Presenter {
                         temp = new Tile(TileType.PLAIN);
                     }
                 }
-                //Add tiles to the map.
+                //Add tiles to the model.map.
                 map.add(temp, i, j);
 
                 //Add tile images to the gridPane
@@ -109,7 +107,7 @@ public class MapPresenter extends Presenter {
     }
 
     /**
-     * Called every time the player clicks on the map screen.
+     * Called every time the player clicks on the model.map screen.
      */
     private void onClick() {
 
@@ -180,7 +178,7 @@ public class MapPresenter extends Presenter {
     }
 
     /**
-     * Sets the character's image on the map to be the input image. (For switching races)
+     * Sets the character's image on the model.map to be the input image. (For switching races)
      * @param img Image to set.
      */
     public void setCharacterImage(Image img) {

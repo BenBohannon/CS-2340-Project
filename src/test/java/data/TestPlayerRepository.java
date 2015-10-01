@@ -1,6 +1,6 @@
 package data;
 
-import model.Player;
+import model.Entity.Player;
 
 import java.util.Collection;
 

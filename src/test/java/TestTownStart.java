@@ -7,9 +7,9 @@ import data.Repository;
 import data.TestPlayerRepository;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import map.Locatable;
-import map.LocationDatasource;
-import model.Player;
+import model.map.Locatable;
+import model.map.LocationDatasource;
+import model.Entity.Player;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 

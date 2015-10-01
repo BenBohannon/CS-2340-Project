@@ -1,10 +1,10 @@
 package presenters;
 
 import com.google.inject.Inject;
-import service.DefaultTurnService;
+import model.service.DefaultTurnService;
 import javafx.event.ActionEvent;
-import model.Mule;
-import model.MuleType;
+import model.Entity.Mule;
+import model.Entity.MuleType;
 
 /**
  * Created by brian on 9/17/15.
@@ -39,8 +39,8 @@ public class TownPresenter extends Presenter {
     }
 
     /**
-     * helper method for logging the unimplemented behavior of returning to the map
-     * UPDATE: now returns to map
+     * helper method for logging the unimplemented behavior of returning to the model.map
+     * UPDATE: now returns to model.map
      */
     private void returnToMap() {
         context.showScreen("map_grid.fxml");
