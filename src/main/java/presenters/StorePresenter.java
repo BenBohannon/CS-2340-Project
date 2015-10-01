@@ -3,7 +3,6 @@ package presenters;
 import com.google.inject.Inject;
 
 import javafx.event.ActionEvent;
-import model.service.DefaultTurnService;
 
 /**
  * Created by connor on 9/29/15.
@@ -11,30 +10,30 @@ import model.service.DefaultTurnService;
 public class StorePresenter extends Presenter {
 
     @Inject
-    DefaultTurnService turnService;
+    //TurnInfoHolder turnInfoHolder;
 
     public void handleSmithoreBuyClick(ActionEvent event) {
-        turnService.getCurrentPlayer().buySmithore(1, 10);               //temp price values
+//        turnInfoHolder.getCurrentPlayer().buySmithore(1, 10);               //temp price values
     }
 
     public void handleSmithoreSellClick(ActionEvent event) {
-        turnService.getCurrentPlayer().sellSmithore(1, 10);
+//        turnInfoHolder.getCurrentPlayer().sellSmithore(1, 10);
     }
 
     public void handleCrystiteBuyClick(ActionEvent event) {
-        turnService.getCurrentPlayer().buyCrystite(1, 20);
+//        turnInfoHolder.getCurrentPlayer().buyCrystite(1, 20);
     }
 
     public void handleCrystiteSellClick(ActionEvent event) {
-        turnService.getCurrentPlayer().sellCrystite(1,20);
+//        turnInfoHolder.getCurrentPlayer().sellCrystite(1,20);
     }
 
     public void handleFoodBuyClick(ActionEvent event) {
-        turnService.getCurrentPlayer().buyFood(1, 5);
+//        turnInfoHolder.getCurrentPlayer().buyFood(1, 5);
     }
 
     public void handleFoodSellClick(ActionEvent event) {
-        turnService.getCurrentPlayer().sellFood(1, 5);
+//        turnInfoHolder.getCurrentPlayer().sellFood(1, 5);
     }
 
     public void handleExitClick(ActionEvent event) {
