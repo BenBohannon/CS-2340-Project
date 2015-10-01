@@ -180,10 +180,6 @@ public class TileSelectionPresenter extends Presenter {
     private void update() {
         // jump to the next grid tile
         Platform.runLater(() -> {
-            if (tileID >= 44 || doneSelecting()) {
-                stopMovement();
-                context.showScreen("map_grid.fxml");
-            }
             tileID ++;
             if (tileID != 1 && tileID % 9 == 0) {
                 border.setTranslateX(border.getTranslateX() - 900);
