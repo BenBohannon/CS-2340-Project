@@ -237,9 +237,7 @@ public class MapPresenter extends Presenter {
     }
 
     /**
-<<<<<<< HEAD
      * Sets the character's image on the model.map to be the input image. (For switching races)
-=======
      * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
      */
     private Point getPixelOffset(int row, int col) {
@@ -248,7 +246,6 @@ public class MapPresenter extends Presenter {
 
     /**
      * Sets the character's image on the map to be the input image. (For switching races)
->>>>>>> 0e19cd327a0081d1f64cdcf956002bde284163c7
      * @param img Image to set.
      */
     public void setCharacterImage(Image img) {
