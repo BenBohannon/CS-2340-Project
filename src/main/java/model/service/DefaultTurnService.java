@@ -150,17 +150,16 @@ public class DefaultTurnService {
      * @return true if all Players' turns have ended, false otherwise
      */
     public boolean isAllTurnsOver() {
-        if (finishedPlayerIds.size() == playerRepository.getAll().size()) {
-            return true;
-        }
-        return false;
+        return finishedPlayerIds.size() == playerRepository.getAll().size();
     }
 
     /**
      * Sets up TurnService state for the next round.
      * Additionally, removes all {@link TurnEndListener}s.
      * Does not begin turn.
-     * @return
+     *
+     * @see #getRoundNumber()
+     * @return the round number
      */
     public int beginRound() {
         if (timer != null
@@ -203,7 +202,7 @@ public class DefaultTurnService {
 
     /**
      * Removes a {@link TurnEndListener} from being invoked when the turn ends.
-     * @param listener
+     * @param listener listener that will no longer be notified of the turn end
      */
     public void removeTurnEndListener(TurnEndListener listener) {
         if (!turnInProgress) {

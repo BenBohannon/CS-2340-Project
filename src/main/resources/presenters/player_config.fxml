@@ -4,10 +4,10 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane hgap="20.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:id="grid" fx:controller="presenters.PlayerMenuPresenter" >
+<GridPane fx:id="grid" hgap="20.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="view.PlayerConfigView">
   <children>
     <Label text="Player Configuration" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <font>
@@ -19,21 +19,36 @@
     <Label text="Race" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="TOP" />
     <Label text="Color" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
     <CheckBox mnemonicParsing="false" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <TextField prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
-          <fx:define>
-              <ToggleGroup fx:id="group"/>
-          </fx:define>
-          <children>
-              <RadioButton text="A" toggleGroup="$group"/>
-              <RadioButton text="B" toggleGroup="$group"/>
-              <RadioButton text="C" toggleGroup="$group"/>
-          </children>
-      </VBox>
+    <TextField fx:id="name_textfield" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+      <fx:define>
+        <ToggleGroup fx:id="race_togglegroup" />
+      </fx:define>
+      <children>
+        <RadioButton text="A" toggleGroup="$race_togglegroup" />
+        <RadioButton text="B" toggleGroup="$race_togglegroup" />
+        <RadioButton text="C" toggleGroup="$race_togglegroup" />
+      </children>
+    </VBox>
     <ColorPicker fx:id="colorPicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-    <Button mnemonicParsing="false" text="Finish" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" onAction="#handleFinishButtonAction"/>
+    <Button mnemonicParsing="false" onAction="#handleFinishButtonAction" text="Finish" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+    <Label fx:id="name_validation_label" prefHeight="16.000091552734375" textFill="$transparent" text="required!" GridPane.columnIndex="2" GridPane.rowIndex="2">
+      <font>
+        <Font size="10.0" fx:id="x1" />
+      </font>
+        <textFill>
+            <Color blue="0.000" green="0.000" opacity="0.000" red="1.000" fx:id="transparent" />
+        </textFill>
+        <textFill>
+            <Color blue="0.000" green="0.000" opacity="1" red="1.000" fx:id="red" />
+        </textFill>
+    </Label>
+    <Label fx:id="race_validation_label" font="$x1" prefHeight="16.000091552734375" text="required!" textFill="$transparent" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+    <Label fx:id="main_validation_label" font="$x1" prefHeight="16.000091552734375" text="some items are missing!" textFill="$transparent" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    <Label fx:id="color_validation_label" font="$x1" prefHeight="16.000091552734375" text="already picked!" textFill="$transparent" GridPane.columnIndex="2" GridPane.rowIndex="4" />
   </children>
   <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
   </columnConstraints>
