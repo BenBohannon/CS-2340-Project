@@ -3,15 +3,14 @@
  */
 
 import com.google.inject.TypeLiteral;
-import data.MemoryPlayerRepository;
 import data.Repository;
-import data.TurnInfoHolder;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import map.Locatable;
-import map.LocationDatasource;
-import map.Map;
-import model.Player;
+import model.entity.Player;
+import model.map.Locatable;
+import model.map.LocationDatasource;
+import data.MemoryPlayerRepository;
+import model.map.Map;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -27,7 +26,7 @@ public class Start extends Application {
     @Override
     public void start(Stage stage) {
 
-        //empty datasource for map//
+        //empty datasource for model.map//
         LocationDatasource lds = new LocationDatasource() {
             @Override
             public Collection<Locatable> get(int row, int col) {
@@ -45,38 +44,13 @@ public class Start extends Application {
             }
         };
 
-        //TurnInfoHolder from the test class.
-        final TurnInfoHolder turnInfoHolder = new TurnInfoHolder() {
-            model.Player player;
 
-            @Override
-            public Player getCurrentPlayer() {
-                System.out.println("TurnInfoHolder#getCurrentPlayer()");
-                if (player == null) {
-                    player = new Player();
-                }
-                return player;
-            }
-
-            @Override
-            public int getRoundNumber() {
-                System.out.println("TurnInfoHolder#getRoundNumber()");
-                return 1;
-            }
-
-            @Override
-            public int getTimeLeftInTurn() {
-                System.out.println("TurnInfoHolder#getTimeLeftInTurn");
-                return 50;
-            }
-        };
 
         final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
         final Map map = new Map(lds);
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
-            binder.bind(TurnInfoHolder.class).toInstance(turnInfoHolder);
             binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
 
             //temp

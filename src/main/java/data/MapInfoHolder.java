@@ -1,7 +1,7 @@
 package data;
 
-import map.TileType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import model.map.TileType;
 
 /**
  * Created by brian on 9/24/15.

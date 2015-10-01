@@ -1,7 +1,7 @@
 package presenters;
 
 import com.google.inject.Inject;
-import map.Map;
+import model.map.Map;
 import view.TestView;
 
 /**
