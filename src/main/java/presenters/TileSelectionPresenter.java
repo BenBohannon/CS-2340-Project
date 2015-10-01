@@ -57,7 +57,7 @@ public class TileSelectionPresenter extends Presenter {
     public void initialize() {
 
         tileID = 0;
-        pane.getChildren().add(border);
+
         pane.setOnMouseMoved(event -> {
             mouseX = event.getX();
             mouseY = event.getY();
@@ -135,6 +135,8 @@ public class TileSelectionPresenter extends Presenter {
                 }
             }
         });
+
+        pane.getChildren().add(border);
 
         pane.setOnMousePressed(event -> onClick());
 

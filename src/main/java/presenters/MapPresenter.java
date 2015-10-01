@@ -15,9 +15,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import map.Map;
 import map.Tile;
 import model.Player;
+import view.MapView;
 
 import java.awt.*;
 import java.util.List;
@@ -27,7 +29,7 @@ import java.util.TimerTask;
 /**
  * Created by Ben 9/14/2015
  */
-public class MapPresenter extends Presenter {
+public class MapPresenter extends Presenter<MapView> {
 
     @Inject
     public Map map;
@@ -100,6 +102,9 @@ public class MapPresenter extends Presenter {
         }
 
         pane.getChildren().add(character);
+        Rectangle totTime = new Rectangle(200, 20);
+        Rectangle remTime = new Rectangle(200, 20, Color.RED);
+        pane.getChildren().addAll(totTime, remTime);
 
     }
 
@@ -272,12 +277,12 @@ public class MapPresenter extends Presenter {
 
     private Group createBorder(Color color) {
         Group border = new Group();
-        javafx.scene.shape.Rectangle top = new javafx.scene.shape.Rectangle(10, 100);
-        javafx.scene.shape.Rectangle bottom = new javafx.scene.shape.Rectangle(10, 100);
-        javafx.scene.shape.Rectangle right = new javafx.scene.shape.Rectangle(100, 10);
-        javafx.scene.shape.Rectangle left = new javafx.scene.shape.Rectangle(100, 10);
-        bottom.setTranslateX(90);
-        right.setTranslateY(90);
+        javafx.scene.shape.Rectangle right = new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle left = new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle bottom = new javafx.scene.shape.Rectangle(100, 10);
+        javafx.scene.shape.Rectangle top = new javafx.scene.shape.Rectangle(100, 10);
+        right.setTranslateX(90);
+        bottom.setTranslateY(90);
         border.getChildren().addAll(top, bottom, right, left);
         border.getChildren().stream()
                 .map(node -> ((javafx.scene.shape.Shape) node))
