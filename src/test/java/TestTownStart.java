@@ -5,13 +5,11 @@
 import com.google.inject.TypeLiteral;
 import data.Repository;
 import data.TestPlayerRepository;
-import data.TurnInfoHolder;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import map.Locatable;
-import map.LocationDatasource;
-import map.Map;
-import model.Player;
+import model.map.Locatable;
+import model.map.LocationDatasource;
+import model.entity.Player;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -26,31 +24,6 @@ public class TestTownStart extends Application {
 
     @Override
     public void start(Stage stage) {
-
-        final TurnInfoHolder testTurnInfoHolder = new TurnInfoHolder() {
-            Player player;
-
-            @Override
-            public Player getCurrentPlayer() {
-                System.out.println("TurnInfoHolder#getCurrentPlayer()");
-                if (player == null) {
-                    player = new Player();
-                }
-                return player;
-            }
-
-            @Override
-            public int getRoundNumber() {
-                System.out.println("TurnInfoHolder#getRoundNumber()");
-                return 1;
-            }
-
-            @Override
-            public int getTimeLeftInTurn() {
-                System.out.println("TurnInfoHolder#getTimeLeftInTurn");
-                return 50;
-            }
-        };
 
         final LocationDatasource lds = new LocationDatasource() {
             @Override
@@ -71,7 +44,6 @@ public class TestTownStart extends Application {
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(new TypeLiteral<Repository<Player>>(){}).to(TestPlayerRepository.class);
-            binder.bind(TurnInfoHolder.class).toInstance(testTurnInfoHolder);
             binder.bind(LocationDatasource.class).toInstance(lds);
         }, stage);
 

@@ -1,10 +1,10 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.TurnInfoHolder;
+import model.service.DefaultTurnService;
 import javafx.event.ActionEvent;
-import model.Mule;
-import model.MuleType;
+import model.entity.Mule;
+import model.entity.MuleType;
 
 /**
  * Created by brian on 9/17/15.
@@ -12,25 +12,25 @@ import model.MuleType;
 public class TownPresenter extends Presenter {
 
     @Inject
-    TurnInfoHolder turnInfoHolder;
+    DefaultTurnService turnService;
 
     public void handleEnergyClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addMule(new Mule(MuleType.Energy));
+        turnService.getCurrentPlayer().addMule(new Mule(MuleType.Energy));
         returnToMap();
     }
 
     public void handleSmithoreClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addMule(new Mule(MuleType.Smithore));
+        turnService.getCurrentPlayer().addMule(new Mule(MuleType.Smithore));
         returnToMap();
     }
 
     public void handleFoodClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addMule(new Mule(MuleType.Food));
+        turnService.getCurrentPlayer().addMule(new Mule(MuleType.Food));
         returnToMap();
     }
 
     public void handleCrystiteClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().addMule(new Mule(MuleType.Crysite));
+        turnService.getCurrentPlayer().addMule(new Mule(MuleType.Crysite));
         returnToMap();
     }
 
@@ -39,8 +39,8 @@ public class TownPresenter extends Presenter {
     }
 
     /**
-     * helper method for logging the unimplemented behavior of returning to the map
-     * UPDATE: now returns to map
+     * helper method for logging the unimplemented behavior of returning to the model.map
+     * UPDATE: now returns to model.map
      */
     private void returnToMap() {
         context.showScreen("map_grid.fxml");
@@ -48,18 +48,20 @@ public class TownPresenter extends Presenter {
 
     public void handlePubClick(ActionEvent event) {
         int amountToAdd;
-        if (turnInfoHolder.getRoundNumber() < 3) {
+        if (turnService.getRoundNumber() < 3) {
             amountToAdd = 50;
-        } else if (turnInfoHolder.getRoundNumber() > 6) {
+        } else if (turnService.getRoundNumber() > 6) {
             amountToAdd = 100;
         } else {
             amountToAdd = 150;
         }
-        turnInfoHolder.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnInfoHolder.getTimeLeftInTurn()));
+
+        turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
         // if (allplayershavegone)
         context.showScreen("map_grid_tile_select.fxml");
         // else
         // context.showScreen("map_grid.fxml");
         // iterate player id and reset to zero at appropriate times
+
     }
 }

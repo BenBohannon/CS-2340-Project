@@ -1,8 +1,9 @@
 package data;
 
-import model.Player;
+import model.entity.Player;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 /**
@@ -37,10 +38,12 @@ public class MemoryPlayerRepository implements Repository<Player> {
 
     @Override
     public Player save(Player entity) {
+        if (entity.getId() == -1) {
+            entity.setId(nextPlayerId++);
+        }
         if (players.contains(entity)) {
             //no action needed in memory//
         } else {
-            entity.setId(nextPlayerId++);
             players.add(entity);
         }
         return entity;
