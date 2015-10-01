@@ -8,6 +8,6 @@ public class StoreInfoHolder {
 
     public int getMuleCount() {
         System.out.println("StoreInfoHolder#getMuleCount() not implemented");
-        return muleCount;
+        return 10;
     }
 }
