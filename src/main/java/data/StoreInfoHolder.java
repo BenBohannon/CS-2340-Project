@@ -1,7 +1,7 @@
 package data;
 
 /**
- * Created by brian on 9/22/15.
+ * Temporary class to store infomation about the state of the store until that is implemented.
  */
 public class StoreInfoHolder {
     private int muleCount;
