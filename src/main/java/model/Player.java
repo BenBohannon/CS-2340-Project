@@ -67,6 +67,7 @@ public class Player {
     /**
      * Adds the amount passed in to the players smithore
      * @param smithore Amount to be added
+     * @param price Price of the smithore
      */
     public void buySmithore(int smithore, int price) {
         if (this.money - price >= 0) {
@@ -75,6 +76,11 @@ public class Player {
         }
     }
 
+    /**
+     * Allows the player to sell smithore
+     * @param smithore Amount to be sold
+     * @param price Price of the smithore
+     */
     public void sellSmithore(int smithore, int price) {
         if (this.smithore - smithore >= 0) {
             this.smithore -= smithore;
@@ -93,6 +99,7 @@ public class Player {
     /**
      * Adds the amount passed in to the players crystite
      * @param crystite Amount to be added
+     * @param price Price of the crystite
      */
     public void buyCrystite(int crystite, int price) {
         if (this.money - price >= 0) {
@@ -101,6 +108,11 @@ public class Player {
         }
     }
 
+    /**
+     * Allows the player to sell crystite
+     * @param crystite Amount to be sold
+     * @param price Price of the crystite
+     */
     public void sellCrystite(int crystite, int price) {
         if (this.crystite - crystite >= 0) {
             this.crystite -= crystite;
@@ -117,8 +129,9 @@ public class Player {
     }
 
     /**
-     * Adds the amount passed in to the players food
+     * Allows the player to buy food
      * @param food Amount to be added
+     * @param price Price of the food
      */
     public void buyFood(int food, int price) {
         if (this.money - price >= 0) {
@@ -127,6 +140,11 @@ public class Player {
         }
     }
 
+    /**
+     * Allows the player to sell food
+     * @param food Amount to be sold
+     * @param price Price of the food
+     */
     public void sellFood(int food, int price) {
         if (this.food - food >= 0) {
             this.food -= food;
@@ -150,6 +168,10 @@ public class Player {
         this.energy += energy;
     }
 
+    /**
+     * Removes energy from the player
+     * @param energy Amount to be removed
+     */
     public void removeEnergy(int energy) {
         this.energy -= energy;
     }
@@ -170,6 +192,10 @@ public class Player {
         this.score += score;
     }
 
+    /**
+     * Lowers the player's score
+     * @param score Amount to be lowered by
+     */
     public void lowerScore(int score) {
         this.score -= score;
     }
