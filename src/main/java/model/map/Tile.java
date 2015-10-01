@@ -1,7 +1,7 @@
-package map;
+package model.map;
 
 import javafx.scene.image.Image;
-import model.Player;
+import model.entity.Player;
 
 import java.util.Random;
 

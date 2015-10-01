@@ -5,7 +5,7 @@ import data.Repository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ColorPicker;
-import model.Player;
+import model.entity.Player;
 
 /**
  * Created by brian on 9/10/15.
@@ -24,6 +24,7 @@ public class PlayerMenuPresenter extends Presenter {
     protected void handleFinishButtonAction(ActionEvent event) {
         Player p = new Player();
         p.setColor(colorPicker.getValue());
+        p.setId(-1);
         playerRepository.save(p);
 
         if (numPlayersLeft > 0) {

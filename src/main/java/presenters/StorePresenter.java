@@ -1,7 +1,6 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.TurnInfoHolder;
 
 import javafx.event.ActionEvent;
 
@@ -11,30 +10,30 @@ import javafx.event.ActionEvent;
 public class StorePresenter extends Presenter {
 
     @Inject
-    TurnInfoHolder turnInfoHolder;
+    //TurnInfoHolder turnInfoHolder;
 
     public void handleSmithoreBuyClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().buySmithore(1, 10);               //temp price values
+//        turnInfoHolder.getCurrentPlayer().buySmithore(1, 10);               //temp price values
     }
 
     public void handleSmithoreSellClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().sellSmithore(1, 10);
+//        turnInfoHolder.getCurrentPlayer().sellSmithore(1, 10);
     }
 
     public void handleCrystiteBuyClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().buyCrystite(1, 20);
+//        turnInfoHolder.getCurrentPlayer().buyCrystite(1, 20);
     }
 
     public void handleCrystiteSellClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().sellCrystite(1,20);
+//        turnInfoHolder.getCurrentPlayer().sellCrystite(1,20);
     }
 
     public void handleFoodBuyClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().buyFood(1, 5);
+//        turnInfoHolder.getCurrentPlayer().buyFood(1, 5);
     }
 
     public void handleFoodSellClick(ActionEvent event) {
-        turnInfoHolder.getCurrentPlayer().sellFood(1, 5);
+//        turnInfoHolder.getCurrentPlayer().sellFood(1, 5);
     }
 
     public void handleExitClick(ActionEvent event) {

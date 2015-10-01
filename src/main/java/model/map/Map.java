@@ -1,16 +1,15 @@
-package map;
+package model.map;
 
 import com.google.inject.Inject;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
  * Created by brian on 9/12/15.
  * Manages the Location grid.
- * All changes of location for any object on the main map are managed and tracked by the Map
+ * All changes of location for any object on the main model.map are managed and tracked by the Map
  * class. It uses a grid of {@link Map.Location} to store and present this information.
  * See {@link Map.Location} for more info.
  */
@@ -44,7 +43,7 @@ public class Map {
         int cols = 9;
 
         if (rows < 1 || cols < 1) {
-            throw new IllegalArgumentException("map must have positive integer rows and columns");
+            throw new IllegalArgumentException("model.map must have positive integer rows and columns");
         }
 
         locationGrid = new Location[cols][rows];
@@ -83,7 +82,7 @@ public class Map {
     }
 
     /**
-     * Adds a previously unplaced {@link Locatable} to the map.
+     * Adds a previously unplaced {@link Locatable} to the model.map.
      * If the Object already has a {@link Location}, it should use the {@link Map#move(Locatable, int, int)}
      * or {@link Location#moveHere(Locatable)} methods.
      * @param locatable Locatable to be added
@@ -108,8 +107,8 @@ public class Map {
     }
 
     /**
-     * Removes a {@link Locatable} from the map grid.
-     * @param locatable locatable to be removed from the map grid
+     * Removes a {@link Locatable} from the model.map grid.
+     * @param locatable locatable to be removed from the model.map grid
      */
     public void remove(Locatable locatable) {
         if (!locatable.getLocation().removeOccupant(locatable)) {
@@ -130,7 +129,7 @@ public class Map {
      */
     public void move(Locatable locatable, int row, int col) {
         if (locatable.getLocation() == null) {
-            throw new IllegalArgumentException("Locatable was not on the map; cannot move.");
+            throw new IllegalArgumentException("Locatable was not on the model.map; cannot move.");
         }
 
         remove(locatable);
@@ -154,9 +153,9 @@ public class Map {
 //=================================================================================
     /**
      * The Location class encapsulates location information for a {@link Locatable}
-     * on the map, and is used by the {@link Map} as an api for accessing this info.
+     * on the model.map, and is used by the {@link Map} as an api for accessing this info.
      * Each {@link Locatable} stores a reference to it's Location when it is being
-     * presented to the user on the game map. The Location Object offers this
+     * presented to the user on the game model.map. The Location Object offers this
      * {@link Locatable} the answer to the question "Where am I?".
      * However, because each {@link Locatable} can only manage its position through
      * the {@link Map} grid, client code can also easily answer the question "What is here?"
@@ -191,8 +190,8 @@ public class Map {
         }
 
         /**
-         * Removes a {@link Locatable} from the map this location.
-         * @param locatable locatable to be removed from the map grid
+         * Removes a {@link Locatable} from the model.map this location.
+         * @param locatable locatable to be removed from the model.map grid
          */
         public void remove(Locatable locatable) {
             map.remove(locatable);

@@ -14,9 +14,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import map.Map;
-import map.Tile;
-import model.Player;
+import model.entity.Player;
+import model.map.Map;
+import model.map.Tile;
 
 import java.awt.*;
 import java.util.Timer;
@@ -180,10 +180,6 @@ public class TileSelectionPresenter extends Presenter {
     private void update() {
         // jump to the next grid tile
         Platform.runLater(() -> {
-            if (tileID >= 44 || doneSelecting()) {
-                stopMovement();
-                context.showScreen("map_grid.fxml");
-            }
             tileID ++;
             if (tileID != 1 && tileID % 9 == 0) {
                 border.setTranslateX(border.getTranslateX() - 900);
