@@ -13,12 +13,16 @@ public class Tile implements Locatable {
     TileType type = TileType.PLAIN;
     Map.Location loc;
     int numOfMountains = 0;
+    private static int mountainSeed = 0;
 
     public Tile(TileType type) {
         this.type = type;
 
         if (type == TileType.MOUNTAIN) {
-            Random rand = new Random();
+            Random rand = new Random(mountainSeed++);
+            if (mountainSeed == 16) {
+                mountainSeed = 0;
+            }
             numOfMountains = rand.nextInt(3) + 1;
         }
     }

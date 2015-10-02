@@ -32,7 +32,6 @@ public class MapPresenter extends Presenter<MapView> {
 
     private boolean isListening = false;
     private TurnEndListener listener = (Player p) -> nextTurn(p);
-
     /**
      * Loads the input .fxml file and gives up control to it.
      * @param str
@@ -60,11 +59,9 @@ public class MapPresenter extends Presenter<MapView> {
             return false;
         } else {
             if (turnService.isAllTurnsOver()) {
-                //TODO: Switch to stat screen here!
-                switchPresenter("map_grid_tile_select.fxml");
-            } else {
-                beginTurn();
+                beginRound();
             }
+            beginTurn();
             return true;
         }
     }
