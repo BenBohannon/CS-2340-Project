@@ -100,7 +100,8 @@ public class DefaultTurnService {
 
         //turn time in millis//
         float foodRatio = (float) currentPlayer.getFood() / GameInfo.getFoodRequirement(roundNumber);
-        turnDuration = (int) (currentPlayer.getPTU(GameInfo.BTU(4)) + currentPlayer.getPTU(GameInfo.BTU(91)) * foodRatio);
+        //turnDuration = (int) (currentPlayer.getPTU(GameInfo.BTU(4)) + currentPlayer.getPTU(GameInfo.BTU(91)) * foodRatio);
+        turnDuration = 10000L; //TEMPORARY CODE. EVERY PLAYER GETS 10 seconds.
 
         timer = new Timer();
         timer.schedule(new TimerTask() {

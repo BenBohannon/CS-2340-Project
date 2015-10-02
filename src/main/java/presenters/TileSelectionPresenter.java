@@ -186,7 +186,7 @@ public class TileSelectionPresenter extends Presenter {
                 border.setTranslateY(border.getTranslateY() + 100);
             }
 
-            //If we've iterated through all tiles, stop.
+            //If we've iterated through the whole map, quit.
             if (tileID % 45 == 0) {
                 border.setTranslateY(border.getTranslateY() - 500);
                 stopMovement();
@@ -194,7 +194,7 @@ public class TileSelectionPresenter extends Presenter {
             }
             border.setTranslateX(border.getTranslateX() + 100);
 
-            //If everyone has already selected, stop.
+            //If everyone has already selected, quit.
             if (doneSelecting()) {
                 stopMovement();
                 context.showScreen("map_grid.fxml");

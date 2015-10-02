@@ -13,6 +13,7 @@ import model.map.LocationDatasource;
 import data.MemoryPlayerRepository;
 import model.map.Map;
 import model.service.DefaultTurnService;
+import presenters.MapPresenter;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
