@@ -4,6 +4,7 @@
 
 import com.google.inject.TypeLiteral;
 import data.Repository;
+import data.StoreInfoHolder;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.entity.Player;
@@ -11,6 +12,8 @@ import model.map.Locatable;
 import model.map.LocationDatasource;
 import data.MemoryPlayerRepository;
 import model.map.Map;
+import model.service.DefaultTurnService;
+import presenters.MapPresenter;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -47,7 +50,10 @@ public class Start extends Application {
 
 
         final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
+
         final Map map = new Map(lds);
+
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreInfoHolder());
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
@@ -55,6 +61,7 @@ public class Start extends Application {
 
             //temp
             binder.bind(Map.class).toInstance(map);
+            binder.bind(DefaultTurnService.class).toInstance(turnService);
         }, stage);
 
         context.showScreen("home_screen.fxml");

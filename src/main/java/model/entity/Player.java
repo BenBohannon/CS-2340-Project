@@ -18,6 +18,7 @@ public class Player {
     private int money;
     private int score;
     private int id;
+    private String name;
     private Color color;
     private ArrayList<Tile> ownedProperties = new ArrayList<>();
 
@@ -305,5 +306,13 @@ public class Player {
     public int getPTU(int BTU) {
         //TODO different based on race
         return BTU;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
