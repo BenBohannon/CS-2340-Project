@@ -61,7 +61,7 @@ public class TownPresenter extends Presenter {
         }
 
         turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
-        turnService.endTurn();
+        //turnService.endTurn();
         // if (allplayershavegone)
         context.showScreen("map_grid_tile_select.fxml");
         // else

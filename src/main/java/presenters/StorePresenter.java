@@ -26,7 +26,7 @@ public class StorePresenter extends Presenter {
     }
 
     public void handleCrystiteSellClick(ActionEvent event) {
-        turnService.getCurrentPlayer().sellCrystite(1,20);
+        turnService.getCurrentPlayer().sellCrystite(1, 20);
     }
 
     public void handleFoodBuyClick(ActionEvent event) {
@@ -34,7 +34,16 @@ public class StorePresenter extends Presenter {
     }
 
     public void handleFoodSellClick(ActionEvent event) {
+        System.out.println(turnService.getCurrentPlayer());
         turnService.getCurrentPlayer().sellFood(1, 5);
+    }
+
+    public void handleEnergyBuyClick(ActionEvent event) {
+        turnService.getCurrentPlayer().buyEnergy(1, 10);
+    }
+
+    public void handleEnergySellClick(ActionEvent event) {
+        turnService.getCurrentPlayer().sellEnergy(1, 10);
     }
 
     public void handleExitClick(ActionEvent event) {

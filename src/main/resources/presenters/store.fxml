@@ -37,5 +37,12 @@
             </children>
         </AnchorPane>
         <Button mnemonicParsing="false" onAction="#handleExitClick" prefHeight="143.0" prefWidth="304.0" text="Exit" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <Label layoutX="127.0" layoutY="20.0" text="Energy" />
+            <Button layoutX="129.0" layoutY="54.0" mnemonicParsing="false" onAction="#handleEnergyBuyClick" text="Buy" />
+            <Button layoutX="130.0" layoutY="80.0" mnemonicParsing="false" onAction="#handleEnergySellClick" text="Sell" />
+         </children>
+      </AnchorPane>
     </children>
 </GridPane>

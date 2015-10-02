@@ -187,6 +187,20 @@ public class Player {
         return energy;
     }
 
+    public void buyEnergy(int energy, int price) {
+        if (this.money - price >= 0) {
+            removeMoney(price);
+            addEnergy(energy);
+        }
+    }
+
+    public void sellEnergy(int energy, int price) {
+        if (this.money - price >= 0) {
+            removeMoney(price);
+            removeEnergy(energy);
+        }
+    }
+
     /**
      * Adds the amount passed in to the players score
      * @param score Amount to be added
