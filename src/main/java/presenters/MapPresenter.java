@@ -31,7 +31,7 @@ public class MapPresenter extends Presenter<MapView> {
     private DefaultTurnService turnService;
 
     private boolean isListening = false;
-    private TurnEndListener listener = (Player p) -> nextTurn(p);
+    private TurnEndListener listener = this::nextTurn;
     /**
      * Loads the input .fxml file and gives up control to it.
      * @param str
