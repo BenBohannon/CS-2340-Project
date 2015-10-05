@@ -63,12 +63,11 @@ public class Player {
 
     /**
      * Adds the amount passed in to the players smithore
-     * @param smithore Amount to be added
      * @param price Price of the smithore
      */
-    public void buySmithore(int smithore, int price) {
+    public void buySmithore(int price) {
         if (this.money - price >= 0) {
-            this.smithore += smithore;
+            this.smithore++;
             removeMoney(price);
             System.out.println(money);
         }
@@ -76,12 +75,11 @@ public class Player {
 
     /**
      * Allows the player to sell smithore
-     * @param smithore Amount to be sold
      * @param price Price of the smithore
      */
-    public void sellSmithore(int smithore, int price) {
+    public void sellSmithore(int price) {
         if (this.smithore - smithore >= 0) {
-            this.smithore -= smithore;
+            this.smithore--;
             addMoney(price);
             System.out.println(money);
         }
@@ -97,12 +95,11 @@ public class Player {
 
     /**
      * Adds the amount passed in to the players crystite
-     * @param crystite Amount to be added
      * @param price Price of the crystite
      */
-    public void buyCrystite(int crystite, int price) {
+    public void buyCrystite(int price) {
         if (this.money - price >= 0) {
-            this.crystite += crystite;
+            this.crystite++;
             removeMoney(price);
             System.out.println(money);
         }
@@ -110,12 +107,11 @@ public class Player {
 
     /**
      * Allows the player to sell crystite
-     * @param crystite Amount to be sold
      * @param price Price of the crystite
      */
-    public void sellCrystite(int crystite, int price) {
+    public void sellCrystite(int price) {
         if (this.crystite - crystite >= 0) {
-            this.crystite -= crystite;
+            this.crystite--;
             addMoney(price);
             System.out.println(money);
         }
@@ -131,25 +127,23 @@ public class Player {
 
     /**
      * Allows the player to buy food
-     * @param food Amount to be added
      * @param price Price of the food
      */
-    public void buyFood(int food, int price) {
+    public void buyFood(int price) {
         if (this.money - price >= 0) {
             removeMoney(price);
-            this.food += food;
+            this.food++;
             System.out.println(money);
         }
     }
 
     /**
      * Allows the player to sell food
-     * @param food Amount to be sold
      * @param price Price of the food
      */
-    public void sellFood(int food, int price) {
+    public void sellFood(int price) {
         if (this.food - food >= 0) {
-            this.food -= food;
+            this.food--;
             addMoney(price);
             System.out.println(money);
         }
@@ -187,17 +181,17 @@ public class Player {
         return energy;
     }
 
-    public void buyEnergy(int energy, int price) {
+    public void buyEnergy(int price) {
         if (this.money - price >= 0) {
             removeMoney(price);
-            addEnergy(energy);
+            addEnergy(1);
         }
     }
 
-    public void sellEnergy(int energy, int price) {
+    public void sellEnergy(int price) {
         if (this.money - price >= 0) {
             removeMoney(price);
-            removeEnergy(energy);
+            removeEnergy(1);
         }
     }
 

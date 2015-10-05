@@ -38,6 +38,10 @@ public class TownPresenter extends Presenter {
         returnToMap();
     }
 
+    public void handleStoreClick(ActionEvent event) {
+        context.showScreen("store.fxml");
+    }
+
     /**
      * helper method for logging the unimplemented behavior of returning to the model.map
      * UPDATE: now returns to model.map
