@@ -17,7 +17,7 @@ public class ConfigScreenPresenter extends Presenter {
         int numPlayersLeft = Integer.parseInt(((RadioButton) group.getSelectedToggle()).getText());
 
         //returns presenter of view passed, after stage has been set//
-        PlayerMenuPresenter nextPresenter = (PlayerMenuPresenter) context.showScreen("player_config.fxml");
+        PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) context.showScreen("player_config.fxml");
 
         //can pass info to next presenter//
         nextPresenter.setNumPlayersLeft(--numPlayersLeft);

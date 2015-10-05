@@ -1,252 +1,106 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.MemoryPlayerRepository;
-import data.Repository;
 import data.MapInfoHolder;
+import data.Repository;
+
+import java.awt.Point;
+
+import data.TurnEndListener;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import map.Map;
-import map.Tile;
+import model.entity.Player;
+import model.map.*;
+import model.service.DefaultTurnService;
+import view.MapView;
 
-import java.awt.*;
-import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import map.*;
-import model.Player;
 
 /**
  * Created by Ben 9/14/2015
  */
-public class MapPresenter extends Presenter {
+public class MapPresenter extends Presenter<MapView> {
 
     @Inject
-    public Map map;
+    private Map map;
     @Inject
-    MapInfoHolder mapInfo;
+    private MapInfoHolder mapInfo;
 
-    @FXML
-    private GridPane grid;
-    @FXML
-    private Pane pane;
-
-
-    private ImageView character;
-    private Timer timer;
-    private double mouseX;
-    private double mouseY;
-
-    private static boolean isLandSelectPhase = true;
     @Inject
-    private Repository<Player> repo;
-    private int currentPlayer = 0;
-    private List<Player> players;
+    private Repository<Player> playerRepository;
 
+    @Inject
+    private DefaultTurnService turnService;
+
+    private boolean isListening = false;
+    private TurnEndListener listener = (Player p) -> nextTurn(p);
     /**
-     * Constructor which sets up the default map.
+     * Loads the input .fxml file and gives up control to it.
+     * @param str
      */
-    @FXML
-    public void initialize() {
-
-        character = new ImageView(new Image("/races/Character.png", 25, 25, true, false));
-        pane.getChildren().add(character);
-        character.setX(340);
-        character.setY(235);
-
-        pane.setOnMouseMoved(event -> {
-            mouseX = event.getX();
-            mouseY = event.getY();
-        });
-
-        pane.setOnMousePressed(event -> onClick());
-
-        if (isLandSelectPhase) {
-            //Ready the first player to choose his land.
-            players = repo.getAll();
+    public void switchPresenter(String str) {
+        if (isListening) {
+            turnService.removeTurnEndListener(listener);
+            isListening = false;
         }
-
-        startMovement();
-
-        int mountainLimit = 6;
-        int mountains = 0;
-
-        //Create a map.
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 5; j++) {
-                Tile tile = new Tile(mapInfo.getTileType(j, i));
-                //Add tiles to the map.
-                map.add(tile, i, j);
-
-                //Add tile images to the gridPane
-                grid.add(new ImageView(tile.getImage(100, 100)), i, j);
-            }
-        }
-
+        context.showScreen(str);
     }
 
     /**
-     * Update Function called 60 times per second for player input.
-     * Moves the player's character towards the mouse.
+     * Computes what should be done to the input tile, based on model information.
+     * @param tileCoord Coordinate of the tile to affect
      */
-    private void update() {
-        moveCharacter(80);
+    public void onClick(Point tileCoord) {
 
-        //If the player is on the town tile, enter the town.
-        Point temp = getCharacterTile();
-        if (temp.getX() == 4 && temp.getY() == 2 && !isLandSelectPhase) {
-            Platform.runLater(() -> enterCity());
+    }
+
+    public boolean checkTurnState() {
+        if (turnService.isTurnInProgress()) {
+            turnService.addTurnEndListener(listener);
+            isListening = true;
+            return false;
+        } else {
+            if (turnService.isAllTurnsOver()) {
+                beginRound();
+            }
+            beginTurn();
+            return true;
         }
     }
 
-    /**
-     * Called every time the player clicks on the map screen.
-     */
-    private void onClick() {
-        if (isLandSelectPhase) {
-            //Check to see if this tile isn't already owned, give it to this player, and move to the next.
-            Point temp = getCharacterTile();
-            Tile tile = map.getOccupants(temp.x, temp.y, Tile.class)[0];
+    public Map getMap() {
+        return map;
+    }
 
-            boolean isOwnedTile = false;
-            for (Player p : players) {
-                if (p.ownsProperty(tile)) {
-                    isOwnedTile = true;
-                    break;
-                }
-            }
-            //If the player is on an owned Tile, do nothing. If on the City, pass their turn.
-            if (isOwnedTile) {
-                return;
-            } else if (tile.getTileType() != TileType.TOWN) {
-                Player player = players.get(currentPlayer);
+    public Repository<Player> getPlayerRepository() {
+        return playerRepository;
+    }
 
-                if (player.getOwnedProperties().size() < 3) {
-                    //Give the player this property.
-                    player.addProperty(tile);
-                    //TODO: Change the Tile's color to have the Player's color.
-                } else if (player.getMoney() >= 300) {
-                    player.addProperty(tile);
-                    player.addMoney(-300);
-                    //TODO: Change the Tile's color to have the Player's color.
-                } else {
-                    //Else, the player can't afford the property, so do nothing.
-                    return;
-                }
-            }
+    public String getCurrentPlayerName() {
+        return turnService.getCurrentPlayer().getName();
+    }
 
-            //Let the next player select his land, if anyone left.
-            currentPlayer++;
-            if (currentPlayer >= players.size()) {
-                isLandSelectPhase = false;
+    public void beginRound() {
+        turnService.beginRound();
+    }
+
+    public void beginTurn() {
+        turnService.beginTurn();
+        turnService.addTurnEndListener(listener);
+        isListening = true;
+    }
+
+    public void nextTurn(Player p) {
+        isListening = false;
+        Platform.runLater(() -> {
+            view.stopMovement();
+            if (!turnService.isAllTurnsOver()) {
+                beginTurn();
+                view.startTurn();
             } else {
-                //Setup the player (who goes first) for his turn.
+                //TODO: Switch to stat screen here!
+                switchPresenter("map_grid_tile_select.fxml");
             }
-            character.setX(340);
-            character.setY(235);
-
-            //Create the pause between turns.
-            stopMovement();
-            startMovement();
-        }
+        });
     }
 
-    /**
-     * Moves the character towards the cursor at a speed of the input number of pixels per second.
-     * @param pixelsPerSecond Speed at which the character moves.
-     */
-    private void moveCharacter(double pixelsPerSecond) {
-        if (character != null) {
-            double deltaX = mouseX - (character.getX() + character.getImage().getWidth()/2);
-            double deltaY = mouseY - (character.getY() + character.getImage().getHeight()/2);
-
-            //If our values aren't ready yet, or If we're already close to the cursor, don't move the character.
-            if (Math.abs(deltaX) < 1 && Math.abs(deltaY) < 1) {
-                return;
-            }
-
-            double mag = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-            final double newDeltaX = deltaX / mag;
-            final double newDeltaY = deltaY / mag;
-
-            final double newPixelsPerSecond = pixelsPerSecond * 0.016;
-
-            Platform.runLater(() -> {
-                character.setX(character.getX() + newDeltaX * newPixelsPerSecond);
-                character.setY(character.getY() + newDeltaY * newPixelsPerSecond);
-            });
-        }
-    }
-
-    /**
-     * Starts the scheduled task of moving the current player towards the mouse.
-     */
-    private void startMovement() {
-        if (timer == null) {
-            long updateTime = 16L;
-            timer = new Timer(true);
-
-            timer.schedule(new TimerTask() {
-                               @Override
-                               public void run() {
-                                   update();
-                               }
-                           },
-                    1000L, updateTime);
-        }
-    }
-
-    /**
-     * Stops the scheduled task of moving the current player towards the mouse.
-     */
-    private void stopMovement() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-    }
-
-    /**
-     * Returns the tile which the character is currently over.
-     */
-    private Point getCharacterTile() {
-        return new Point(((int) (character.getX() + character.getImage().getWidth()/2) )/100,
-                ((int) (character.getY() + character.getImage().getHeight()/2))/100);
-    }
-
-    /**
-     * Sets the character's image on the map to be the input image. (For switching races)
-     * @param img Image to set.
-     */
-    public void setCharacterImage(Image img) {
-        if (img == null) {
-            throw new NullPointerException("Input image was null!");
-        }
-
-        character.setImage(img);
-    }
-
-    /**
-     * Turns control over to the TownPresenter, and stops character movement.
-     */
-    public void enterCity() {
-        stopMovement();
-
-        context.showScreen("town.fxml");
-    }
-
-    /**
-     * Prepares the Map to start a land selection phase the next time it's shown.
-     */
-    public static void readyLandSelectPhase() {
-        isLandSelectPhase = true;
-    }
 
 }

@@ -1,7 +1,7 @@
-package model;
+package model.entity;
 
 import javafx.scene.paint.Color;
-import map.Tile;
+import model.map.Tile;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,6 +18,7 @@ public class Player {
     private int money;
     private int score;
     private int id;
+    private String name;
     private Color color;
     private ArrayList<Tile> ownedProperties = new ArrayList<>();
 
@@ -40,10 +41,6 @@ public class Player {
 
     public void addMoney(int amount) {
         money = money + amount;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public Color getColor() {
@@ -131,14 +128,6 @@ public class Player {
     }
 
     /**
-     * Gets the player's score
-     * @return The score
-     */
-    public int getScore() {
-        return score;
-    }
-
-    /**
      * Constructs player that owns the lands passed in
      * @param ownedProperties The properties the player owns
      */
@@ -207,4 +196,39 @@ public class Player {
     }
 
     //TODO implement ownership of land
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if ((obj == null) || !(obj instanceof Player)) {
+            return false;
+        }
+        return ((Player) obj).getId() == getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getPTU(int BTU) {
+        //TODO different based on race
+        return BTU;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
