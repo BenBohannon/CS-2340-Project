@@ -13,7 +13,7 @@
     <Button mnemonicParsing="false" onAction="#handleSmithoreClick" prefHeight="250" prefWidth="250" text="SMITHORE MULES" GridPane.columnIndex="0" GridPane.rowIndex="2" />
     <Button mnemonicParsing="false" onAction="#handleCrystiteClick" prefHeight="250" prefWidth="250" text="CRYSTITE MULES" GridPane.columnIndex="1" GridPane.rowIndex="2" />
     <Button mnemonicParsing="false" onAction="#handleMapClick" prefHeight="250" prefWidth="250" text="Map" GridPane.columnIndex="2" />
-    <Button mnemonicParsing="false" onAction="#handleStoreClick" prefHeight="273.0" prefWidth="249.0" text="Store" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Button mnemonicParsing="false" onAction="#handleStoreClick" prefHeight="273.0" prefWidth="249.0" text="Auction" GridPane.columnIndex="1" GridPane.rowIndex="1" />
   </children>
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
