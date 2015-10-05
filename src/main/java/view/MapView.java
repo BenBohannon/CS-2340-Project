@@ -1,6 +1,5 @@
 package view;
 
-import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -84,9 +83,7 @@ public class MapView extends View<MapPresenter> {
             }
         }
 
-        if (presenter.checkTurnState()) {
-            startTurn();
-        } else {
+        if (presenter.isTurnInProgress()) {
             startMovement();
         }
 
@@ -103,7 +100,7 @@ public class MapView extends View<MapPresenter> {
         //If the player is on the town tile, enter the town.
         Point temp = getCharacterTile();
         if (temp.getX() == 4 && temp.getY() == 2) { //&& !isLandSelectPhase) {
-            Platform.runLater(() -> enterCity());
+            Platform.runLater(presenter::enterCity);
         }
     }
 
@@ -191,7 +188,7 @@ public class MapView extends View<MapPresenter> {
     /**
      * Starts the turn with an intermission text, then allows movement.
      */
-    public void startTurn() {
+    public void showTurnStartText() {
         character.setX(340);
         character.setY(235);
 
@@ -209,8 +206,8 @@ public class MapView extends View<MapPresenter> {
                     pane.getChildren().remove(text);
                     startMovement();
                 });
-                           }
-                       }, 4000L);
+            }
+        }, 4000L);
     }
 
     /**
@@ -224,17 +221,6 @@ public class MapView extends View<MapPresenter> {
 
         character.setImage(img);
     }
-
-    /**
-     * Turns control over to the TownPresenter, and stops character movement.
-     */
-    public void enterCity() {
-        stopMovement();
-
-        presenter.switchPresenter("town.fxml");
-    }
-
-
 
     private Group createBorder(Color color) {
         Group border = new Group();

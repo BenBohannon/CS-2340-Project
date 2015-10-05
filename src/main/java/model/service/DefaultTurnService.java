@@ -47,21 +47,21 @@ public class DefaultTurnService {
     private static final String TURN_IN_PROGRESS = "A turn is currently in progress.";
     private static final String TURN_NOT_IN_PROGRESS = "No turn is currently in progress";
 
-    private int roundNumber;
-    private Collection<TurnEndListener> turnEndListeners;
-    private Player currentPlayer;
+    private volatile int roundNumber;
+    private volatile Collection<TurnEndListener> turnEndListeners;
+    private volatile Player currentPlayer;
 
-    private boolean turnInProgress;
-    private long turnStartTime;
-    private long turnDuration;
+    private volatile boolean turnInProgress;
+    private volatile long turnStartTime;
+    private volatile long turnDuration;
 
-    private Timer timer;
+    private volatile Timer timer;
 
     private Repository<Player> playerRepository;
     private StoreInfoHolder storeInfo;
 
     //players are added to this list after their turns are complete//
-    private Collection<Integer> finishedPlayerIds;
+    private volatile Collection<Integer> finishedPlayerIds;
 
     @Inject
     public DefaultTurnService(Repository<Player> playerRepository, StoreInfoHolder storeInfo) {
@@ -233,6 +233,10 @@ public class DefaultTurnService {
     }
 
 
+    /**
+     * Prematurely ends a player's turn, calling all listeners
+     * @return the player whose turn it was.
+     */
     public Player endTurn() {
         if (timer != null) {
             timer.cancel();

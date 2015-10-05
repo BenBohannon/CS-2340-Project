@@ -47,11 +47,14 @@ public class PresenterContext {
      * Presenter is created by the dependency injector and returned.
      * If a View is designated, the injected Presenter is given a reference to the {@link View}
      * and the presenter is returned
+     *
+     * The presenter is returned before its initialize() method has been called. you much call it manually.
+     *
      * @param fxmlFileName name of the desired fxml file, relative to the resources/presenters
      *                     directory. For example: "home_screen.fxml"
      * @return The presenter defined in the fxml file, or in the View
      */
-    public Presenter showScreen(String fxmlFileName) {
+    public Presenter showScreenUninitialized(String fxmlFileName) {
         //create fxml loader for this fxml file//
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
 
@@ -81,37 +84,27 @@ public class PresenterContext {
             return view.presenter;
         } else {
             //If fxml designated a Presenter, simply return it//
-            return (Presenter) handler;
+            Presenter p = (Presenter) handler;
+            return p;
         }
     }
 
     /**
-     * @deprecated the other showScreen method can produce Views. Let's just standardize the screen size
-     * so that this isn't necessary.
-     * @param fxmlFileName
-     * @param length
-     * @param height
-     * @param isResizable
-     * @return
+     * Creates a new {@link Scene} from the fxml file indicated, and sets it as
+     * the active Scene in the Stage. If a {@link Presenter} is defined in the FXML, the
+     * Presenter is created by the dependency injector and returned.
+     * If a View is designated, the injected Presenter is given a reference to the {@link View}
+     * and the presenter is returned.
+     * Before it is returned, the presenter's initialize() method is called.
+     * @param fxmlFileName name of the desired fxml file, relative to the resources/presenters
+     *                     directory. For example: "home_screen.fxml"
+     * @return The presenter defined in the fxml file, or in the View
      */
-//    public Presenter showScreen(String fxmlFileName, int length, int height, boolean isResizable) {
-//        //create fxml loader for this fxml file//
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
-//
-//        //set our injector to generate the Presenter; it will inject this PresenterContext//
-//        loader.setControllerFactory(guiceInjector::getInstance);
-//        Parent root = null;
-//
-//        try {
-//            root = loader.<Parent>load();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        stage.setScene(new Scene(root, length, height));
-//        stage.setResizable(isResizable);
-//        stage.show();
-//
-//        return loader.getController();
-//    }
+    public Presenter showScreen(String fxmlFileName) {
+        Presenter p = showScreenUninitialized(fxmlFileName);
+        if (p.view != null) {
+            p.initialize();
+        }
+        return p;
+    }
 }

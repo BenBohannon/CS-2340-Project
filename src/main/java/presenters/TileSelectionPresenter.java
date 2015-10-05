@@ -55,6 +55,7 @@ public class TileSelectionPresenter extends Presenter {
      */
     @FXML
     public void initialize() {
+        System.out.println("view initialize()");
 
         tileID = 0;
         pane.getChildren().add(border);

@@ -31,17 +31,40 @@ public class MapPresenter extends Presenter<MapView> {
     private DefaultTurnService turnService;
 
     private boolean isListening = false;
-    private TurnEndListener listener = (Player p) -> nextTurn(p);
-    /**
+    private TurnEndListener listener = this::nextTurn;
+
+
+    @Override
+    public void initialize() {
+        if (turnService.isTurnInProgress()) {
+            turnService.addTurnEndListener(listener);
+        } else {
+            if (turnService.isAllTurnsOver()) {
+                beginRound();
+            }
+            beginTurn();
+        }
+    }
+
+        /**
      * Loads the input .fxml file and gives up control to it.
      * @param str
      */
-    public void switchPresenter(String str) {
+    private void switchPresenter(String str) {
         if (isListening) {
             turnService.removeTurnEndListener(listener);
             isListening = false;
         }
         context.showScreen(str);
+    }
+
+    /**
+     * Turns control over to the TownPresenter, and stops character movement.
+     */
+    public void enterCity() {
+        view.stopMovement();
+
+        switchPresenter("town.fxml");
     }
 
     /**
@@ -52,18 +75,8 @@ public class MapPresenter extends Presenter<MapView> {
 
     }
 
-    public boolean checkTurnState() {
-        if (turnService.isTurnInProgress()) {
-            turnService.addTurnEndListener(listener);
-            isListening = true;
-            return false;
-        } else {
-            if (turnService.isAllTurnsOver()) {
-                beginRound();
-            }
-            beginTurn();
-            return true;
-        }
+    public boolean isTurnInProgress() {
+        return turnService.isTurnInProgress();
     }
 
     public Map getMap() {
@@ -82,19 +95,19 @@ public class MapPresenter extends Presenter<MapView> {
         turnService.beginRound();
     }
 
-    public void beginTurn() {
+    private void beginTurn() {
         turnService.beginTurn();
         turnService.addTurnEndListener(listener);
         isListening = true;
+        view.showTurnStartText();
     }
 
-    public void nextTurn(Player p) {
+    private void nextTurn(Player p) {
         isListening = false;
         Platform.runLater(() -> {
             view.stopMovement();
             if (!turnService.isAllTurnsOver()) {
                 beginTurn();
-                view.startTurn();
             } else {
                 //TODO: Switch to stat screen here!
                 switchPresenter("map_grid_tile_select.fxml");
