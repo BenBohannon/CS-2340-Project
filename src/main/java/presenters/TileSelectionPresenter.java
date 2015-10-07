@@ -187,18 +187,20 @@ public class TileSelectionPresenter extends Presenter {
                 border.setTranslateX(border.getTranslateX() - 900);
                 border.setTranslateY(border.getTranslateY() + 100);
             }
+
+            //If we've iterated through the whole map, quit.
             if (tileID % 45 == 0) {
                 border.setTranslateY(border.getTranslateY() - 500);
-                if (noneSelected()) {
-                    stopMovement();
-                    context.showScreen("map_grid.fxml");
-                }
-                for (int i = 0; i < playerRepository.getAll().size(); i++) {
-                    playerHasChosen[i] = false;
-                }
-                selectionRound++;
+                stopMovement();
+                context.showScreen("map_grid.fxml");
             }
             border.setTranslateX(border.getTranslateX() + 100);
+
+            //If everyone has already selected, quit.
+            if (doneSelecting()) {
+                stopMovement();
+                context.showScreen("map_grid.fxml");
+            }
         });
     }
 
