@@ -60,12 +60,11 @@ public class TownPresenter extends Presenter {
             amountToAdd = 150;
         }
 
-        turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
-        // if (allplayershavegone)
-        context.showScreen("map_grid_tile_select.fxml");
-        // else
-        // context.showScreen("map_grid.fxml");
-        // iterate player id and reset to zero at appropriate times
+        if (turnService.isTurnInProgress()) {
+            turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+            turnService.endTurn();
+        }
+        context.showScreen("map_grid.fxml");
 
     }
 }
