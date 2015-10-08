@@ -48,7 +48,7 @@ public class Start extends Application {
         };
 
 
-        StoreDatasource sds = new StoreDatasource() {
+        final StoreDatasource sds = new StoreDatasource() {
 
             private int energyAmount = energy;
             private int foodAmount = food;
