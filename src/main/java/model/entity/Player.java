@@ -82,6 +82,7 @@ public class Player {
 
     public void offsetFood(int amount) {
         food += amount;
+        System.out.println(food);
     }
 
     /**

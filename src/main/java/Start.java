@@ -49,14 +49,31 @@ public class Start extends Application {
 
 
         StoreDatasource sds = new StoreDatasource() {
+
+            private int energyAmount = energy;
+            private int foodAmount = food;
+            private int smithoreAmount = smithore;
+            private int crystiteAmount = crystite;
+
+            private int energyStorePrice = energyPrice;
+            private int foodStorePrice = foodPrice;
+            private int smithoreStorePrice= smithorePrice;
+            private int crystiteStorePrice = crystitePrice;
+
             @Override
             public void saveAmount(int energy, int food, int smithore, int crystite) {
-
+                energyAmount = energy;
+                foodAmount = food;
+                smithoreAmount = smithore;
+                crystiteAmount = crystite;
             }
 
             @Override
-            public void savePrice(int energyPrice1, int foodPrice1, int smithorePrice1, int crystitePrice1) {
-
+            public void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice) {
+                energyStorePrice = energyPrice;
+                foodStorePrice = foodPrice;
+                smithoreStorePrice = smithorePrice;
+                crystiteStorePrice = crystitePrice;
             }
 
             @Override
