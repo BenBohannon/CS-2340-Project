@@ -1,8 +1,8 @@
 package presenters;
 
 import com.google.inject.Inject;
-
 import javafx.event.ActionEvent;
+import model.entity.Store;
 import model.service.DefaultTurnService;
 
 /**
@@ -13,36 +13,40 @@ public class StorePresenter extends Presenter {
     @Inject
     DefaultTurnService turnService;
 
+    @Inject
+    Store store;
+
+
     public void handleSmithoreBuyClick(ActionEvent event) {
-        turnService.getCurrentPlayer().buySmithore(10);               //temp price values
+        store.sellSmithore(turnService.getCurrentPlayer());
     }
 
     public void handleSmithoreSellClick(ActionEvent event) {
-        turnService.getCurrentPlayer().sellSmithore(10);
+        store.buySmithore(turnService.getCurrentPlayer(), 10);      //temp price
     }
 
     public void handleCrystiteBuyClick(ActionEvent event) {
-        turnService.getCurrentPlayer().buyCrystite(20);
+        store.sellCrystite(turnService.getCurrentPlayer());
     }
 
     public void handleCrystiteSellClick(ActionEvent event) {
-        turnService.getCurrentPlayer().sellCrystite(20);
+        store.buyCrystite(turnService.getCurrentPlayer(), 20);
     }
 
     public void handleFoodBuyClick(ActionEvent event) {
-        turnService.getCurrentPlayer().buyFood(5);
+        store.sellFood(turnService.getCurrentPlayer());
     }
 
     public void handleFoodSellClick(ActionEvent event) {
-        turnService.getCurrentPlayer().sellFood(5);
+        store.buyFood(turnService.getCurrentPlayer(), 5);
     }
 
     public void handleEnergyBuyClick(ActionEvent event) {
-        turnService.getCurrentPlayer().buyEnergy(10);
+        store.sellEnergy(turnService.getCurrentPlayer());
     }
 
     public void handleEnergySellClick(ActionEvent event) {
-        turnService.getCurrentPlayer().sellEnergy(10);
+        store.buyEnergy(turnService.getCurrentPlayer(), 10);
     }
 
     public void handleExitClick(ActionEvent event) {

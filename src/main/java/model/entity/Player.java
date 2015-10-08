@@ -11,6 +11,7 @@ import java.util.LinkedList;
  * Created by brian on 9/17/15.
  */
 public class Player {
+    private int score;
     private int smithore;
     private int crystite;
     private int food;
@@ -212,5 +213,9 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

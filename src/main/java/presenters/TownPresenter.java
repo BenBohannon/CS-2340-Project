@@ -38,7 +38,7 @@ public class TownPresenter extends Presenter {
         returnToMap();
     }
 
-    public void handleAuctionClick(ActionEvent event) {
+    public void handleStoreClick(ActionEvent event) {
         context.showScreen("store.fxml");
     }
 
@@ -61,7 +61,7 @@ public class TownPresenter extends Presenter {
         }
 
         if (turnService.isTurnInProgress()) {
-            turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+            turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
             turnService.endTurn();
         }
         context.showScreen("map_grid.fxml");

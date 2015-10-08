@@ -7,7 +7,7 @@ import com.google.inject.Inject;
  */
 public class Store {
 
-    private int STARTING_ENERGY = 16;
+    /*private int STARTING_ENERGY = 16;
     private int STARTING_FOOD = 16;
     private int STARTING_SMITHORE = 0;
     private int STARTING_CRYSTITE = 0;
@@ -15,6 +15,7 @@ public class Store {
     private int STARTING_FOOD_PRICE = -30;
     private int STARTING_SMITHORE_PRICE = -50;
     private int STARTING_CRYSTITE_PRICE = -100;
+    */
 
     private int energy;
     private int food;
@@ -33,18 +34,15 @@ public class Store {
     public Store(StoreDatasource storeDatasource) {
         this.storeDatasource = storeDatasource;
 
-        energy = STARTING_ENERGY;
-        food = STARTING_FOOD;
-        smithore = STARTING_SMITHORE;
-        crystite = STARTING_CRYSTITE;
+        energy = storeDatasource.getEnergy();
+        food = storeDatasource.getFood();
+        smithore = storeDatasource.getSmithore();
+        crystite = storeDatasource.getCrystite();
 
-        energyPrice = STARTING_ENERGY_PRICE;
-        foodPrice = STARTING_FOOD_PRICE;
-        smithorePrice = STARTING_SMITHORE_PRICE;
-        crystitePrice = STARTING_CRYSTITE_PRICE;
-
-        storeDatasource.saveAmount(energy, food, smithore, crystite);
-        storeDatasource.savePrice(energyPrice, foodPrice, smithorePrice, crystitePrice);
+        energyPrice = storeDatasource.getEnergyPrice();
+        foodPrice = storeDatasource.getFoodPrice();
+        smithorePrice = storeDatasource.getSmithorePrice();
+        crystitePrice = storeDatasource.getCrystitePrice();
     }
 
     /**

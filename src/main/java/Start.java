@@ -3,17 +3,17 @@
  */
 
 import com.google.inject.TypeLiteral;
+import data.MemoryPlayerRepository;
 import data.Repository;
 import data.StoreInfoHolder;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.entity.Player;
+import model.entity.StoreDatasource;
 import model.map.Locatable;
 import model.map.LocationDatasource;
-import data.MemoryPlayerRepository;
 import model.map.Map;
 import model.service.DefaultTurnService;
-import presenters.MapPresenter;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -48,6 +48,57 @@ public class Start extends Application {
         };
 
 
+        StoreDatasource sds = new StoreDatasource() {
+            @Override
+            public void saveAmount(int energy, int food, int smithore, int crystite) {
+
+            }
+
+            @Override
+            public void savePrice(int energyPrice1, int foodPrice1, int smithorePrice1, int crystitePrice1) {
+
+            }
+
+            @Override
+            public int getEnergy() {
+                return energy;
+            }
+
+            @Override
+            public int getFood() {
+                return food;
+            }
+
+            @Override
+            public int getSmithore() {
+                return smithore;
+            }
+
+            @Override
+            public int getCrystite() {
+                return crystite;
+            }
+
+            @Override
+            public int getEnergyPrice() {
+                return energyPrice;
+            }
+
+            @Override
+            public int getFoodPrice() {
+                return foodPrice;
+            }
+
+            @Override
+            public int getSmithorePrice() {
+                return smithorePrice;
+            }
+
+            @Override
+            public int getCrystitePrice() {
+                return crystitePrice;
+            }
+        };
 
         final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
 
@@ -58,6 +109,7 @@ public class Start extends Application {
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
             binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
+            binder.bind(StoreDatasource.class).toInstance(sds);
 
             //temp
             binder.bind(Map.class).toInstance(map);
