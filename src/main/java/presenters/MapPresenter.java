@@ -97,7 +97,7 @@ public class MapPresenter extends Presenter<MapView> {
                 view.startTurn();
             } else {
                 //TODO: Switch to stat screen here!
-                switchPresenter("map_grid_tile_select.fxml");
+                switchPresenter("auction.fxml");
             }
         });
     }
