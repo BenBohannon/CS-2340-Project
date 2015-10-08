@@ -78,42 +78,42 @@ public class Start extends Application {
 
             @Override
             public int getEnergy() {
-                return energy;
+                return energyAmount;
             }
 
             @Override
             public int getFood() {
-                return food;
+                return foodAmount;
             }
 
             @Override
             public int getSmithore() {
-                return smithore;
+                return smithoreAmount;
             }
 
             @Override
             public int getCrystite() {
-                return crystite;
+                return crystiteAmount;
             }
 
             @Override
             public int getEnergyPrice() {
-                return energyPrice;
+                return energyStorePrice;
             }
 
             @Override
             public int getFoodPrice() {
-                return foodPrice;
+                return foodStorePrice;
             }
 
             @Override
             public int getSmithorePrice() {
-                return smithorePrice;
+                return smithoreStorePrice;
             }
 
             @Override
             public int getCrystitePrice() {
-                return crystitePrice;
+                return crystiteStorePrice;
             }
         };
 
