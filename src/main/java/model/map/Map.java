@@ -226,5 +226,24 @@ public class Map {
         private boolean addOccupant(Locatable occupant) {
             return occupants.add(occupant);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof Location)) {
+                return false;
+            }
+
+            Location other = (Location) obj;
+
+            if (other.getRow() == getRow() && other.getCol() == getCol()) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return row * 2 + col;
+        }
     }
 }

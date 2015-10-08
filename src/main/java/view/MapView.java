@@ -37,6 +37,7 @@ public class MapView extends View<MapPresenter> {
     private Text text;
 
     private ImageView character;
+    private ImageView mule;
     private Timer timer;
     private double mouseX;
     private double mouseY;
@@ -47,9 +48,9 @@ public class MapView extends View<MapPresenter> {
     @FXML
     public void initialize() {
 
-        character = new ImageView(new Image("/races/Character.png", 25, 25, true, false));
-        character.setX(340);
-        character.setY(235);
+        character = createImageView("/races/Character.png", 25, 25);
+        addImageToPane(character, 340, 235);
+
         ColorAdjust monochrome = new ColorAdjust();
         monochrome.setSaturation(-1.0);
         Blend blush = new Blend(BlendMode.MULTIPLY, monochrome,
@@ -60,7 +61,7 @@ public class MapView extends View<MapPresenter> {
             mouseY = event.getY();
         });
 
-        pane.setOnMousePressed(event -> onClick());
+        pane.setOnMousePressed(event -> presenter.onClick(getImageCoordinates(character)));
 
         Map map = presenter.getMap();
         //Create a model.map.
@@ -86,8 +87,22 @@ public class MapView extends View<MapPresenter> {
         if (presenter.isTurnInProgress()) {
             startMovement();
         }
+    }
 
-        pane.getChildren().add(character);
+    public void displayMule() {
+        if (mule == null) {
+            mule = new ImageView(new Image("/mule/shrek_donkey.png", 40, 40, true, false));
+        }
+        character.setX(character.getX() + 30);
+        character.setY(character.getY() + 30);
+        pane.getChildren().add(mule);
+    }
+
+    public void stopDisplayingMule() {
+        if (mule != null) {
+            pane.getChildren().remove(mule);
+        }
+        mule = null;
     }
 
     /**
@@ -98,17 +113,10 @@ public class MapView extends View<MapPresenter> {
         moveCharacter(80);
 
         //If the player is on the town tile, enter the town.
-        Point temp = getCharacterTile();
+        Point temp = getImageCoordinates(character);
         if (temp.getX() == 4 && temp.getY() == 2) { //&& !isLandSelectPhase) {
             Platform.runLater(presenter::enterCity);
         }
-    }
-
-    /**
-     * Called every time the player clicks on the model.map screen.
-     */
-    private void onClick() {
-        presenter.onClick(getCharacterTile());
     }
 
     /**
@@ -135,6 +143,12 @@ public class MapView extends View<MapPresenter> {
             Platform.runLater(() -> {
                 character.setX(character.getX() + newDeltaX * newPixelsPerSecond);
                 character.setY(character.getY() + newDeltaY * newPixelsPerSecond);
+
+                //Move mule with character sprite//
+                if (mule != null) {
+                    mule.setX(character.getX() + 30);
+                    mule.setY(character.getY() + 30);
+                }
             });
         }
     }
@@ -165,24 +179,6 @@ public class MapView extends View<MapPresenter> {
         if (timer != null) {
             timer.cancel();
         }
-    }
-
-    /**
-     * @return Point coordinates of the Tile which the character is currently over.
-     */
-    private Point getCharacterTile() {
-        int x = (int)(character.getX() + character.getImage().getWidth()/2);
-        int y = (int)(character.getY() + character.getImage().getWidth()/2);
-        return new Point(((int) (character.getX() + character.getImage().getWidth()/2) )/100,
-                ((int) (character.getY() + character.getImage().getHeight()/2))/100);
-    }
-
-    /**
-     * Sets the character's image on the model.map to be the input image. (For switching races)
-     * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
-     */
-    private Point getPixelOffset(int row, int col) {
-        return new Point(col * 100, row * 100);
     }
 
     /**
@@ -222,6 +218,23 @@ public class MapView extends View<MapPresenter> {
         character.setImage(img);
     }
 
+    /**
+     * @param imageView imageview sprite
+     * @return Point coordinates of the Tile which the imageview is currently over.
+     */
+    private Point getImageCoordinates(ImageView imageView) {
+        return new Point(((int) (imageView.getX() + imageView.getImage().getWidth()/2) )/100,
+                ((int) (imageView.getY() + imageView.getImage().getHeight()/2))/100);
+    }
+
+    /**
+     * Sets the character's image on the model.map to be the input image. (For switching races)
+     * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
+     */
+    private Point getPixelOffset(int row, int col) {
+        return new Point(col * 100, row * 100);
+    }
+
     private Group createBorder(Color color) {
         Group border = new Group();
         javafx.scene.shape.Rectangle top = new javafx.scene.shape.Rectangle(10, 100);
@@ -235,5 +248,15 @@ public class MapView extends View<MapPresenter> {
                 .map(node -> ((javafx.scene.shape.Shape) node))
                 .forEach(shape -> shape.setFill(color));
         return border;
+    }
+
+    private ImageView createImageView(String imagePath, int width, int height) {
+        return new ImageView(new Image(imagePath, width, height, true, false));
+    }
+
+    private void addImageToPane(ImageView view, int x, int y) {
+        view.setX(x);
+        view.setY(y);
+        pane.getChildren().add(view);
     }
 }

@@ -8,6 +8,7 @@ import java.awt.Point;
 
 import data.TurnEndListener;
 import javafx.application.Platform;
+import model.entity.Mule;
 import model.entity.Player;
 import model.map.*;
 import model.service.DefaultTurnService;
@@ -17,7 +18,7 @@ import view.MapView;
 /**
  * Created by Ben 9/14/2015
  */
-public class MapPresenter extends Presenter<MapView> {
+public class MapPresenter extends Presenter<MapView> implements TurnEndListener {
 
     @Inject
     private Map map;
@@ -30,19 +31,24 @@ public class MapPresenter extends Presenter<MapView> {
     @Inject
     private DefaultTurnService turnService;
 
-    private boolean isListening = false;
-    private TurnEndListener listener = this::nextTurn;
+    private boolean isListening;
+    private boolean isPlacingMule;
+    private Mule mulePlacing;
 
 
     @Override
     public void initialize() {
         if (turnService.isTurnInProgress()) {
-            turnService.addTurnEndListener(listener);
+            turnService.addTurnEndListener(this);
         } else {
             if (turnService.isAllTurnsOver()) {
                 beginRound();
             }
             beginTurn();
+        }
+        
+        if (isPlacingMule) {
+            view.displayMule();
         }
     }
 
@@ -52,7 +58,7 @@ public class MapPresenter extends Presenter<MapView> {
      */
     private void switchPresenter(String str) {
         if (isListening) {
-            turnService.removeTurnEndListener(listener);
+            turnService.removeTurnEndListener(this);
             isListening = false;
         }
         context.showScreen(str);
@@ -67,12 +73,57 @@ public class MapPresenter extends Presenter<MapView> {
         switchPresenter("town.fxml");
     }
 
+    @Override
+    public void onTurnEnd(Player player) {
+        isListening = false;
+        Platform.runLater(() -> {
+            view.stopMovement();
+
+            //Mule is lost if not placed//
+            if (isPlacingMule) {
+                player.mules.remove(mulePlacing);
+                view.stopDisplayingMule();
+                isPlacingMule = false;
+            }
+
+            if (turnService.isAllTurnsOver()) {
+                //TODO: Switch to stat screen here!
+                switchPresenter("map_grid_tile_select.fxml");
+            } else {
+                beginTurn();
+            }
+        });
+    }
+
     /**
      * Computes what should be done to the input tile, based on model information.
      * @param tileCoord Coordinate of the tile to affect
      */
     public void onClick(Point tileCoord) {
+        if (!isPlacingMule) {
+            return;
+        }
 
+        //check if player owns tile//
+        boolean owned = playerRepository.getAll().stream()
+                .flatMap(p -> p.getOwnedProperties().stream())
+                .anyMatch(t -> {
+                    return t.getLocation().getCol() == tileCoord.x && t.getLocation().getRow() == tileCoord.y;
+                });
+
+        //check for another mule//
+        boolean occupied = map.getOccupants(tileCoord.y, tileCoord.x, Mule.class).length > 0;
+
+        if (owned && !occupied) {
+            map.add(mulePlacing, tileCoord.y, tileCoord.x);
+
+        }
+
+        //TODO mule lost text
+
+        mulePlacing = null;
+        isPlacingMule = false;
+        view.stopDisplayingMule();
     }
 
     public boolean isTurnInProgress() {
@@ -91,29 +142,28 @@ public class MapPresenter extends Presenter<MapView> {
         return turnService.getCurrentPlayer().getName();
     }
 
+    public boolean isPlacingMule() {
+        return isPlacingMule;
+    }
+
+    /**
+     * should be called by townPresenter
+     * @param isPlacingMule
+     */
+    public void setIsPlacingMule(boolean isPlacingMule, Mule mule) {
+        this.mulePlacing = mule;
+        this.isPlacingMule = isPlacingMule;
+    }
+
     public void beginRound() {
         turnService.beginRound();
     }
 
     private void beginTurn() {
+        System.out.println("beginTurn()");
         turnService.beginTurn();
-        turnService.addTurnEndListener(listener);
+        turnService.addTurnEndListener(this);
         isListening = true;
         view.showTurnStartText();
     }
-
-    private void nextTurn(Player p) {
-        isListening = false;
-        Platform.runLater(() -> {
-            view.stopMovement();
-            if (!turnService.isAllTurnsOver()) {
-                beginTurn();
-            } else {
-                //TODO: Switch to stat screen here!
-                switchPresenter("map_grid_tile_select.fxml");
-            }
-        });
-    }
-
-
 }

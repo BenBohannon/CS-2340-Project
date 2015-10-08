@@ -249,11 +249,12 @@ public class DefaultTurnService {
         turnStartTime = -1;
         turnDuration = -1;
 
+        Collection<TurnEndListener> tempTurnEndListeners = turnEndListeners;
+        turnEndListeners = null;
         //push out event//
-        for (TurnEndListener listener : turnEndListeners) {
+        for (TurnEndListener listener : tempTurnEndListeners) {
             listener.onTurnEnd(player);
         }
-        turnEndListeners = null;
         return player;
     }
 }

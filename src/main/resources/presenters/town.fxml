@@ -7,11 +7,11 @@
 
 <GridPane prefHeight="800.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="presenters.TownPresenter">
   <children>
-    <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="ENERGY MULES" onAction="#handleEnergyClick" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-    <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="FOOD MULES" onAction="#handleFoodClick" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+    <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="ENERGY MULES" onAction="#handleMuleClick" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+    <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="FOOD MULES" onAction="#handleMuleClick" GridPane.columnIndex="1" GridPane.rowIndex="0" />
     <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="Pub" onAction="#handlePubClick" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-    <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="SMITHORE MULES" onAction="#handleSmithoreClick" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-    <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="CRYSTITE MULES" onAction="#handleCrystiteClick" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="SMITHORE MULES" onAction="#handleMuleClick" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="CRYSTITE MULES" onAction="#handleMuleClick" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     <Button mnemonicParsing="false" prefHeight="250" prefWidth="250" text="Map" onAction="#handleMapClick" GridPane.columnIndex="2" GridPane.rowIndex="0" />
   </children>
   <columnConstraints>
