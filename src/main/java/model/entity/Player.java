@@ -16,7 +16,6 @@ public class Player {
     private int food;
     private int energy;
     private int money;
-    private int score;
     private int id;
     private String name;
     private Color color;
@@ -200,10 +199,6 @@ public class Player {
 
     public int getId() {
         return id;
-    }
-
-    public int getScore() {
-        return score;
     }
 
     public int getPTU(int BTU) {
