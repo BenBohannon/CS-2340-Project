@@ -39,14 +39,8 @@ public class Player {
         return money;
     }
 
-    public void addMoney(int amount) {
-        money = money + amount;
-    }
-
-    public void removeMoney(int amount) {
-        if (money - amount >= 0) {
-            money = money - amount;
-        }
+    public void offsetMoney(int money) {
+        this.money += money;
     }
 
     public Color getColor() {
@@ -61,29 +55,10 @@ public class Player {
         this.id = id;
     }
 
-    /**
-     * Adds the amount passed in to the players smithore
-     * @param price Price of the smithore
-     */
-    public void buySmithore(int price) {
-        if (this.money - price >= 0) {
-            this.smithore++;
-            removeMoney(price);
-            System.out.println(money);
-        }
+    public void offsetSmithore(int amount) {
+        smithore += amount;
     }
 
-    /**
-     * Allows the player to sell smithore
-     * @param price Price of the smithore
-     */
-    public void sellSmithore(int price) {
-        if (this.smithore - smithore >= 0) {
-            this.smithore--;
-            addMoney(price);
-            System.out.println(money);
-        }
-    }
 
     /**
      * Gets the player's smithore
@@ -93,28 +68,8 @@ public class Player {
         return smithore;
     }
 
-    /**
-     * Adds the amount passed in to the players crystite
-     * @param price Price of the crystite
-     */
-    public void buyCrystite(int price) {
-        if (this.money - price >= 0) {
-            this.crystite++;
-            removeMoney(price);
-            System.out.println(money);
-        }
-    }
-
-    /**
-     * Allows the player to sell crystite
-     * @param price Price of the crystite
-     */
-    public void sellCrystite(int price) {
-        if (this.crystite - crystite >= 0) {
-            this.crystite--;
-            addMoney(price);
-            System.out.println(money);
-        }
+    public void offsetCrystite(int amount) {
+        crystite += amount;
     }
 
     /**
@@ -125,28 +80,8 @@ public class Player {
         return crystite;
     }
 
-    /**
-     * Allows the player to buy food
-     * @param price Price of the food
-     */
-    public void buyFood(int price) {
-        if (this.money - price >= 0) {
-            removeMoney(price);
-            this.food++;
-            System.out.println(money);
-        }
-    }
-
-    /**
-     * Allows the player to sell food
-     * @param price Price of the food
-     */
-    public void sellFood(int price) {
-        if (this.food - food >= 0) {
-            this.food--;
-            addMoney(price);
-            System.out.println(money);
-        }
+    public void offsetFood(int amount) {
+        food += amount;
     }
 
     /**
@@ -157,21 +92,6 @@ public class Player {
         return food;
     }
 
-    /**
-     * Adds the amount passed in to the players energy
-     * @param energy Amount to be added
-     */
-    public void addEnergy(int energy) {
-        this.energy += energy;
-    }
-
-    /**
-     * Removes energy from the player
-     * @param energy Amount to be removed
-     */
-    public void removeEnergy(int energy) {
-        this.energy -= energy;
-    }
 
     /**
      * Gets the player's energy
@@ -181,35 +101,10 @@ public class Player {
         return energy;
     }
 
-    public void buyEnergy(int price) {
-        if (this.money - price >= 0) {
-            removeMoney(price);
-            addEnergy(1);
-        }
+    public void offsetEnergy(int amount) {
+        energy += amount;
     }
 
-    public void sellEnergy(int price) {
-        if (this.money - price >= 0) {
-            removeMoney(price);
-            removeEnergy(1);
-        }
-    }
-
-    /**
-     * Adds the amount passed in to the players score
-     * @param score Amount to be added
-     */
-    public void addScore(int score) {
-        this.score += score;
-    }
-
-    /**
-     * Lowers the player's score
-     * @param score Amount to be lowered by
-     */
-    public void lowerScore(int score) {
-        this.score -= score;
-    }
 
     /**
      * Constructs player that owns the lands passed in

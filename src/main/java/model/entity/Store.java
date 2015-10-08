@@ -11,10 +11,10 @@ public class Store {
     private int STARTING_FOOD = 16;
     private int STARTING_SMITHORE = 0;
     private int STARTING_CRYSTITE = 0;
-    private int STARTING_ENERGY_PRICE = 25;
-    private int STARTING_FOOD_PRICE = 30;
-    private int STARTING_SMITHORE_PRICE = 50;
-    private int STARTING_CRYSTITE_PRICE = 100;
+    private int STARTING_ENERGY_PRICE = -25;
+    private int STARTING_FOOD_PRICE = -30;
+    private int STARTING_SMITHORE_PRICE = -50;
+    private int STARTING_CRYSTITE_PRICE = -100;
 
     private int energy;
     private int food;
@@ -52,10 +52,13 @@ public class Store {
      * @param player The player buying the energy
      */
     public void sellEnergy(Player player) {
-        if (energy != 0) {
-            energy--;
-            player.buyEnergy(energyPrice);
-            storeDatasource.saveAmount(energy, food, smithore, crystite);
+        if (energy > 0) {
+            if (player.getMoney() + energyPrice >= 0) {
+                energy--;
+                player.offsetEnergy(1);
+                player.offsetMoney(energyPrice);
+                storeDatasource.saveAmount(energy, food, smithore, crystite);
+            }
         }
     }
 
@@ -65,9 +68,12 @@ public class Store {
      * @param price The price it is being sold for
      */
     public void buyEnergy(Player player, int price) {
-        energy++;
-        player.sellEnergy(price);
-        storeDatasource.saveAmount(energy, food, smithore, crystite);
+        if (player.getEnergy() > 0) {
+            energy++;
+            player.offsetEnergy(-1);
+            player.offsetMoney(price);
+            storeDatasource.saveAmount(energy, food, smithore, crystite);
+        }
     }
 
     /**
@@ -75,10 +81,13 @@ public class Store {
      * @param player The player buying the food
      */
     public void sellFood(Player player) {
-        if (food != 0) {
-            food--;
-            player.buyFood(foodPrice);
-            storeDatasource.saveAmount(energy, food, smithore, crystite);
+        if (food > 0) {
+            if (player.getMoney() + foodPrice >= 0) {
+                food--;
+                player.offsetFood(1);
+                player.offsetMoney(foodPrice);
+                storeDatasource.saveAmount(energy, food, smithore, crystite);
+            }
         }
     }
 
@@ -88,9 +97,12 @@ public class Store {
      * @param price The price it is being sold for
      */
     public void buyFood(Player player, int price) {
-        food++;
-        player.sellFood(price);
-        storeDatasource.saveAmount(energy, food, smithore, crystite);
+        if (player.getMoney() > 0) {
+            food++;
+            player.offsetFood(-1);
+            player.offsetMoney(price);
+            storeDatasource.saveAmount(energy, food, smithore, crystite);
+        }
     }
 
     /**
@@ -98,10 +110,13 @@ public class Store {
      * @param player The player buying the smithore
      */
     public void sellSmithore(Player player) {
-        if (smithore != 0) {
-            smithore--;
-            player.buySmithore(smithorePrice);
-            storeDatasource.saveAmount(energy, food, smithore, crystite);
+        if (smithore > 0) {
+            if (player.getMoney() + smithorePrice >= 0) {
+                smithore--;
+                player.offsetSmithore(1);
+                player.offsetMoney(smithorePrice);
+                storeDatasource.saveAmount(energy, food, smithore, crystite);
+            }
         }
     }
 
@@ -111,9 +126,12 @@ public class Store {
      * @param price The price it is being sold for
      */
     public void buySmithore(Player player, int price) {
-        smithore++;
-        player.sellSmithore(price);
-        storeDatasource.saveAmount(energy, food, smithore, crystite);
+        if (player.getSmithore() > 0) {
+            smithore++;
+            player.offsetSmithore(-1);
+            player.offsetMoney(price);
+            storeDatasource.saveAmount(energy, food, smithore, crystite);
+        }
     }
 
     /**
@@ -121,10 +139,13 @@ public class Store {
      * @param player The player buying the crystite
      */
     public void sellCrystite(Player player) {
-        if (crystite != 0) {
-            crystite--;
-            player.sellCrystite(crystitePrice);
-            storeDatasource.saveAmount(energy, food, smithore, crystite);
+        if (crystite > 0) {
+            if (player.getMoney() + crystitePrice >= 0) {
+                crystite--;
+                player.offsetCrystite(1);
+                player.offsetMoney(crystitePrice);
+                storeDatasource.saveAmount(energy, food, smithore, crystite);
+            }
         }
     }
 
@@ -134,9 +155,12 @@ public class Store {
      * @param price The price it is being sold for
      */
     public void buyCrystite(Player player, int price) {
-        crystite++;
-        player.sellCrystite(price);
-        storeDatasource.saveAmount(energy, food, smithore, crystite);
+        if (player.getCrystite() > 0) {
+            crystite++;
+            player.offsetCrystite(-1);
+            player.offsetMoney(price);
+            storeDatasource.saveAmount(energy, food, smithore, crystite);
+        }
     }
 
     public int getEnergyPrice() {
