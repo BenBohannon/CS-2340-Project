@@ -1,8 +1,6 @@
 package view;
 
 import com.google.inject.Inject;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import presenters.Presenter;
 
 

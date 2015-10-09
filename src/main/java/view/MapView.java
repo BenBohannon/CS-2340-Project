@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class MapView extends View<MapPresenter> {
     private Timer timer;
     private double mouseX;
     private double mouseY;
+    private Rectangle timerWhite;
+    private Rectangle timerRed;
 
     private LinkedList<ImageView> installedMuleImageViews;
 
@@ -58,10 +61,14 @@ public class MapView extends View<MapPresenter> {
         character = createImageView("/races/Character.png", 25, 25);
         addImageToPane(character, 340, 235);
 
+        timerWhite = new Rectangle(200, 20, Color.WHITE);
+        timerRed = new Rectangle(200, 20, Color.RED);
         ColorAdjust monochrome = new ColorAdjust();
         monochrome.setSaturation(-1.0);
         Blend blush = new Blend(BlendMode.MULTIPLY, monochrome,
                 new ColorInput(0, 0, character.getImage().getWidth(), character.getImage().getHeight(), Color.RED));
+
+        pane.getChildren().addAll(timerWhite, timerRed);
 
         pane.setOnMouseMoved(event -> {
             mouseX = event.getX();
@@ -121,12 +128,23 @@ public class MapView extends View<MapPresenter> {
      */
     private void update() {
         moveCharacter(80);
+        updateTimer();
 
         //If the player is on the town tile, enter the town.
         Point temp = getImageCoordinates(character);
         if (temp.getX() == 4 && temp.getY() == 2) { //&& !isLandSelectPhase) {
             Platform.runLater(presenter::enterCity);
         }
+    }
+
+    /**
+     * Updates the red timer on screen
+     */
+    private void updateTimer() {
+        Platform.runLater(() -> {
+            double timerPerc = presenter.getTimeRemaining();
+            timerRed.setWidth(timerPerc * 200);
+        });
     }
 
     /**

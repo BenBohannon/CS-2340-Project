@@ -5,6 +5,7 @@ import data.GameInfo;
 import data.Repository;
 import data.StoreInfoHolder;
 import data.TurnEndListener;
+import javafx.application.Platform;
 import model.entity.Player;
 
 import java.util.*;
@@ -56,6 +57,8 @@ public class DefaultTurnService {
     private volatile long turnDuration;
 
     private volatile Timer timer;
+    private volatile Timer timer2;
+    private volatile double stopwatch;
 
     private Repository<Player> playerRepository;
     private StoreInfoHolder storeInfo;
@@ -102,6 +105,7 @@ public class DefaultTurnService {
         float foodRatio = (float) currentPlayer.getFood() / GameInfo.getFoodRequirement(roundNumber);
         //turnDuration = (int) (currentPlayer.getPTU(GameInfo.BTU(4)) + currentPlayer.getPTU(GameInfo.BTU(91)) * foodRatio);
         turnDuration = 10000L; //TEMPORARY CODE. EVERY PLAYER GETS 10 seconds.
+        stopwatch = turnDuration;
 
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -109,13 +113,34 @@ public class DefaultTurnService {
             public void run() {
                 endTurn();
             }
-        }, turnDuration);
+        }, turnDuration + 4000L);
+
+        timer2 = new Timer();
+        timer2.schedule(new TimerTask() {
+                           @Override
+                           public void run() {
+                               Platform.runLater(() ->
+                               {
+                                   stopwatch -= 11;
+                                   if (stopwatch <= 0) { timer2.cancel(); }
+                               });
+                           }
+                       },
+                4050L, 10L);
 
         turnStartTime = new Date().getTime();
         turnEndListeners = new LinkedList<>();
         turnInProgress = true;
 
         return currentPlayer;
+    }
+
+    /**
+     * Get time remaining in turn
+     * @return stopwatch
+     */
+    public double getTimeRemaining() {
+        return stopwatch/turnDuration;
     }
 
     /**

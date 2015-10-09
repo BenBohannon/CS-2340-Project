@@ -3,16 +3,15 @@ package presenters;
 import com.google.inject.Inject;
 import data.MapInfoHolder;
 import data.Repository;
-
-import java.awt.Point;
-
 import data.TurnEndListener;
 import javafx.application.Platform;
 import model.entity.Mule;
 import model.entity.Player;
-import model.map.*;
+import model.map.Map;
 import model.service.DefaultTurnService;
 import view.MapView;
+
+import java.awt.*;
 
 
 /**
@@ -27,7 +26,6 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
     @Inject
     private Repository<Player> playerRepository;
-
     @Inject
     private DefaultTurnService turnService;
 
@@ -87,8 +85,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             }
 
             if (turnService.isAllTurnsOver()) {
-                //TODO: Switch to stat screen here!
-                switchPresenter("map_grid_tile_select.fxml");
+                switchPresenter("auction.fxml");
             } else {
                 beginTurn();
             }
@@ -154,6 +151,8 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         this.mulePlacing = mule;
         this.isPlacingMule = isPlacingMule;
     }
+
+    public double getTimeRemaining() { return turnService.getTimeRemaining(); }
 
     public void beginRound() {
         turnService.beginRound();
