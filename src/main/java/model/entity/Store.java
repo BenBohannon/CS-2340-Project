@@ -96,7 +96,7 @@ public class Store {
      * @param price The price it is being sold for
      */
     public void buyFood(Player player, int price) {
-        if (player.getMoney() > 0) {
+        if (player.getFood() > 0) {
             food++;
             player.offsetFood(-1);
             player.offsetMoney(price);
