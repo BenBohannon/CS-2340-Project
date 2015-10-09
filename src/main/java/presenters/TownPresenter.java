@@ -60,7 +60,7 @@ public class TownPresenter extends Presenter {
             turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
             turnService.endTurn();
         }
-        context.showScreen("map_grid.fxml");
+        context.showScreen("auction.fxml");
 
     }
 }

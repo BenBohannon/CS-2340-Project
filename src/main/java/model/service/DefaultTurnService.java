@@ -122,7 +122,7 @@ public class DefaultTurnService {
                                Platform.runLater(() ->
                                {
                                    stopwatch -= 11;
-                                   if (stopwatch <= 0) { timer2.cancel(); }
+                                   if (stopwatch <= 0) { stopwatch = turnDuration; timer2.cancel(); }
                                });
                            }
                        },
@@ -133,6 +133,14 @@ public class DefaultTurnService {
         turnInProgress = true;
 
         return currentPlayer;
+    }
+
+    /**
+     * Stop all timers
+     */
+    public void stopTimers() {
+        timer.cancel();
+        timer2.cancel();
     }
 
     /**

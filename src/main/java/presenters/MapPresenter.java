@@ -39,6 +39,7 @@ public class MapPresenter extends Presenter<MapView> {
             turnService.removeTurnEndListener(listener);
             isListening = false;
         }
+        turnService.stopTimers();
         context.showScreen(str);
     }
 
