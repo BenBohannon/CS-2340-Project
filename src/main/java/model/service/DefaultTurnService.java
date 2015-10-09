@@ -122,7 +122,6 @@ public class DefaultTurnService {
                                Platform.runLater(() ->
                                {
                                    stopwatch -= 11;
-                                   System.out.println(stopwatch);
                                    if (stopwatch <= 0) { timer2.cancel(); }
                                });
                            }

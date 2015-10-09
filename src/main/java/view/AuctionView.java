@@ -27,13 +27,17 @@ public class AuctionView extends View<AuctionPresenter> {
         // Key listener for
 
 
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                presenter.switchPresenter("map_grid_tile_select.fxml");
-            }
-        }, 4000L);
+//        timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                presenter.switchPresenter("map_grid_tile_select.fxml");
+//            }
+//        }, 4000L);
+    }
+
+    public void handleContinueButtonAction() {
+        presenter.switchPresenter("map_grid_tile_select.fxml");
     }
 
     public void startSmithoreBidding() {
