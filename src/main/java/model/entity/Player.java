@@ -11,12 +11,12 @@ import java.util.LinkedList;
  * Created by brian on 9/17/15.
  */
 public class Player {
+    private int score;
     private int smithore;
     private int crystite;
     private int food;
     private int energy;
-    private int money;
-    private int score;
+    private int money = 2000;
     private int id;
     private String name;
     private Color color;
@@ -39,14 +39,8 @@ public class Player {
         return money;
     }
 
-    public void addMoney(int amount) {
-        money = money + amount;
-    }
-
-    public void removeMoney(int amount) {
-        if (money - amount >= 0) {
-            money = money - amount;
-        }
+    public void offsetMoney(int money) {
+        this.money += money;
     }
 
     public Color getColor() {
@@ -61,29 +55,10 @@ public class Player {
         this.id = id;
     }
 
-    /**
-     * Adds the amount passed in to the players smithore
-     * @param smithore Amount to be added
-     * @param price Price of the smithore
-     */
-    public void buySmithore(int smithore, int price) {
-        if (this.money - price >= 0) {
-            this.smithore += smithore;
-            removeMoney(price);
-        }
+    public void offsetSmithore(int amount) {
+        smithore += amount;
     }
 
-    /**
-     * Allows the player to sell smithore
-     * @param smithore Amount to be sold
-     * @param price Price of the smithore
-     */
-    public void sellSmithore(int smithore, int price) {
-        if (this.smithore - smithore >= 0) {
-            this.smithore -= smithore;
-            addMoney(price);
-        }
-    }
 
     /**
      * Gets the player's smithore
@@ -93,28 +68,8 @@ public class Player {
         return smithore;
     }
 
-    /**
-     * Adds the amount passed in to the players crystite
-     * @param crystite Amount to be added
-     * @param price Price of the crystite
-     */
-    public void buyCrystite(int crystite, int price) {
-        if (this.money - price >= 0) {
-            this.crystite += crystite;
-            removeMoney(price);
-        }
-    }
-
-    /**
-     * Allows the player to sell crystite
-     * @param crystite Amount to be sold
-     * @param price Price of the crystite
-     */
-    public void sellCrystite(int crystite, int price) {
-        if (this.crystite - crystite >= 0) {
-            this.crystite -= crystite;
-            addMoney(price);
-        }
+    public void offsetCrystite(int amount) {
+        crystite += amount;
     }
 
     /**
@@ -125,28 +80,9 @@ public class Player {
         return crystite;
     }
 
-    /**
-     * Allows the player to buy food
-     * @param food Amount to be added
-     * @param price Price of the food
-     */
-    public void buyFood(int food, int price) {
-        if (this.money - price >= 0) {
-            removeMoney(price);
-            this.food += food;
-        }
-    }
-
-    /**
-     * Allows the player to sell food
-     * @param food Amount to be sold
-     * @param price Price of the food
-     */
-    public void sellFood(int food, int price) {
-        if (this.food - food >= 0) {
-            this.food -= food;
-            addMoney(price);
-        }
+    public void offsetFood(int amount) {
+        food += amount;
+        System.out.println(food);
     }
 
     /**
@@ -157,21 +93,6 @@ public class Player {
         return food;
     }
 
-    /**
-     * Adds the amount passed in to the players energy
-     * @param energy Amount to be added
-     */
-    public void addEnergy(int energy) {
-        this.energy += energy;
-    }
-
-    /**
-     * Removes energy from the player
-     * @param energy Amount to be removed
-     */
-    public void removeEnergy(int energy) {
-        this.energy -= energy;
-    }
 
     /**
      * Gets the player's energy
@@ -181,21 +102,10 @@ public class Player {
         return energy;
     }
 
-    /**
-     * Adds the amount passed in to the players score
-     * @param score Amount to be added
-     */
-    public void addScore(int score) {
-        this.score += score;
+    public void offsetEnergy(int amount) {
+        energy += amount;
     }
 
-    /**
-     * Lowers the player's score
-     * @param score Amount to be lowered by
-     */
-    public void lowerScore(int score) {
-        this.score -= score;
-    }
 
     /**
      * Constructs player that owns the lands passed in
@@ -293,10 +203,6 @@ public class Player {
         return id;
     }
 
-    public int getScore() {
-        return score;
-    }
-
     public int getPTU(int BTU) {
         //TODO different based on race
         return BTU;
@@ -308,5 +214,9 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

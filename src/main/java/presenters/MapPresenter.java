@@ -59,6 +59,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             turnService.removeTurnEndListener(this);
             isListening = false;
         }
+        turnService.stopTimers();
         context.showScreen(str);
     }
 

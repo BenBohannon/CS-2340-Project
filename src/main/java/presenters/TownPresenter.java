@@ -41,12 +41,12 @@ public class TownPresenter extends Presenter implements TurnEndListener {
         presenter.initialize();
     }
 
-    public void handleStoreClick(ActionEvent event) {
-        context.showScreen("store.fxml");
-    }
-
     public void handleMapClick(ActionEvent event) {
         returnToMapUninitialized().initialize();
+    }
+
+    public void handleStoreClick(ActionEvent event) {
+        context.showScreen("store.fxml");
     }
 
     /**
@@ -71,10 +71,10 @@ public class TownPresenter extends Presenter implements TurnEndListener {
         }
 
         if (turnService.isTurnInProgress()) {
-            turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+            turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
             turnService.endTurn();
         }
-        context.showScreen("map_grid.fxml");
+        context.showScreen("auction.fxml");
 
     }
 
