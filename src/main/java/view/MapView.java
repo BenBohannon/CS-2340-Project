@@ -14,11 +14,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import model.entity.Mule;
+import model.entity.MuleType;
 import model.entity.Player;
 import model.map.*;
 import presenters.MapPresenter;
@@ -42,11 +46,14 @@ public class MapView extends View<MapPresenter> {
     private double mouseX;
     private double mouseY;
 
+    private LinkedList<ImageView> installedMuleImageViews;
+
     /**
      * Constructor which sets up the default model.map.
      */
     @FXML
     public void initialize() {
+        installedMuleImageViews = new LinkedList<>();
 
         character = createImageView("/races/Character.png", 25, 25);
         addImageToPane(character, 340, 235);
@@ -71,6 +78,11 @@ public class MapView extends View<MapPresenter> {
 
                 //Add tile images to the gridPane
                 grid.add(new ImageView(tile.getImage(100, 100)), i, j);
+
+                Mule[] mules = map.getOccupants(i, j, Mule.class);
+                if (mules.length != 0) {
+                    placeMuleGraphic(j, i, mules[0].getType());
+                }
             }
         }
 
@@ -93,9 +105,7 @@ public class MapView extends View<MapPresenter> {
         if (mule == null) {
             mule = new ImageView(new Image("/mule/shrek_donkey.png", 40, 40, true, false));
         }
-        character.setX(character.getX() + 30);
-        character.setY(character.getY() + 30);
-        pane.getChildren().add(mule);
+        addImageToPane(mule, (int) (character.getX() + 30), (int) (character.getY() + 30));
     }
 
     public void stopDisplayingMule() {
@@ -218,20 +228,26 @@ public class MapView extends View<MapPresenter> {
         character.setImage(img);
     }
 
+    public void placeMuleGraphic(int row, int col, MuleType type) {
+        Point p = getPixelOffset(row, col);
+        ImageView img = createImageView(type.getImagePath(), 100, 100);
+        addImageToPane(img, (int) p.getX(), (int) p.getY());
+        installedMuleImageViews.add(img);
+    }
+
     /**
      * @param imageView imageview sprite
      * @return Point coordinates of the Tile which the imageview is currently over.
      */
-    private Point getImageCoordinates(ImageView imageView) {
-        return new Point(((int) (imageView.getX() + imageView.getImage().getWidth()/2) )/100,
-                ((int) (imageView.getY() + imageView.getImage().getHeight()/2))/100);
+    public static Point getImageCoordinates(ImageView imageView) {
+        return new Point((int) ((imageView.getX() + imageView.getImage().getWidth() / 2) / 100),
+                (int) ((imageView.getY() + imageView.getImage().getHeight() / 2) / 100));
     }
 
     /**
-     * Sets the character's image on the model.map to be the input image. (For switching races)
      * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
      */
-    private Point getPixelOffset(int row, int col) {
+    public static Point getPixelOffset(int row, int col) {
         return new Point(col * 100, row * 100);
     }
 
@@ -250,7 +266,7 @@ public class MapView extends View<MapPresenter> {
         return border;
     }
 
-    private ImageView createImageView(String imagePath, int width, int height) {
+    public static ImageView createImageView(String imagePath, int width, int height) {
         return new ImageView(new Image(imagePath, width, height, true, false));
     }
 

@@ -14,9 +14,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import model.entity.Mule;
+import model.entity.MuleType;
 import model.entity.Player;
 import model.map.Map;
 import model.map.Tile;
+import view.MapView;
 
 import java.awt.*;
 import java.util.Timer;
@@ -55,7 +58,6 @@ public class TileSelectionPresenter extends Presenter {
      */
     @FXML
     public void initialize() {
-        System.out.println("view initialize()");
 
         tileID = 0;
         pane.getChildren().add(border);
@@ -151,6 +153,11 @@ public class TileSelectionPresenter extends Presenter {
 
                 //Add tile images to the gridPane
                 grid.add(new ImageView(tile.getImage(100, 100)), i, j);
+
+                Mule[] mules = map.getOccupants(i, j, Mule.class);
+                if (mules.length != 0) {
+                    placeMuleGraphic(i, j, mules[0].getType());
+                }
             }
         }
     }
@@ -258,4 +265,15 @@ public class TileSelectionPresenter extends Presenter {
         return new Point(col * 100, row * 100);
     }
 
+    public void placeMuleGraphic(int col, int row, MuleType type) {
+        Point p = getPixelOffset(row, col);
+        ImageView img = MapView.createImageView(type.getImagePath(), 100, 100);
+        addImageToPane(img, (int) p.getX(), (int) p.getY());
+    }
+    
+    private void addImageToPane(ImageView view, int x, int y) {
+        view.setX(x);
+        view.setY(y);
+        pane.getChildren().add(view);
+    }
 }

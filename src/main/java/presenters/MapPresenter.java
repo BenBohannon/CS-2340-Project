@@ -107,19 +107,19 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         //check if player owns tile//
         boolean owned = playerRepository.getAll().stream()
                 .flatMap(p -> p.getOwnedProperties().stream())
-                .anyMatch(t -> {
-                    return t.getLocation().getCol() == tileCoord.x && t.getLocation().getRow() == tileCoord.y;
-                });
+                .anyMatch(t -> t.getLocation().getCol() == tileCoord.y && t.getLocation().getRow() == tileCoord.x);
 
         //check for another mule//
-        boolean occupied = map.getOccupants(tileCoord.y, tileCoord.x, Mule.class).length > 0;
+        boolean occupied = map.getOccupants(tileCoord.x, tileCoord.y, Mule.class).length > 0;
 
+        System.out.println(tileCoord.x + ", " + tileCoord.y);
+        System.out.println("owned: "+ owned + " occupied: " + occupied);
         if (owned && !occupied) {
-            map.add(mulePlacing, tileCoord.y, tileCoord.x);
-
+            map.add(mulePlacing, tileCoord.x, tileCoord.y);
+            view.placeMuleGraphic(tileCoord.y, tileCoord.x, mulePlacing.getType());
+        } else {
+            System.out.println("Mule Lost");
         }
-
-        //TODO mule lost text
 
         mulePlacing = null;
         isPlacingMule = false;
