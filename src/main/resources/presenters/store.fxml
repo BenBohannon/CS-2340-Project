@@ -17,21 +17,21 @@
     <children>
         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
             <children>
-                <Label layoutX="125.0" layoutY="14.0" text="Crystite" />
+                <Label fx:id="crystiteLabel" layoutX="125.0" layoutY="14.0" text="Crystite" />
                 <Button layoutX="129.0" layoutY="60.0" mnemonicParsing="false" onAction="#handleCrystiteBuyClick" text="Buy" />
                 <Button layoutX="129.0" layoutY="86.0" mnemonicParsing="false" onAction="#handleCrystiteSellClick" text="Sell" />
             </children>
         </AnchorPane>
         <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
             <children>
-                <Label layoutX="134.0" layoutY="21.0" text="Food" />
+                <Label fx:id="foodLabel" layoutX="134.0" layoutY="21.0" text="Food" />
                 <Button layoutX="131.0" layoutY="54.0" mnemonicParsing="false" onAction="#handleFoodBuyClick" text="Buy" />
                 <Button layoutX="131.0" layoutY="80.0" mnemonicParsing="false" onAction="#handleFoodSellClick" text="Sell" />
             </children>
         </AnchorPane>
         <AnchorPane prefHeight="200.0" prefWidth="200.0">
             <children>
-                <Label layoutX="120.0" layoutY="20.0" text="Smithore" />
+                <Label fx:id="smithoreLabel" layoutX="120.0" layoutY="20.0" text="Smithore" />
                 <Button layoutX="129.0" layoutY="54.0" mnemonicParsing="false" onAction="#handleSmithoreBuyClick" text="Buy" />
                 <Button layoutX="129.0" layoutY="80.0" mnemonicParsing="false" onAction="#handleSmithoreSellClick" text="Sell" />
             </children>
@@ -39,7 +39,7 @@
         <Button mnemonicParsing="false" onAction="#handleExitClick" prefHeight="143.0" prefWidth="304.0" text="Exit" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <Label layoutX="127.0" layoutY="20.0" text="Energy" />
+            <Label fx:id="energyLabel" layoutX="127.0" layoutY="20.0" text="Energy" />
             <Button layoutX="129.0" layoutY="54.0" mnemonicParsing="false" onAction="#handleEnergyBuyClick" text="Buy" />
             <Button layoutX="130.0" layoutY="80.0" mnemonicParsing="false" onAction="#handleEnergySellClick" text="Sell" />
          </children>

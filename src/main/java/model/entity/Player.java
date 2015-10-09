@@ -16,7 +16,7 @@ public class Player {
     private int crystite;
     private int food;
     private int energy;
-    private int money;
+    private int money = 2000;
     private int id;
     private String name;
     private Color color;
