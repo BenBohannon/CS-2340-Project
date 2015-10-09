@@ -148,7 +148,7 @@ public class DefaultTurnService {
      * @return stopwatch
      */
     public double getTimeRemaining() {
-        return stopwatch/turnDuration;
+        return stopwatch / turnDuration;
     }
 
     /**

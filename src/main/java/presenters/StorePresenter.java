@@ -28,7 +28,7 @@ public class StorePresenter extends Presenter {
     private Label energyLabel;
 
     @FXML
-    void initialize() {
+    public void initialize() {
         updateEnergyLabel();
         updateFoodLabel();
         updateCrysLabel();

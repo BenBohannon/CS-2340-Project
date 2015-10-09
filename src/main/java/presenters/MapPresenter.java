@@ -40,7 +40,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             turnService.addTurnEndListener(this);
         } else {
             if (turnService.isAllTurnsOver()) {
-                beginRound();
+                turnService.beginRound();
             }
             beginTurn();
         }
@@ -154,10 +154,6 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
     }
 
     public double getTimeRemaining() { return turnService.getTimeRemaining(); }
-
-    public void beginRound() {
-        turnService.beginRound();
-    }
 
     private void beginTurn() {
         System.out.println("beginTurn()");
