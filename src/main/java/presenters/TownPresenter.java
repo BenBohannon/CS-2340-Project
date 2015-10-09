@@ -54,7 +54,9 @@ public class TownPresenter extends Presenter implements TurnEndListener {
      * UPDATE: now returns to model.map
      */
     private MapPresenter returnToMapUninitialized() {
-        turnService.removeTurnEndListener(this);
+        if (turnService.isTurnInProgress()) {
+            turnService.removeTurnEndListener(this);
+        }
         return (MapPresenter) context.showScreenUninitialized("map_grid.fxml");
     }
 
