@@ -52,7 +52,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         }
     }
 
-        /**
+    /**
      * Loads the input .fxml file and gives up control to it.
      * @param str
      */

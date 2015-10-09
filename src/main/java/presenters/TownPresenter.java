@@ -41,6 +41,10 @@ public class TownPresenter extends Presenter implements TurnEndListener {
         presenter.initialize();
     }
 
+    public void handleStoreClick(ActionEvent event) {
+        context.showScreen("store.fxml");
+    }
+
     public void handleMapClick(ActionEvent event) {
         returnToMapUninitialized().initialize();
     }

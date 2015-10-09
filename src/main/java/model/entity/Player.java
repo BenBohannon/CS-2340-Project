@@ -43,6 +43,12 @@ public class Player {
         money = money + amount;
     }
 
+    public void removeMoney(int amount) {
+        if (money - amount >= 0) {
+            money = money - amount;
+        }
+    }
+
     public Color getColor() {
         return color;
     }
@@ -58,9 +64,25 @@ public class Player {
     /**
      * Adds the amount passed in to the players smithore
      * @param smithore Amount to be added
+     * @param price Price of the smithore
      */
-    public void addSmithore(int smithore) {
-        this.smithore += smithore;
+    public void buySmithore(int smithore, int price) {
+        if (this.money - price >= 0) {
+            this.smithore += smithore;
+            removeMoney(price);
+        }
+    }
+
+    /**
+     * Allows the player to sell smithore
+     * @param smithore Amount to be sold
+     * @param price Price of the smithore
+     */
+    public void sellSmithore(int smithore, int price) {
+        if (this.smithore - smithore >= 0) {
+            this.smithore -= smithore;
+            addMoney(price);
+        }
     }
 
     /**
@@ -74,9 +96,25 @@ public class Player {
     /**
      * Adds the amount passed in to the players crystite
      * @param crystite Amount to be added
+     * @param price Price of the crystite
      */
-    public void addCrystite(int crystite) {
-        this.crystite += crystite;
+    public void buyCrystite(int crystite, int price) {
+        if (this.money - price >= 0) {
+            this.crystite += crystite;
+            removeMoney(price);
+        }
+    }
+
+    /**
+     * Allows the player to sell crystite
+     * @param crystite Amount to be sold
+     * @param price Price of the crystite
+     */
+    public void sellCrystite(int crystite, int price) {
+        if (this.crystite - crystite >= 0) {
+            this.crystite -= crystite;
+            addMoney(price);
+        }
     }
 
     /**
@@ -88,11 +126,27 @@ public class Player {
     }
 
     /**
-     * Adds the amount passed in to the players food
+     * Allows the player to buy food
      * @param food Amount to be added
+     * @param price Price of the food
      */
-    public void addFood(int food) {
-        this.food += food;
+    public void buyFood(int food, int price) {
+        if (this.money - price >= 0) {
+            removeMoney(price);
+            this.food += food;
+        }
+    }
+
+    /**
+     * Allows the player to sell food
+     * @param food Amount to be sold
+     * @param price Price of the food
+     */
+    public void sellFood(int food, int price) {
+        if (this.food - food >= 0) {
+            this.food -= food;
+            addMoney(price);
+        }
     }
 
     /**
@@ -112,6 +166,14 @@ public class Player {
     }
 
     /**
+     * Removes energy from the player
+     * @param energy Amount to be removed
+     */
+    public void removeEnergy(int energy) {
+        this.energy -= energy;
+    }
+
+    /**
      * Gets the player's energy
      * @return The energy
      */
@@ -125,6 +187,14 @@ public class Player {
      */
     public void addScore(int score) {
         this.score += score;
+    }
+
+    /**
+     * Lowers the player's score
+     * @param score Amount to be lowered by
+     */
+    public void lowerScore(int score) {
+        this.score -= score;
     }
 
     /**
@@ -152,6 +222,7 @@ public class Player {
             throw new java.lang.IllegalArgumentException("Property cannot be null.");
         }
         ownedProperties.add(property);
+        property.setOwner(this);
     }
 
     /**
@@ -160,6 +231,7 @@ public class Player {
      */
     public void removeProperty(Tile property) {
         ownedProperties.remove(property);
+        property.setOwner(null);
     }
 
     /**
@@ -170,10 +242,15 @@ public class Player {
      */
     public void buyProperty(Tile property, int price) {
         if (money - price < 0) {
-            throw new RuntimeException("Cannot buy.");
+            //Label l = new Label("Cannot buy, insufficient funds");
+            throw new RuntimeException("Cannot buy, insufficient funds.");
+        }
+        if (property.ownedBy() != null) {
+            throw new RuntimeException("Cannot buy, already owned");
         }
         money = money - price;
         ownedProperties.add(property);
+        property.setOwner(this);
     }
 
     /**
@@ -184,6 +261,7 @@ public class Player {
     public void sellProperty(Tile property, int price) {
         money += price;
         removeProperty(property);
+        property.setOwner(null);
     }
 
     /**

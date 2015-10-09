@@ -1,6 +1,7 @@
 package model.map;
 
 import javafx.scene.image.Image;
+import model.entity.Player;
 
 import java.util.Random;
 
@@ -15,6 +16,8 @@ public class Tile implements Locatable {
     int numOfMountains = 0;
     private static int mountainSeed = 0;
 
+    private Player owner;
+
     public Tile(TileType type) {
         this.type = type;
 
@@ -25,6 +28,22 @@ public class Tile implements Locatable {
             }
             numOfMountains = rand.nextInt(3) + 1;
         }
+    }
+
+    /**
+     * Sets the owner of the tile
+     * @param owner The new owner of the tile
+     */
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    /**
+     * Returns the owner if the tile is owned, and null if it is not
+     * @return The owner of the tile
+     */
+    public Player ownedBy() {
+        return owner;
     }
 
     public TileType getTileType() {
@@ -110,6 +129,4 @@ public class Tile implements Locatable {
 
         return img;
     }
-
-
 }
