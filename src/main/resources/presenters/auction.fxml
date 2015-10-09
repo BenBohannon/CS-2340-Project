@@ -8,10 +8,5 @@
 <Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="490" minWidth="890" prefHeight="490.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AuctionView">
   <children>
   <Button layoutX="336.0" layoutY="228.0" onAction="#handleContinueButtonAction" mnemonicParsing="false" prefHeight="35.0" prefWidth="96.0" text="Continue" />
-      <Text layoutX="336.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Auction" wrappingWidth="96.0">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Text>
   </children>
 </Pane>
