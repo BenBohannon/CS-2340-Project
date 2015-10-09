@@ -164,10 +164,7 @@ public class DefaultTurnService {
      * @return the Player whose turn is in progress, or null if none are in progress
      */
     public Player getCurrentPlayer() {
-        if (turnInProgress) {
-            return currentPlayer;
-        }
-        return null;
+        return currentPlayer;
     }
 
     /**
@@ -272,7 +269,7 @@ public class DefaultTurnService {
         }
         timer = null;
         Player player = currentPlayer;
-        currentPlayer = null;
+        //currentPlayer = null;
         turnInProgress = false;
         finishedPlayerIds.add(player.getId());
         turnStartTime = -1;

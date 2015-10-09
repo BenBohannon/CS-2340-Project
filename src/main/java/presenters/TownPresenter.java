@@ -38,6 +38,10 @@ public class TownPresenter extends Presenter {
         returnToMap();
     }
 
+    public void handleStoreClick(ActionEvent event) {
+        context.showScreen("store.fxml");
+    }
+
     /**
      * helper method for logging the unimplemented behavior of returning to the model.map
      * UPDATE: now returns to model.map
@@ -57,7 +61,7 @@ public class TownPresenter extends Presenter {
         }
 
         if (turnService.isTurnInProgress()) {
-            turnService.getCurrentPlayer().addMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+            turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
             turnService.endTurn();
         }
         context.showScreen("auction.fxml");

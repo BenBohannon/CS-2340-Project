@@ -11,12 +11,12 @@ import java.util.LinkedList;
  * Created by brian on 9/17/15.
  */
 public class Player {
+    private int score;
     private int smithore;
     private int crystite;
     private int food;
     private int energy;
-    private int money;
-    private int score;
+    private int money = 2000;
     private int id;
     private String name;
     private Color color;
@@ -39,8 +39,8 @@ public class Player {
         return money;
     }
 
-    public void addMoney(int amount) {
-        money = money + amount;
+    public void offsetMoney(int money) {
+        this.money += money;
     }
 
     public Color getColor() {
@@ -55,13 +55,10 @@ public class Player {
         this.id = id;
     }
 
-    /**
-     * Adds the amount passed in to the players smithore
-     * @param smithore Amount to be added
-     */
-    public void addSmithore(int smithore) {
-        this.smithore += smithore;
+    public void offsetSmithore(int amount) {
+        smithore += amount;
     }
+
 
     /**
      * Gets the player's smithore
@@ -71,12 +68,8 @@ public class Player {
         return smithore;
     }
 
-    /**
-     * Adds the amount passed in to the players crystite
-     * @param crystite Amount to be added
-     */
-    public void addCrystite(int crystite) {
-        this.crystite += crystite;
+    public void offsetCrystite(int amount) {
+        crystite += amount;
     }
 
     /**
@@ -87,12 +80,9 @@ public class Player {
         return crystite;
     }
 
-    /**
-     * Adds the amount passed in to the players food
-     * @param food Amount to be added
-     */
-    public void addFood(int food) {
-        this.food += food;
+    public void offsetFood(int amount) {
+        food += amount;
+        System.out.println(food);
     }
 
     /**
@@ -103,13 +93,6 @@ public class Player {
         return food;
     }
 
-    /**
-     * Adds the amount passed in to the players energy
-     * @param energy Amount to be added
-     */
-    public void addEnergy(int energy) {
-        this.energy += energy;
-    }
 
     /**
      * Gets the player's energy
@@ -119,13 +102,10 @@ public class Player {
         return energy;
     }
 
-    /**
-     * Adds the amount passed in to the players score
-     * @param score Amount to be added
-     */
-    public void addScore(int score) {
-        this.score += score;
+    public void offsetEnergy(int amount) {
+        energy += amount;
     }
+
 
     /**
      * Constructs player that owns the lands passed in
@@ -152,6 +132,7 @@ public class Player {
             throw new java.lang.IllegalArgumentException("Property cannot be null.");
         }
         ownedProperties.add(property);
+        property.setOwner(this);
     }
 
     /**
@@ -160,6 +141,7 @@ public class Player {
      */
     public void removeProperty(Tile property) {
         ownedProperties.remove(property);
+        property.setOwner(null);
     }
 
     /**
@@ -170,10 +152,15 @@ public class Player {
      */
     public void buyProperty(Tile property, int price) {
         if (money - price < 0) {
-            throw new RuntimeException("Cannot buy.");
+            //Label l = new Label("Cannot buy, insufficient funds");
+            throw new RuntimeException("Cannot buy, insufficient funds.");
+        }
+        if (property.ownedBy() != null) {
+            throw new RuntimeException("Cannot buy, already owned");
         }
         money = money - price;
         ownedProperties.add(property);
+        property.setOwner(this);
     }
 
     /**
@@ -184,6 +171,7 @@ public class Player {
     public void sellProperty(Tile property, int price) {
         money += price;
         removeProperty(property);
+        property.setOwner(null);
     }
 
     /**
@@ -215,10 +203,6 @@ public class Player {
         return id;
     }
 
-    public int getScore() {
-        return score;
-    }
-
     public int getPTU(int BTU) {
         //TODO different based on race
         return BTU;
@@ -230,5 +214,9 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getScore() {
+        return score;
     }
 }
