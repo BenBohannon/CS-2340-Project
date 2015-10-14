@@ -98,8 +98,9 @@ public class MapPresenter extends Presenter<MapView> {
         Platform.runLater(() -> {
             view.stopMovement();
             if (!turnService.isAllTurnsOver()) {
+                context.showScreen("map_grid.fxml");
                 beginTurn();
-                view.startTurn();
+//                view.startTurn();
             } else {
                 switchPresenter("auction.fxml");
             }
