@@ -52,7 +52,7 @@ public class AuctionView extends View<AuctionPresenter> {
 //        pane.getChildren().add(new Rectangle(100, 100));
 
         // Stream or for loop players
-//        player1 = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
+//        player1 = new ImageView(new Image("/races/Human.png", 25, 25, true, false));
 //        player1.setTranslateX(150);
 //        player1.setTranslateY(700);
         // Key listener for

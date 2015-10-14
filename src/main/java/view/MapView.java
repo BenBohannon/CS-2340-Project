@@ -50,7 +50,7 @@ public class MapView extends View<MapPresenter> {
     @FXML
     public void initialize() {
 
-        character = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
+        character = new ImageView(new Image("/races/Human.png", 25, 25, true, false));
         character.setX(340);
         character.setY(235);
         timerWhite = new Rectangle(200, 20, Color.WHITE);
