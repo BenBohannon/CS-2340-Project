@@ -33,18 +33,20 @@ public class AuctionView extends View<AuctionPresenter> {
         playerRepository = turnService.getAllPlayers();
         playerImageList = new ArrayList<>();
         for (int i = 0; i < playerRepository.size(); i++) {
-            ImageView playerImage = playerRepository.get(i).getRaceImage();
+            ImageView playerImage = new ImageView(playerRepository.get(i).getRaceImage().getImage());
             playerImageList.add(playerImage);
                 double deltaX = playerRepository.get(i).getRaceImage().getImage().getWidth()/2 - 16;
-            playerImage.setTranslateX(-242 + 150 * i - deltaX);
+            playerImage.setTranslateX(150 + 150 * i - deltaX);
                 double deltaY = playerRepository.get(i).getRaceImage().getImage().getHeight()/2 - 16;
-            playerImage.setTranslateY(148 - deltaY);
-            Text playerName = new Text("Player " + (i + 1) + "\n \"" + playerRepository.get(i).getName() + "\"");
+            playerImage.setTranslateY(390 - deltaY);
+            Text playerName = new Text("Player " + (i + 1) + "\n\"" + playerRepository.get(i).getName() + "\"");
             playerName.setTranslateX(150 + 150 * i);
-            playerName.setTranslateY(360);
-            Text resourceScore = new Text(playerRepository.get(i).getCrystite() + " Crystite");
+            playerName.setTranslateY(370);
+            Text resourceScore = new Text(playerRepository.get(i).getCrystite() + " Crystite\n"
+                    + playerRepository.get(i).getEnergy() + " Energy\n"
+                    + playerRepository.get(i).getFood() + " Food");
             resourceScore.setTranslateX(150 + 150 * i);
-            resourceScore.setTranslateY(430);
+            resourceScore.setTranslateY(435);
             pane.getChildren().addAll(playerImage, playerName, resourceScore);
         }
 //        pane.getChildren().add(new Rectangle(100, 100));
