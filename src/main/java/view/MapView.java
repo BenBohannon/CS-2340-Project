@@ -13,16 +13,16 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import model.entity.Player;
+import model.map.Map;
+import model.map.Tile;
+import presenters.MapPresenter;
 
 import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import model.entity.Player;
-import model.map.*;
-import presenters.MapPresenter;
 
 /**
  * Map View takes in user input and interacts with its Map Presenter.
@@ -91,6 +91,9 @@ public class MapView extends View<MapPresenter> {
         if (presenter.checkTurnState()) {
             startTurn();
         } else {
+            character = presenter.getCurrentPlayer().getRaceImage();
+            character.setX(340);
+            character.setY(235);
             startMovement();
         }
 

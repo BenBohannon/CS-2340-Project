@@ -3,12 +3,15 @@ package view;
 import com.google.inject.Inject;
 import data.Repository;
 import javafx.application.Platform;
-import javafx.scene.image.Image;
+import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import model.entity.Player;
 import model.service.DefaultTurnService;
 import presenters.AuctionPresenter;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,21 +22,37 @@ public class AuctionView extends View<AuctionPresenter> {
 
     @Inject
     private DefaultTurnService turnService;
+    @FXML
+    private Pane pane;
 
     private Timer timer;
-    private ImageView player1;
-    private ImageView player2;
-    private ImageView player3;
-    private ImageView player4;
+    private ArrayList<ImageView> playerImageList;
     private Repository<Player> playerRepository;
 
     public void initialize() {
         playerRepository = turnService.getAllPlayers();
+        playerImageList = new ArrayList<>();
+        for (int i = 0; i < playerRepository.size(); i++) {
+            ImageView playerImage = playerRepository.get(i).getRaceImage();
+            playerImageList.add(playerImage);
+                double deltaX = playerRepository.get(i).getRaceImage().getImage().getWidth()/2 - 16;
+            playerImage.setTranslateX(-242 + 150 * i - deltaX);
+                double deltaY = playerRepository.get(i).getRaceImage().getImage().getHeight()/2 - 16;
+            playerImage.setTranslateY(148 - deltaY);
+            Text playerName = new Text("Player " + (i + 1) + "\n \"" + playerRepository.get(i).getName() + "\"");
+            playerName.setTranslateX(150 + 150 * i);
+            playerName.setTranslateY(360);
+            Text resourceScore = new Text(playerRepository.get(i).getCrystite() + " Crystite");
+            resourceScore.setTranslateX(150 + 150 * i);
+            resourceScore.setTranslateY(430);
+            pane.getChildren().addAll(playerImage, playerName, resourceScore);
+        }
+//        pane.getChildren().add(new Rectangle(100, 100));
 
         // Stream or for loop players
-        player1 = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
-        player1.setTranslateX(150);
-        player1.setTranslateY(700);
+//        player1 = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
+//        player1.setTranslateX(150);
+//        player1.setTranslateY(700);
         // Key listener for
 
 
