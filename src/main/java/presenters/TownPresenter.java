@@ -64,7 +64,12 @@ public class TownPresenter extends Presenter {
             turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
             turnService.endTurn();
         }
-        context.showScreen("auction.fxml");
+        if (turnService.isAllTurnsOver()) {
+            context.showScreen("auction.fxml");
+        } else {
+            context.showScreen("map_grid.fxml");
+            //Turn seems to end on its own idk how
+        }
 
     }
 }

@@ -29,7 +29,7 @@ public class MapPresenter extends Presenter<MapView> {
     private DefaultTurnService turnService;
 
     private boolean isListening = false;
-    private TurnEndListener listener = (Player p) -> nextTurn(p);
+    private TurnEndListener listener = (Player p) -> nextTurn();
     /**
      * Loads the input .fxml file and gives up control to it.
      * @param str
@@ -39,7 +39,7 @@ public class MapPresenter extends Presenter<MapView> {
             turnService.removeTurnEndListener(listener);
             isListening = false;
         }
-        turnService.stopTimers();
+//        turnService.stopTimers();
         context.showScreen(str);
     }
 
@@ -93,7 +93,7 @@ public class MapPresenter extends Presenter<MapView> {
         isListening = true;
     }
 
-    public void nextTurn(Player p) {
+    public void nextTurn() {
         isListening = false;
         Platform.runLater(() -> {
             view.stopMovement();
@@ -101,11 +101,9 @@ public class MapPresenter extends Presenter<MapView> {
                 beginTurn();
                 view.startTurn();
             } else {
-                //TODO: Switch to stat screen here!
                 switchPresenter("auction.fxml");
             }
         });
     }
-
 
 }
