@@ -139,8 +139,14 @@ public class DefaultTurnService {
      * Stop all timers
      */
     public void stopTimers() {
-        timer.cancel();
-        timer2.cancel();
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (timer2 != null) {
+            timer2.cancel();
+            timer2 = null;
+        }
     }
 
     /**
@@ -264,10 +270,7 @@ public class DefaultTurnService {
 
 
     public Player endTurn() {
-        if (timer != null) {
-            timer.cancel();
-        }
-        timer = null;
+        stopTimers();
         Player player = currentPlayer;
         //currentPlayer = null;
         turnInProgress = false;
