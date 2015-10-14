@@ -64,18 +64,8 @@ public class Player {
 
     public void setRace(Toggle race) {
         this.race = race;
-        if (((RadioButton) race).getText().equals("A")) {
-            this.raceImage = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
-        }
-        if (((RadioButton) race).getText().equals("B")) {
-            this.raceImage = new ImageView(new Image("/races/BCharacter.png", 25, 25, true, false));
-        }
-        if (((RadioButton) race).getText().equals("C")) {
-            this.raceImage = new ImageView(new Image("/races/CCharacter.gif", 25, 25, true, false));
-        }
-        if (((RadioButton) race).getText().equals("D")) {
-            this.raceImage = new ImageView(new Image("/races/DCharacter.gif", 25, 25, true, false));
-        }
+        String imageFile = "/races/" + ((RadioButton) race).getText() + ".png";
+        this.raceImage = new ImageView(new Image(imageFile, 50, 50, true, false));
     }
 
     public ImageView getRaceImage() {
