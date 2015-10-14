@@ -1,8 +1,12 @@
 package view;
 
+import com.google.inject.Inject;
+import data.Repository;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import model.entity.Player;
+import model.service.DefaultTurnService;
 import presenters.AuctionPresenter;
 
 import java.util.Timer;
@@ -13,13 +17,19 @@ import java.util.TimerTask;
  */
 public class AuctionView extends View<AuctionPresenter> {
 
+    @Inject
+    private DefaultTurnService turnService;
+
     private Timer timer;
     private ImageView player1;
     private ImageView player2;
     private ImageView player3;
     private ImageView player4;
+    private Repository<Player> playerRepository;
 
     public void initialize() {
+        playerRepository = turnService.getAllPlayers();
+
         // Stream or for loop players
         player1 = new ImageView(new Image("/races/Character.png", 25, 25, true, false));
         player1.setTranslateX(150);
