@@ -1,6 +1,5 @@
 package view;
 
-import com.google.inject.Inject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
@@ -51,7 +50,7 @@ public class MapView extends View<MapPresenter> {
     @FXML
     public void initialize() {
 
-        character = new ImageView(new Image("/races/Character.png", 25, 25, true, false));
+        character = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
         character.setX(340);
         character.setY(235);
         timerWhite = new Rectangle(200, 20, Color.WHITE);
@@ -208,6 +207,7 @@ public class MapView extends View<MapPresenter> {
      * Starts the turn with an intermission text, then allows movement.
      */
     public void startTurn() {
+        character = presenter.getCurrentPlayer().getRaceImage();
         character.setX(340);
         character.setY(235);
 

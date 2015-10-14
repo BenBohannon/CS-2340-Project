@@ -21,7 +21,7 @@ public class AuctionView extends View<AuctionPresenter> {
 
     public void initialize() {
         // Stream or for loop players
-        player1 = new ImageView(new Image("/races/Character.png", 25, 25, true, false));
+        player1 = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
         player1.setTranslateX(150);
         player1.setTranslateY(700);
         // Key listener for

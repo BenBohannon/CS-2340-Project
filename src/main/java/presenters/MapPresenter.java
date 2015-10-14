@@ -77,6 +77,10 @@ public class MapPresenter extends Presenter<MapView> {
         return turnService.getCurrentPlayer().getName();
     }
 
+    public Player getCurrentPlayer() {
+        return turnService.getCurrentPlayer();
+    }
+
     public double getTimeRemaining() { return turnService.getTimeRemaining(); }
 
     public void beginRound() {

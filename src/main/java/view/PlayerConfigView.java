@@ -2,10 +2,7 @@ package view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import presenters.PlayerConfigPresenter;
 
@@ -48,7 +45,8 @@ public class PlayerConfigView extends View<PlayerConfigPresenter> {
         if (validateForm()) {
             //can make calls on presenter//
             //notice that the presenter is already of the correct type, because it was injected into the View class.//
-            presenter.finish(colorPicker.getValue(), name_textfield.getText());
+
+            presenter.finish(colorPicker.getValue(), name_textfield.getText(), race_togglegroup.getSelectedToggle());
         }
     }
 
@@ -86,4 +84,10 @@ public class PlayerConfigView extends View<PlayerConfigPresenter> {
         name_validation_label.setText("name already used!");
         main_validation_label.setTextFill(red);
     }
+
+    public void showRaceAlreadyChosen() {
+        race_validation_label.setTextFill(red);
+        main_validation_label.setTextFill(red);
+    }
+
 }

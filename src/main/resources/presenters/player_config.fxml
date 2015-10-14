@@ -28,6 +28,7 @@
         <RadioButton text="A" toggleGroup="$race_togglegroup" />
         <RadioButton text="B" toggleGroup="$race_togglegroup" />
         <RadioButton text="C" toggleGroup="$race_togglegroup" />
+        <RadioButton text="D" toggleGroup="$race_togglegroup" />
       </children>
     </VBox>
     <ColorPicker fx:id="colorPicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
