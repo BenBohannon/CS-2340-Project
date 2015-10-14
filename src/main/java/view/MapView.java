@@ -89,8 +89,8 @@ public class MapView extends View<MapPresenter> {
         }
 
         if (presenter.checkTurnState()) {
-            startTurn();
-        } else {
+            startTurn();    // Should go here at beginning of turn
+        } else {            // This is for when the player returns to map from town
             character = presenter.getCurrentPlayer().getRaceImage();
             character.setX(340);
             character.setY(235);
