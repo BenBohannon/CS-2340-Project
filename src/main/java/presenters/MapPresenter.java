@@ -6,12 +6,16 @@ import data.Repository;
 import data.TurnEndListener;
 import javafx.application.Platform;
 import model.entity.Mule;
+import model.entity.MuleType;
 import model.entity.Player;
 import model.map.Map;
+import model.map.Tile;
+import model.map.TileType;
 import model.service.DefaultTurnService;
 import view.MapView;
 
 import java.awt.*;
+import java.util.*;
 
 
 /**
@@ -87,6 +91,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             }
 
             if (turnService.isAllTurnsOver()) {
+                calcProduction();
                 switchPresenter("auction.fxml");
             } else {
                 beginTurn();
@@ -175,6 +180,59 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
                 switchPresenter("auction.fxml");
             }
         });
+    }
+
+    private void calcProduction() {
+        for (int i = 0; i < map.getRows(); i++) {
+            for (int j = 0; j < map.getCols(); j++) {
+
+                Mule[] mule = map.getOccupants(i, j, Mule.class);
+                if (mule.length < 1) {
+                    continue;
+                }
+
+                Tile[] tile = map.getOccupants(i, j, Tile.class);
+
+                int amount = 1;
+
+                if (mule[0].getType() == MuleType.Crysite) {
+                    tile[0].ownedBy().offsetCrystite(amount);
+
+                } else if (mule[0].getType() == MuleType.Energy) {
+
+                    if (tile[0].getTileType() == TileType.PLAIN) {
+                        amount = 3;
+                    } else if (tile[0].getTileType() == TileType.RIVER) {
+                        amount = 2;
+                    }
+
+                    tile[0].ownedBy().offsetEnergy(amount);
+
+                } else if (mule[0].getType() == MuleType.Food) {
+                    if (tile[0].getTileType() == TileType.RIVER) {
+                        amount = 4;
+                    } else if (tile[0].getTileType() == TileType.PLAIN) {
+                        amount = 2;
+                    }
+
+                    tile[0].ownedBy().offsetFood(amount);
+
+                } else if (mule[0].getType() == MuleType.Smithore) {
+                    if (tile[0].getTileType() == TileType.MOUNTAIN_3) {
+                        amount = 4;
+                    } else if (tile[0].getTileType() == TileType.MOUNTAIN_2) {
+                        amount = 3;
+                    } else if (tile[0].getTileType() == TileType.MOUNTAIN_1) {
+                        amount = 2;
+                    } else if (tile[0].getTileType() == TileType.RIVER) {
+                        amount = 0;
+                    }
+
+                    tile[0].ownedBy().offsetSmithore(amount);
+                }
+
+            }
+        }
     }
 
 }
