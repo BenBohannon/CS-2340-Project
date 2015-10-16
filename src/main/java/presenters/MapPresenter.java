@@ -156,10 +156,10 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
     }
 
     private void beginTurn() {
-        System.out.println("beginTurn()");
         turnService.beginTurn();
         turnService.addTurnEndListener(this);
         isListening = true;
+        view.setCharacterImage(turnService.getCurrentPlayer().getRace().getImagePath());
         view.showTurnStartText();
     }
 
