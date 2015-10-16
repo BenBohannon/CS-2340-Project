@@ -108,10 +108,14 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             return;
         }
 
+        /*
         //check if player owns tile//
         boolean owned = playerRepository.getAll().stream()
                 .flatMap(p -> p.getOwnedProperties().stream())
                 .anyMatch(t -> t.getLocation().getCol() == tileCoord.y && t.getLocation().getRow() == tileCoord.x);
+        */
+        Tile[] tile = map.getOccupants(tileCoord.x, tileCoord.y, Tile.class);
+        boolean owned = (getCurrentPlayer() == tile[0].ownedBy());
 
         //check for another mule//
         boolean occupied = map.getOccupants(tileCoord.x, tileCoord.y, Mule.class).length > 0;
