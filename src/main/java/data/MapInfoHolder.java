@@ -12,11 +12,11 @@ import model.map.TileType;
 public class MapInfoHolder {
 
     private static TileType[][] TILE_GRID = {
-            {TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN, TileType.RIVER, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN},
-            {TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.PLAIN, TileType.PLAIN, TileType.MOUNTAIN, TileType.PLAIN},
-            {TileType.MOUNTAIN, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.TOWN, TileType.PLAIN, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN},
-            {TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN},
-            {TileType.PLAIN, TileType.MOUNTAIN, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.MOUNTAIN, TileType.PLAIN},
+            {TileType.MOUNTAIN_2, TileType.MOUNTAIN_2, TileType.MOUNTAIN_1, TileType.PLAIN, TileType.RIVER, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN},
+            {TileType.MOUNTAIN_3, TileType.MOUNTAIN_1, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.PLAIN, TileType.PLAIN, TileType.MOUNTAIN_1, TileType.PLAIN},
+            {TileType.MOUNTAIN_1, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.TOWN, TileType.PLAIN, TileType.MOUNTAIN_1, TileType.MOUNTAIN_1, TileType.PLAIN},
+            {TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.MOUNTAIN_1, TileType.MOUNTAIN_3, TileType.MOUNTAIN_2, TileType.PLAIN},
+            {TileType.PLAIN, TileType.MOUNTAIN_2, TileType.PLAIN, TileType.PLAIN, TileType.RIVER, TileType.MOUNTAIN_1, TileType.MOUNTAIN_2, TileType.MOUNTAIN_1, TileType.PLAIN},
 
     };
 

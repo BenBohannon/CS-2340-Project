@@ -19,23 +19,6 @@ public class Map {
 
     private LocationDatasource datasource;
 
-//    /**
-//     * Default Constructor for an empty Map.
-//     */
-//    @Inject
-//    public Map() {
-//        int rows = 5;
-//        int cols = 9;
-//
-//        locationGrid = new Location[cols][rows];
-//
-//        for (int i = 0; i < cols; i++) {
-//            for (int j = 0; j < rows; j++) {
-//                locationGrid[i][j] = new Location(i, j, this);
-//            }
-//        }
-//    }
-
     @Inject
     public Map(LocationDatasource lds) {
         datasource = lds;
@@ -242,6 +225,25 @@ public class Map {
 
         private boolean addOccupant(Locatable occupant) {
             return occupants.add(occupant);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof Location)) {
+                return false;
+            }
+
+            Location other = (Location) obj;
+
+            if (other.getRow() == getRow() && other.getCol() == getCol()) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return row * 2 + col;
         }
     }
 }

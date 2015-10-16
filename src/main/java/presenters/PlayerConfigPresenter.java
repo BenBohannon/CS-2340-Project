@@ -1,12 +1,12 @@
 package presenters;
 
-import com.apple.laf.AquaButtonBorder;
 import com.google.inject.Inject;
 import data.Repository;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.RadioButton;
 import javafx.scene.paint.Color;
 import model.entity.Player;
+import model.entity.PlayerRace;
 import view.PlayerConfigView;
 
 /**
@@ -60,7 +60,11 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             Player p = new Player();
             p.setColor(playerColor);
             p.setName(playerName);
-            p.setRace(playerRace);
+            for (PlayerRace race : PlayerRace.values()) {
+                if (race.toString().equals(playerRace.selectedProperty().toString())) {
+                    p.setRace(race);
+                }
+            }
             p.setId(-1);
             playerRepository.save(p);
 

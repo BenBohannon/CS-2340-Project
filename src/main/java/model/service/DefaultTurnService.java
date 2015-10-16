@@ -48,23 +48,23 @@ public class DefaultTurnService {
     private static final String TURN_IN_PROGRESS = "A turn is currently in progress.";
     private static final String TURN_NOT_IN_PROGRESS = "No turn is currently in progress";
 
-    private int roundNumber;
-    private Collection<TurnEndListener> turnEndListeners;
-    private Player currentPlayer;
+    private volatile int roundNumber;
+    private volatile Collection<TurnEndListener> turnEndListeners;
+    private volatile Player currentPlayer;
 
-    private boolean turnInProgress;
-    private long turnStartTime;
-    private long turnDuration;
+    private volatile boolean turnInProgress;
+    private volatile long turnStartTime;
+    private volatile long turnDuration;
 
-    private Timer timer;
-    private Timer timer2;
-    private double stopwatch;
+    private volatile Timer timer;
+    private volatile Timer timer2;
+    private volatile double stopwatch;
 
     private Repository<Player> playerRepository;
     private StoreInfoHolder storeInfo;
 
     //players are added to this list after their turns are complete//
-    private Collection<Integer> finishedPlayerIds;
+    private volatile Collection<Integer> finishedPlayerIds;
 
     @Inject
     public DefaultTurnService(Repository<Player> playerRepository, StoreInfoHolder storeInfo) {
@@ -154,7 +154,7 @@ public class DefaultTurnService {
      * @return stopwatch
      */
     public double getTimeRemaining() {
-        return stopwatch/turnDuration;
+        return stopwatch / turnDuration;
     }
 
     /**
@@ -277,6 +277,10 @@ public class DefaultTurnService {
     }
 
 
+    /**
+     * Prematurely ends a player's turn, calling all listeners
+     * @return the player whose turn it was.
+     */
     public Player endTurn() {
         stopTimers();
         Player player = currentPlayer;
@@ -286,11 +290,12 @@ public class DefaultTurnService {
         turnStartTime = -1;
         turnDuration = -1;
 
+        Collection<TurnEndListener> tempTurnEndListeners = turnEndListeners;
+        turnEndListeners = null;
         //push out event//
-        for (TurnEndListener listener : turnEndListeners) {
+        for (TurnEndListener listener : tempTurnEndListeners) {
             listener.onTurnEnd(player);
         }
-        turnEndListeners = null;
         return player;
     }
 }

@@ -1,6 +1,7 @@
 package model.map;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import model.entity.Player;
 
 import java.util.Random;
@@ -11,23 +12,13 @@ import java.util.Random;
  */
 public class Tile implements Locatable {
 
-    TileType type = TileType.PLAIN;
+    TileType type;
     Map.Location loc;
-    int numOfMountains = 0;
-    private static int mountainSeed = 0;
 
     private Player owner;
 
     public Tile(TileType type) {
         this.type = type;
-
-        if (type == TileType.MOUNTAIN) {
-            Random rand = new Random(mountainSeed++);
-            if (mountainSeed == 16) {
-                mountainSeed = 0;
-            }
-            numOfMountains = rand.nextInt(3) + 1;
-        }
     }
 
     /**
@@ -69,31 +60,7 @@ public class Tile implements Locatable {
      * @return Image of this tile.
      */
     public Image getImage() {
-        Image img;
-        switch (type) {
-            case PLAIN:
-                img = new Image("/tiles/plain.png");
-                break;
-            case MOUNTAIN:
-                if (numOfMountains == 1) {
-                    img = new Image("/tiles/1mountain.png");
-                } else if (numOfMountains == 2) {
-                    img = new Image("/tiles/2mountains.png");
-                } else {
-                    img = new Image("/tiles/3mountains.png");
-                }
-                break;
-            case RIVER:
-                img = new Image("/tiles/river.png");
-                break;
-            case TOWN:
-                img = new Image("/tiles/town.png");
-                break;
-            default:
-                throw new NullPointerException("Type was null!");
-        }
-
-        return img;
+        return new Image(type.getImagePath());
     }
 
     /**
@@ -103,30 +70,6 @@ public class Tile implements Locatable {
      * @return Image of this tile.
      */
     public Image getImage(int width, int height) {
-        Image img;
-        switch (type) {
-            case PLAIN:
-                img = new Image("/tiles/plain.png", width, height, false, false);
-                break;
-            case MOUNTAIN:
-                if (numOfMountains == 1) {
-                    img = new Image("/tiles/1mountain.png", width, height, false, false);
-                } else if (numOfMountains == 2) {
-                    img = new Image("/tiles/2mountains.png", width, height, false, false);
-                } else {
-                    img = new Image("/tiles/3mountains.png", width, height, false, false);
-                }
-                break;
-            case RIVER:
-                img = new Image("/tiles/river.png",  width, height, false, false);
-                break;
-            case TOWN:
-                img = new Image("/tiles/town.png",  width, height, false, false);
-                break;
-            default:
-                throw new NullPointerException("Type was null!");
-        }
-
-        return img;
+        return new Image(type.getImagePath(), width, height, true, false);
     }
 }
