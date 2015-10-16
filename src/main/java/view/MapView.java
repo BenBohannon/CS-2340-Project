@@ -61,6 +61,10 @@ public class MapView extends View<MapPresenter> {
         character = createImageView("/races/Human.png", 25, 25);
         addImageToPane(character, 340, 235);
 
+        if (presenter.isTurnInProgress()) {
+            setCharacterImage(presenter.getCurrentPlayer().getRace().getImagePath());
+        }
+
         timerWhite = new Rectangle(200, 20, Color.WHITE);
         timerRed = new Rectangle(200, 20, Color.RED);
         ColorAdjust monochrome = new ColorAdjust();
@@ -239,14 +243,14 @@ public class MapView extends View<MapPresenter> {
 
     /**
      * Sets the character's image on the map to be the input image. (For switching races)
-     * @param img Image to set.
+     * @param imagePath path of image to set
      */
-    public void setCharacterImage(Image img) {
-        if (img == null) {
-            throw new NullPointerException("Input image was null!");
+    public void setCharacterImage(String imagePath) {
+        if (imagePath == null) {
+            throw new NullPointerException("Input image path was null!");
         }
 
-        character.setImage(img);
+        character.setImage(new Image(imagePath, 25, 25, true, false));
     }
 
     public void placeMuleGraphic(int row, int col, MuleType type) {

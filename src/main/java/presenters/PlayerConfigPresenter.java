@@ -27,7 +27,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
      * @param playerColor player's color
      * @param playerName player's name, totally valid thank to the View
      */
-    public void finish(Color playerColor, String playerName, Toggle playerRace) {
+    public void finish(Color playerColor, String playerName, String playerRace) {
 
         boolean allUnique = true;
 
@@ -61,7 +61,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             p.setColor(playerColor);
             p.setName(playerName);
             for (PlayerRace race : PlayerRace.values()) {
-                if (race.toString().equals(playerRace.selectedProperty().toString())) {
+                if (race.toString().toLowerCase().equals(playerRace.trim().toLowerCase())) {
                     p.setRace(race);
                 }
             }

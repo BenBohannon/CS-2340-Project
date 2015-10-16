@@ -46,7 +46,7 @@ public class PlayerConfigView extends View<PlayerConfigPresenter> {
             //can make calls on presenter//
             //notice that the presenter is already of the correct type, because it was injected into the View class.//
 
-            presenter.finish(colorPicker.getValue(), name_textfield.getText(), race_togglegroup.getSelectedToggle());
+            presenter.finish(colorPicker.getValue(), name_textfield.getText(), ((RadioButton) race_togglegroup.getSelectedToggle()).getText());
         }
     }
 
