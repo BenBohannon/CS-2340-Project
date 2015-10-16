@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.entity.Player;
 import model.entity.PlayerRace;
+import model.entity.StoreDatasource;
 import model.map.Locatable;
 import model.map.LocationDatasource;
 import model.map.Map;
@@ -49,6 +50,75 @@ public class StartTileChoice extends Application {
             }
         };
 
+        final StoreDatasource sds = new StoreDatasource() {
+
+            private int energyAmount = energy;
+            private int foodAmount = food;
+            private int smithoreAmount = smithore;
+            private int crystiteAmount = crystite;
+
+            private int energyStorePrice = energyPrice;
+            private int foodStorePrice = foodPrice;
+            private int smithoreStorePrice= smithorePrice;
+            private int crystiteStorePrice = crystitePrice;
+
+            @Override
+            public void saveAmount(int energy, int food, int smithore, int crystite) {
+                energyAmount = energy;
+                foodAmount = food;
+                smithoreAmount = smithore;
+                crystiteAmount = crystite;
+            }
+
+            @Override
+            public void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice) {
+                energyStorePrice = energyPrice;
+                foodStorePrice = foodPrice;
+                smithoreStorePrice = smithorePrice;
+                crystiteStorePrice = crystitePrice;
+            }
+
+            @Override
+            public int getEnergy() {
+                return energyAmount;
+            }
+
+            @Override
+            public int getFood() {
+                return foodAmount;
+            }
+
+            @Override
+            public int getSmithore() {
+                return smithoreAmount;
+            }
+
+            @Override
+            public int getCrystite() {
+                return crystiteAmount;
+            }
+
+            @Override
+            public int getEnergyPrice() {
+                return energyStorePrice;
+            }
+
+            @Override
+            public int getFoodPrice() {
+                return foodStorePrice;
+            }
+
+            @Override
+            public int getSmithorePrice() {
+                return smithoreStorePrice;
+            }
+
+            @Override
+            public int getCrystitePrice() {
+                return crystiteStorePrice;
+            }
+        };
+
 
 
         final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
@@ -77,6 +147,7 @@ public class StartTileChoice extends Application {
 
             //temp
             binder.bind(Map.class).toInstance(map);
+            binder.bind(StoreDatasource.class).toInstance(sds);
             binder.bind(DefaultTurnService.class).toInstance(turnService);
         }, stage);
 
