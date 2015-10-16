@@ -62,4 +62,10 @@ public class MemoryPlayerRepository implements Repository<Player> {
         players.remove(p);
         return p;
     }
+
+    @Override
+    public int size() {
+        int size = players.size();
+        return size;
+    }
 }

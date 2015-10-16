@@ -31,4 +31,10 @@ public class TestPlayerRepository implements Repository<Player> {
         System.out.println("delete()");
         return null;
     }
+
+    @Override
+    public int size() {
+        System.out.println("size()");
+        return -1;
+    }
 }

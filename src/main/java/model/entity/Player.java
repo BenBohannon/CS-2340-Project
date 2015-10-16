@@ -1,8 +1,13 @@
 package model.entity;
 
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import model.map.Tile;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,6 +23,8 @@ public class Player {
     private int energy;
     private int money = 2000;
     private int id;
+    private Toggle race;
+    private ImageView raceImage;
     private String name;
     private Color color;
     private ArrayList<Tile> ownedProperties = new ArrayList<>();
@@ -49,6 +56,18 @@ public class Player {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public Toggle getRace() { return race; }
+
+    public void setRace(Toggle race) {
+        this.race = race;
+        String imageFile = "/races/" + ((RadioButton) race).getText() + ".png";
+        this.raceImage = new ImageView(new Image(imageFile, 50, 50, true, false));
+    }
+
+    public ImageView getRaceImage() {
+        return raceImage;
     }
 
     public void setId(int id) {

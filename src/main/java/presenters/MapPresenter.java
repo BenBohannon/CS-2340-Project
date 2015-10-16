@@ -59,7 +59,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             turnService.removeTurnEndListener(this);
             isListening = false;
         }
-        turnService.stopTimers();
+//        turnService.stopTimers();
         context.showScreen(str);
     }
 
@@ -136,13 +136,14 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         return playerRepository;
     }
 
-    public String getCurrentPlayerName() {
-        return turnService.getCurrentPlayer().getName();
-    }
-
     public boolean isPlacingMule() {
         return isPlacingMule;
     }
+    public Player getCurrentPlayer() {
+        return turnService.getCurrentPlayer();
+    }
+
+    public double getTimeRemaining() { return turnService.getTimeRemaining(); }
 
     /**
      * should be called by townPresenter
@@ -153,8 +154,6 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         this.isPlacingMule = isPlacingMule;
     }
 
-    public double getTimeRemaining() { return turnService.getTimeRemaining(); }
-
     private void beginTurn() {
         System.out.println("beginTurn()");
         turnService.beginTurn();
@@ -162,4 +161,19 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         isListening = true;
         view.showTurnStartText();
     }
+
+    public void nextTurn() {
+        isListening = false;
+        Platform.runLater(() -> {
+            view.stopMovement();
+            if (!turnService.isAllTurnsOver()) {
+                context.showScreen("map_grid.fxml");
+//                beginTurn();
+//                view.startTurn();
+            } else {
+                switchPresenter("auction.fxml");
+            }
+        });
+    }
+
 }

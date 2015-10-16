@@ -15,18 +15,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.entity.Mule;
 import model.entity.MuleType;
 import model.entity.Player;
-import model.map.*;
+import model.map.Map;
+import model.map.Tile;
 import presenters.MapPresenter;
+
 
 /**
  * Map View takes in user input and interacts with its Map Presenter.
@@ -58,7 +58,7 @@ public class MapView extends View<MapPresenter> {
     public void initialize() {
         installedMuleImageViews = new LinkedList<>();
 
-        character = createImageView("/races/Character.png", 25, 25);
+        character = createImageView("/races/Human.png", 25, 25);
         addImageToPane(character, 340, 235);
 
         timerWhite = new Rectangle(200, 20, Color.WHITE);
@@ -213,10 +213,7 @@ public class MapView extends View<MapPresenter> {
      * Starts the turn with an intermission text, then allows movement.
      */
     public void showTurnStartText() {
-        character.setX(340);
-        character.setY(235);
-
-        text = new Text(250, 120, presenter.getCurrentPlayerName() + "'s Turn! Get Ready!");
+        text = new Text(250, 120, presenter.getCurrentPlayer().getName() + "'s Turn! Get Ready!");
         text.setFont(new Font(40));
         pane.getChildren().add(text);
         text.toFront();
@@ -232,6 +229,12 @@ public class MapView extends View<MapPresenter> {
                 });
             }
         }, 4000L);
+    }
+
+    public void startTurn() {
+        character = presenter.getCurrentPlayer().getRaceImage();
+        character.setX(340);
+        character.setY(235);
     }
 
     /**

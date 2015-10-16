@@ -1,6 +1,5 @@
 package data;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -11,4 +10,5 @@ public interface Repository <T> {
     public T get(Object id);
     public T save(T entity);
     public T delete(Object id);
+    public int size();
 }
