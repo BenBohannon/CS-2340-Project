@@ -38,6 +38,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
     public void initialize() {
         if (turnService.isTurnInProgress()) {
             turnService.addTurnEndListener(this);
+            isListening = true;
         } else {
             if (turnService.isAllTurnsOver()) {
                 turnService.beginRound();

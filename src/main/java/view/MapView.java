@@ -232,7 +232,7 @@ public class MapView extends View<MapPresenter> {
     }
 
     public void startTurn() {
-        character = presenter.getCurrentPlayer().getRaceImage();
+        character = createImageView(presenter.getCurrentPlayer().getRace().getImagePath(), 50, 50);
         character.setX(340);
         character.setY(235);
     }

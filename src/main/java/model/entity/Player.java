@@ -23,8 +23,7 @@ public class Player {
     private int energy;
     private int money = 2000;
     private int id;
-    private Toggle race;
-    private ImageView raceImage;
+    private PlayerRace race;
     private String name;
     private Color color;
     private ArrayList<Tile> ownedProperties = new ArrayList<>();
@@ -58,16 +57,10 @@ public class Player {
         this.color = color;
     }
 
-    public Toggle getRace() { return race; }
+    public PlayerRace getRace() { return race; }
 
-    public void setRace(Toggle race) {
+    public void setRace(PlayerRace race) {
         this.race = race;
-        String imageFile = "/races/" + ((RadioButton) race).getText() + ".png";
-        this.raceImage = new ImageView(new Image(imageFile, 50, 50, true, false));
-    }
-
-    public ImageView getRaceImage() {
-        return raceImage;
     }
 
     public void setId(int id) {

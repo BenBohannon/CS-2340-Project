@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.entity.Player;
+import model.entity.PlayerRace;
 import model.map.Locatable;
 import model.map.LocationDatasource;
 import model.map.Map;
@@ -55,11 +56,13 @@ public class StartTileChoice extends Application {
         p1.setName("P1");
         p1.setId(0);
         p1.setColor(Color.ALICEBLUE);
+        p1.setRace(PlayerRace.Bonzoid);
         playerRepository.save(p1);
 
         Player p2 = new Player();
         p2.setName("P2");
         p2.setId(1);
+        p2.setRace(PlayerRace.Buzzite);
         p2.setColor(Color.BLANCHEDALMOND);
         playerRepository.save(p2);
 

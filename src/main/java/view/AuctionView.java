@@ -33,11 +33,11 @@ public class AuctionView extends View<AuctionPresenter> {
         playerRepository = turnService.getAllPlayers();
         playerImageList = new ArrayList<>();
         for (int i = 0; i < playerRepository.size(); i++) {
-            ImageView playerImage = new ImageView(playerRepository.get(i).getRaceImage().getImage());
+            ImageView playerImage = MapView.createImageView(playerRepository.get(i).getRace().getImagePath(), 50, 50);
             playerImageList.add(playerImage);
-                double deltaX = playerRepository.get(i).getRaceImage().getImage().getWidth()/2 - 16;
+                double deltaX = playerImage.getImage().getWidth()/2 - 16;
             playerImage.setTranslateX(150 + 150 * i - deltaX);
-                double deltaY = playerRepository.get(i).getRaceImage().getImage().getHeight()/2 - 16;
+                double deltaY = playerImage.getImage().getHeight()/2 - 16;
             playerImage.setTranslateY(390 - deltaY);
             Text playerName = new Text("Player " + (i + 1) + "\n\"" + playerRepository.get(i).getName() + "\"");
             playerName.setTranslateX(150 + 150 * i);
