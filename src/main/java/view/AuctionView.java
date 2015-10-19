@@ -214,8 +214,8 @@ public class AuctionView extends View<AuctionPresenter> {
 
     public void resetCharacters() {
         for (int i = 0; i < playerRepository.size(); i++) {
-            double deltaY = playerRepository.get(i).getRaceImage().getImage().getHeight()/2 - 16;
-            playerImageList.get(i).setTranslateY(390 - deltaY);
+//            double deltaY = (new Image(playerRepository.get(i).getRace().getImagePath())).getHeight()/2 - 16;
+            playerImageList.get(i).setTranslateY(385);
         }
     }
 }
