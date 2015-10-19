@@ -47,11 +47,14 @@ public class PresenterContext {
      * Presenter is created by the dependency injector and returned.
      * If a View is designated, the injected Presenter is given a reference to the {@link View}
      * and the presenter is returned
+     *
+     * The presenter is returned before its initialize() method has been called. you much call it manually.
+     *
      * @param fxmlFileName name of the desired fxml file, relative to the resources/presenters
      *                     directory. For example: "home_screen.fxml"
      * @return The presenter defined in the fxml file, or in the View
      */
-    public Presenter showScreen(String fxmlFileName) {
+    public Presenter showScreenUninitialized(String fxmlFileName) {
         //create fxml loader for this fxml file//
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
 
@@ -81,7 +84,27 @@ public class PresenterContext {
             return view.presenter;
         } else {
             //If fxml designated a Presenter, simply return it//
-            return (Presenter) handler;
+            Presenter p = (Presenter) handler;
+            return p;
         }
+    }
+
+    /**
+     * Creates a new {@link Scene} from the fxml file indicated, and sets it as
+     * the active Scene in the Stage. If a {@link Presenter} is defined in the FXML, the
+     * Presenter is created by the dependency injector and returned.
+     * If a View is designated, the injected Presenter is given a reference to the {@link View}
+     * and the presenter is returned.
+     * Before it is returned, the presenter's initialize() method is called.
+     * @param fxmlFileName name of the desired fxml file, relative to the resources/presenters
+     *                     directory. For example: "home_screen.fxml"
+     * @return The presenter defined in the fxml file, or in the View
+     */
+    public Presenter showScreen(String fxmlFileName) {
+        Presenter p = showScreenUninitialized(fxmlFileName);
+        if (p.view != null) {
+            p.initialize();
+        }
+        return p;
     }
 }

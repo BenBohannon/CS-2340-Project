@@ -52,11 +52,11 @@ public class AuctionView extends View<AuctionPresenter> {
         playerRepository = turnService.getAllPlayers();
         playerImageList = new ArrayList<>();
         for (int i = 0; i < playerRepository.size(); i++) {
-            ImageView playerImage = new ImageView(playerRepository.get(i).getRaceImage().getImage());
+            ImageView playerImage = MapView.createImageView(playerRepository.get(i).getRace().getImagePath(), 50, 50);
             playerImageList.add(playerImage);
-                double deltaX = playerRepository.get(i).getRaceImage().getImage().getWidth()/2 - 16;
+                double deltaX = playerImage.getImage().getWidth()/2 - 16;
             playerImage.setTranslateX(150 + 150 * i - deltaX);
-                double deltaY = playerRepository.get(i).getRaceImage().getImage().getHeight()/2 - 16;
+                double deltaY = playerImage.getImage().getHeight()/2 - 16;
             playerImage.setTranslateY(390 - deltaY);
             Text playerName = new Text("Player " + (i + 1) + "\n\"" + playerRepository.get(i).getName() + "\"");
             names.add(playerName);
@@ -128,7 +128,7 @@ public class AuctionView extends View<AuctionPresenter> {
 //        pane.getChildren().add(new Rectangle(100, 100));
 
         // Stream or for loop players
-//        player1 = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
+//        player1 = new ImageView(new Image("/races/Human.png", 25, 25, true, false));
 //        player1.setTranslateX(150);
 //        player1.setTranslateY(700);
         // Key listener for

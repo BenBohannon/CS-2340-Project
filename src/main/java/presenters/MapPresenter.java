@@ -5,18 +5,23 @@ import data.MapInfoHolder;
 import data.Repository;
 import data.TurnEndListener;
 import javafx.application.Platform;
+import model.entity.Mule;
+import model.entity.MuleType;
 import model.entity.Player;
 import model.map.Map;
+import model.map.Tile;
+import model.map.TileType;
 import model.service.DefaultTurnService;
 import view.MapView;
 
 import java.awt.*;
+import java.util.*;
 
 
 /**
  * Created by Ben 9/14/2015
  */
-public class MapPresenter extends Presenter<MapView> {
+public class MapPresenter extends Presenter<MapView> implements TurnEndListener {
 
     @Inject
     private Map map;
@@ -28,15 +33,35 @@ public class MapPresenter extends Presenter<MapView> {
     @Inject
     private DefaultTurnService turnService;
 
-    private boolean isListening = false;
-    private TurnEndListener listener = (Player p) -> nextTurn();
+    private boolean isListening;
+    private boolean isPlacingMule;
+    private Mule mulePlacing;
+
+
+    @Override
+    public void initialize() {
+        if (turnService.isTurnInProgress()) {
+            turnService.addTurnEndListener(this);
+            isListening = true;
+        } else {
+            if (turnService.isAllTurnsOver()) {
+                turnService.beginRound();
+            }
+            beginTurn();
+        }
+        
+        if (isPlacingMule) {
+            view.displayMule();
+        }
+    }
+
     /**
      * Loads the input .fxml file and gives up control to it.
      * @param str
      */
-    public void switchPresenter(String str) {
+    private void switchPresenter(String str) {
         if (isListening) {
-            turnService.removeTurnEndListener(listener);
+            turnService.removeTurnEndListener(this);
             isListening = false;
         }
 //        turnService.stopTimers();
@@ -44,25 +69,73 @@ public class MapPresenter extends Presenter<MapView> {
     }
 
     /**
+     * Turns control over to the TownPresenter, and stops character movement.
+     */
+    public void enterCity() {
+        view.stopMovement();
+
+        switchPresenter("town.fxml");
+    }
+
+    @Override
+    public void onTurnEnd(Player player) {
+        isListening = false;
+        Platform.runLater(() -> {
+            view.stopMovement();
+
+            //Mule is lost if not placed//
+            if (isPlacingMule) {
+                player.mules.remove(mulePlacing);
+                view.stopDisplayingMule();
+                isPlacingMule = false;
+            }
+
+            if (turnService.isAllTurnsOver()) {
+                calcProduction();
+                switchPresenter("auction.fxml");
+            } else {
+                beginTurn();
+            }
+        });
+    }
+
+    /**
      * Computes what should be done to the input tile, based on model information.
      * @param tileCoord Coordinate of the tile to affect
      */
     public void onClick(Point tileCoord) {
+        if (!isPlacingMule) {
+            return;
+        }
 
+        /*
+        //check if player owns tile//
+        boolean owned = playerRepository.getAll().stream()
+                .flatMap(p -> p.getOwnedProperties().stream())
+                .anyMatch(t -> t.getLocation().getCol() == tileCoord.y && t.getLocation().getRow() == tileCoord.x);
+        */
+        Tile[] tile = map.getOccupants(tileCoord.x, tileCoord.y, Tile.class);
+        boolean owned = (getCurrentPlayer() == tile[0].ownedBy());
+
+        //check for another mule//
+        boolean occupied = map.getOccupants(tileCoord.x, tileCoord.y, Mule.class).length > 0;
+
+        System.out.println(tileCoord.x + ", " + tileCoord.y);
+        System.out.println("owned: "+ owned + " occupied: " + occupied);
+        if (owned && !occupied) {
+            map.add(mulePlacing, tileCoord.x, tileCoord.y);
+            view.placeMuleGraphic(tileCoord.y, tileCoord.x, mulePlacing.getType());
+        } else {
+            System.out.println("Mule Lost");
+        }
+
+        mulePlacing = null;
+        isPlacingMule = false;
+        view.stopDisplayingMule();
     }
 
-    public boolean checkTurnState() {
-        if (turnService.isTurnInProgress()) {
-            turnService.addTurnEndListener(listener);
-            isListening = true;
-            return false;
-        } else {
-            if (turnService.isAllTurnsOver()) {
-                beginRound();
-            }
-            beginTurn();
-            return true;
-        }
+    public boolean isTurnInProgress() {
+        return turnService.isTurnInProgress();
     }
 
     public Map getMap() {
@@ -73,24 +146,30 @@ public class MapPresenter extends Presenter<MapView> {
         return playerRepository;
     }
 
-    public String getCurrentPlayerName() {
-        return turnService.getCurrentPlayer().getName();
+    public boolean isPlacingMule() {
+        return isPlacingMule;
     }
-
     public Player getCurrentPlayer() {
         return turnService.getCurrentPlayer();
     }
 
     public double getTimeRemaining() { return turnService.getTimeRemaining(); }
 
-    public void beginRound() {
-        turnService.beginRound();
+    /**
+     * should be called by townPresenter
+     * @param isPlacingMule
+     */
+    public void setIsPlacingMule(boolean isPlacingMule, Mule mule) {
+        this.mulePlacing = mule;
+        this.isPlacingMule = isPlacingMule;
     }
 
-    public void beginTurn() {
+    private void beginTurn() {
         turnService.beginTurn();
-        turnService.addTurnEndListener(listener);
+        turnService.addTurnEndListener(this);
         isListening = true;
+        view.setCharacterImage(turnService.getCurrentPlayer().getRace().getImagePath());
+        view.showTurnStartText();
     }
 
     public void nextTurn() {
@@ -105,6 +184,59 @@ public class MapPresenter extends Presenter<MapView> {
                 switchPresenter("auction.fxml");
             }
         });
+    }
+
+    private void calcProduction() {
+        for (int i = 0; i < map.getRows(); i++) {
+            for (int j = 0; j < map.getCols(); j++) {
+
+                Mule[] mule = map.getOccupants(i, j, Mule.class);
+                if (mule.length < 1) {
+                    continue;
+                }
+
+                Tile[] tile = map.getOccupants(i, j, Tile.class);
+
+                int amount = 1;
+
+                if (mule[0].getType() == MuleType.Crysite) {
+                    tile[0].ownedBy().offsetCrystite(amount);
+
+                } else if (mule[0].getType() == MuleType.Energy) {
+
+                    if (tile[0].getTileType() == TileType.PLAIN) {
+                        amount = 3;
+                    } else if (tile[0].getTileType() == TileType.RIVER) {
+                        amount = 2;
+                    }
+
+                    tile[0].ownedBy().offsetEnergy(amount);
+
+                } else if (mule[0].getType() == MuleType.Food) {
+                    if (tile[0].getTileType() == TileType.RIVER) {
+                        amount = 4;
+                    } else if (tile[0].getTileType() == TileType.PLAIN) {
+                        amount = 2;
+                    }
+
+                    tile[0].ownedBy().offsetFood(amount);
+
+                } else if (mule[0].getType() == MuleType.Smithore) {
+                    if (tile[0].getTileType() == TileType.MOUNTAIN_3) {
+                        amount = 4;
+                    } else if (tile[0].getTileType() == TileType.MOUNTAIN_2) {
+                        amount = 3;
+                    } else if (tile[0].getTileType() == TileType.MOUNTAIN_1) {
+                        amount = 2;
+                    } else if (tile[0].getTileType() == TileType.RIVER) {
+                        amount = 0;
+                    }
+
+                    tile[0].ownedBy().offsetSmithore(amount);
+                }
+
+            }
+        }
     }
 
 }

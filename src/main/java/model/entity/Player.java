@@ -1,9 +1,7 @@
 package model.entity;
 
-import com.apple.laf.AquaButtonBorder;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -25,8 +23,7 @@ public class Player {
     private int energy;
     private int money = 2000;
     private int id;
-    private Toggle race;
-    private ImageView raceImage;
+    private PlayerRace race;
     private String name;
     private Color color;
     private ArrayList<Tile> ownedProperties = new ArrayList<>();
@@ -60,26 +57,10 @@ public class Player {
         this.color = color;
     }
 
-    public Toggle getRace() { return race; }
+    public PlayerRace getRace() { return race; }
 
-    public void setRace(Toggle race) {
+    public void setRace(PlayerRace race) {
         this.race = race;
-        if (((RadioButton) race).getText().equals("A")) {
-            this.raceImage = new ImageView(new Image("/races/ACharacter.png", 25, 25, true, false));
-        }
-        if (((RadioButton) race).getText().equals("B")) {
-            this.raceImage = new ImageView(new Image("/races/BCharacter.png", 25, 25, true, false));
-        }
-        if (((RadioButton) race).getText().equals("C")) {
-            this.raceImage = new ImageView(new Image("/races/CCharacter.gif", 25, 25, true, false));
-        }
-        if (((RadioButton) race).getText().equals("D")) {
-            this.raceImage = new ImageView(new Image("/races/DCharacter.gif", 25, 25, true, false));
-        }
-    }
-
-    public ImageView getRaceImage() {
-        return raceImage;
     }
 
     public void setId(int id) {

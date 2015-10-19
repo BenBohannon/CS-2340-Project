@@ -21,4 +21,8 @@ public class Presenter<T extends View> {
     public PresenterContext context;
 
     public T view;
+
+    public void initialize() {
+
+    }
 }
