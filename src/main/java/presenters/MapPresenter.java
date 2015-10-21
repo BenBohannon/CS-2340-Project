@@ -15,7 +15,6 @@ import model.service.DefaultTurnService;
 import view.MapView;
 
 import java.awt.*;
-import java.util.*;
 
 
 /**
@@ -172,19 +171,19 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         view.showTurnStartText();
     }
 
-    public void nextTurn() {
-        isListening = false;
-        Platform.runLater(() -> {
-            view.stopMovement();
-            if (!turnService.isAllTurnsOver()) {
-                context.showScreen("map_grid.fxml");
-//                beginTurn();
-//                view.startTurn();
-            } else {
-                switchPresenter("auction.fxml");
-            }
-        });
-    }
+//    public void nextTurn() {
+//        isListening = false;
+//        Platform.runLater(() -> {
+//            view.stopMovement();
+//            if (!turnService.isAllTurnsOver()) {
+//                context.showScreen("map_grid.fxml");
+////                beginTurn();
+////                view.startTurn();
+//            } else {
+//                switchPresenter("auction.fxml");
+//            }
+//        });
+//    }
 
     private void calcProduction() {
         for (int i = 0; i < map.getRows(); i++) {

@@ -75,8 +75,10 @@ public class TownPresenter extends Presenter implements TurnEndListener {
             turnService.endTurn();
         }
         if (turnService.isAllTurnsOver()) {
+            turnService.removeTurnEndListener(this);
             context.showScreen("auction.fxml");
         } else {
+            turnService.removeTurnEndListener(this);
             context.showScreen("map_grid.fxml");
             //Turn seems to end on its own idk how
         }
