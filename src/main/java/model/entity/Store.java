@@ -45,6 +45,22 @@ public class Store {
         crystitePrice = storeDatasource.getCrystitePrice();
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
+    public int getFood() {
+        return food;
+    }
+
+    public int getSmithore() {
+        return smithore;
+    }
+
+    public int getCrystite() {
+        return crystite;
+    }
+
     /**
      * Sells 1 energy unit to the specified player, at the going rate
      * @param player The player buying the energy

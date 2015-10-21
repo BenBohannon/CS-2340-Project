@@ -276,6 +276,33 @@ public class DefaultTurnService {
         this.roundNumber = roundNumber;
     }
 
+    public void randomEvent() {
+        Player player = currentPlayer;
+    }
+
+    public void calculateRank() {
+        Object[] playersByRank = playerRepository.getAll().toArray();
+        for (int i = 0; i < playersByRank.length; i++) {
+            int big = i;
+            for (int j = i; j < playersByRank.length; j++) {
+                Player p1 = (Player) playersByRank[j];
+                Player p2 = (Player) playersByRank[i];
+                if (p1.getMoney() > p2.getMoney()) {
+                    big = j;
+                }
+            }
+            if (big != i) {
+                Player tempPlayer = (Player) playersByRank[i];
+                playersByRank[i] = playersByRank[big];
+                playersByRank[big] = tempPlayer;
+            }
+        }
+        for (int i = 0; i < playersByRank.length; i++) {
+            Player temp = (Player) playersByRank[i];
+            temp.setRank(i + 1);
+        }
+    }
+
 
     /**
      * Prematurely ends a player's turn, calling all listeners
@@ -284,6 +311,8 @@ public class DefaultTurnService {
     public Player endTurn() {
         stopTimers();
         Player player = currentPlayer;
+        calculateRank();
+        System.out.println(currentPlayer.getRank());
         //currentPlayer = null;
         turnInProgress = false;
         finishedPlayerIds.add(player.getId());
