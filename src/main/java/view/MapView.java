@@ -234,10 +234,10 @@ public class MapView extends View<MapPresenter> {
                     startMovement();
                 });
             }
-        }, 4000L);
+        }, 2000L);
     }
 
-//    public void startTurn() {
+//    public void startTurnTurn() {
 //        character = createImageView(presenter.getCurrentPlayer().getRace().getImagePath(), 50, 50);
 //        character.setX(340);
 //        character.setY(235);

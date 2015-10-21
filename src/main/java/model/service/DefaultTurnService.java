@@ -55,6 +55,7 @@ public class DefaultTurnService {
     private volatile boolean turnInProgress;
     private volatile long turnStartTime;
     private volatile long turnDuration;
+    private volatile long delay;
 
     private volatile Timer timer;
     private volatile Timer timer2;
@@ -106,6 +107,7 @@ public class DefaultTurnService {
         //turnDuration = (int) (currentPlayer.getPTU(GameInfo.BTU(4)) + currentPlayer.getPTU(GameInfo.BTU(91)) * foodRatio);
         turnDuration = 10000L; //TEMPORARY CODE. EVERY PLAYER GETS 10 seconds.
         stopwatch = turnDuration;
+        delay = 2000L;
 
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -113,7 +115,7 @@ public class DefaultTurnService {
             public void run() {
                 endTurn();
             }
-        }, turnDuration + 4000L);
+        }, turnDuration + delay);
 
         timer2 = new Timer();
         timer2.schedule(new TimerTask() {
@@ -126,7 +128,7 @@ public class DefaultTurnService {
                                });
                            }
                        },
-                4050L, 10L);
+                delay, 10L);
 
         turnStartTime = new Date().getTime();
         turnEndListeners = new LinkedList<>();
@@ -195,6 +197,8 @@ public class DefaultTurnService {
      * @return true if all Players' turns have ended, false otherwise
      */
     public boolean isAllTurnsOver() {
+//        System.out.println("finished ids size: " + finishedPlayerIds.size());
+//        System.out.println("player repository size: " + playerRepository.getAll().size());
         return finishedPlayerIds.size() == playerRepository.getAll().size();
     }
 

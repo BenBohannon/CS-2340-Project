@@ -40,7 +40,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
     @Override
     public void initialize() {
         if (turnService.isTurnInProgress()) {
-            turnService.addTurnEndListener(this);
+            turnService.addTurnEndListener(this); // Make sure this only happens ONCE
             isListening = true;
         } else {
             if (turnService.isAllTurnsOver()) {
@@ -165,7 +165,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
     private void beginTurn() {
         turnService.beginTurn();
-        turnService.addTurnEndListener(this);
+//        turnService.addTurnEndListener(this);
         isListening = true;
         view.setCharacterImage(turnService.getCurrentPlayer().getRace().getImagePath());
         view.showTurnStartText();

@@ -21,7 +21,7 @@ import java.util.Collection;
 /**
  * Created by brian on 10/5/15.
  */
-public class StartTileChoice extends Application {
+public class StartFourPlayers extends Application {
 
     public static void main(String[] args) {
         launch(args);
@@ -134,6 +134,20 @@ public class StartTileChoice extends Application {
         p2.setRace(PlayerRace.Buzzite);
         p2.setColor(Color.BLANCHEDALMOND);
         playerRepository.save(p2);
+
+//        Player p3 = new Player();
+//        p3.setName("P3");
+//        p3.setId(2);
+//        p3.setColor(Color.AQUAMARINE);
+//        p3.setRace(PlayerRace.Ugaite);
+//        playerRepository.save(p3);
+//
+//        Player p4 = new Player();
+//        p4.setName("P4");
+//        p4.setId(3);
+//        p4.setRace(PlayerRace.Human);
+//        p4.setColor(Color.BLACK);
+//        playerRepository.save(p4);
 
 
         final Map map = new Map(lds);
