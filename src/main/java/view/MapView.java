@@ -237,6 +237,27 @@ public class MapView extends View<MapPresenter> {
         }, 2000L);
     }
 
+    public void showRandomEventText(String eventText) {
+        text = new Text(250, 120, eventText);
+        text.setFont(new Font(40));
+        pane.getChildren().add(text);
+        text.toFront();
+        character.setX(340);
+        character.setY(235);
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() ->
+                {
+                    pane.getChildren().remove(text);
+                    startMovement();
+                });
+            }
+        }, 5000L);
+    }
+
 //    public void startTurnTurn() {
 //        character = createImageView(presenter.getCurrentPlayer().getRace().getImagePath(), 50, 50);
 //        character.setX(340);

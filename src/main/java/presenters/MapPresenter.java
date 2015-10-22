@@ -15,6 +15,9 @@ import model.service.DefaultTurnService;
 import view.MapView;
 
 import java.awt.*;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -45,8 +48,29 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         } else {
             if (turnService.isAllTurnsOver()) {
                 turnService.beginRound();
+
+                Random rand = new Random();
+                int deltaMoney = rand.nextInt(400) - 200;
+
+                Player temp;
+
+                //TODO: MAKE RANDOM EVENT HERE!
+                view.showRandomEventText();
+
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() ->
+                        {
+                            beginTurn();
+                        });
+                    }
+                }, 5000L);
+
+            } else {
+                beginTurn();
             }
-            beginTurn();
         }
         
         if (isPlacingMule) {
