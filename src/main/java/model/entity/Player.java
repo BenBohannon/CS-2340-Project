@@ -1,13 +1,8 @@
 package model.entity;
 
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Toggle;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import model.map.Tile;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -27,6 +22,7 @@ public class Player {
     private String name;
     private Color color;
     private ArrayList<Tile> ownedProperties = new ArrayList<>();
+    public int rank;
 
     public Collection<Mule> mules;
 
@@ -69,6 +65,14 @@ public class Player {
 
     public void offsetSmithore(int amount) {
         smithore += amount;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
 

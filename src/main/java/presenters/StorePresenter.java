@@ -80,18 +80,18 @@ public class StorePresenter extends Presenter {
     }
 
     private void updateCrysLabel() {
-        crystiteLabel.setText("Crystite: " + turnService.getCurrentPlayer().getCrystite());
+        crystiteLabel.setText("Crystite: " + store.getCrystite());
     }
 
     private void updateFoodLabel() {
-        foodLabel.setText("Food: " + turnService.getCurrentPlayer().getFood());
+        foodLabel.setText("Food: " + store.getFood());
     }
 
     private void updateEnergyLabel() {
-        energyLabel.setText("Energy: " + turnService.getCurrentPlayer().getEnergy());
+        energyLabel.setText("Energy: " + store.getEnergy());
     }
 
     private void updateSmithoreLabel() {
-        smithoreLabel.setText("Smithore: " + turnService.getCurrentPlayer().getSmithore());
+        smithoreLabel.setText("Smithore: " + store.getSmithore());
     }
 }

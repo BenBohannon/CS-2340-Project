@@ -10,10 +10,10 @@ public interface StoreDatasource {
     public int smithore = 0;
     public int crystite = 0;
 
-    public int energyPrice = -25;
-    public int foodPrice = -30;
-    public int smithorePrice = -50;
-    public int crystitePrice = -100;
+    public int energyPrice = -2500;
+    public int foodPrice = -3000;
+    public int smithorePrice = -5000;
+    public int crystitePrice = -10000;
 
     public void saveAmount(int energy, int food, int smithore, int crystite);
     public void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice);
