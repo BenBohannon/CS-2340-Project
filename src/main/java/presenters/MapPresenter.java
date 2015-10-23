@@ -88,10 +88,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Platform.runLater(() ->
-                        {
-                            beginTurn();
-                        });
+                        Platform.runLater(MapPresenter.this::beginTurn);
                     }
                 }, 5010L);
 
@@ -221,20 +218,6 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         view.setCharacterImage(turnService.getCurrentPlayer().getRace().getImagePath());
         view.showTurnStartText();
     }
-
-//    public void nextTurn() {
-//        isListening = false;
-//        Platform.runLater(() -> {
-//            view.stopMovement();
-//            if (!turnService.isAllTurnsOver()) {
-//                context.showScreen("map_grid.fxml");
-////                beginTurn();
-////                view.startTurn();
-//            } else {
-//                switchPresenter("auction.fxml");
-//            }
-//        });
-//    }
 
     private void calcProduction() {
         for (int i = 0; i < map.getRows(); i++) {

@@ -210,6 +210,7 @@ public class MapView extends View<MapPresenter> {
     public void stopMovement() {
         if (timer != null) {
             timer.cancel();
+            timer = null;
         }
     }
 
@@ -224,8 +225,8 @@ public class MapView extends View<MapPresenter> {
         character.setX(340);
         character.setY(235);
 
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
+        Timer turnStartTextTimer = new Timer();
+        turnStartTextTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() ->
@@ -245,8 +246,8 @@ public class MapView extends View<MapPresenter> {
         character.setX(340);
         character.setY(235);
 
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
+        Timer randomEventTextTimer = new Timer();
+        randomEventTextTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() ->

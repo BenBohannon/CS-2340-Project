@@ -25,9 +25,6 @@ import java.util.TimerTask;
 public class AuctionView extends View<AuctionPresenter> {
 
     //TODO: fix holding down buttons, put in store, put in buy/sell option for players, make food/energy rounds, timer
-
-    @Inject
-    private DefaultTurnService turnService;
     @Inject
     private Repository<Player> playerRepository;
     @FXML
