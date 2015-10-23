@@ -3,7 +3,7 @@ package presenters;
 import com.google.inject.Inject;
 import data.MapInfoHolder;
 import data.Repository;
-import data.TurnEndListener;
+import model.service.TurnEndListener;
 import javafx.application.Platform;
 import model.entity.Mule;
 import model.entity.MuleType;
@@ -173,6 +173,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             map.add(mulePlacing, tileCoord.x, tileCoord.y);
             view.placeMuleGraphic(tileCoord.y, tileCoord.x, mulePlacing.getType());
         } else {
+            turnService.getCurrentPlayer().mules.remove(mulePlacing);
             System.out.println("Mule Lost");
         }
 

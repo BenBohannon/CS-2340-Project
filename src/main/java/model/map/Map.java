@@ -1,6 +1,7 @@
 package model.map;
 
 import com.google.inject.Inject;
+import data.LocationDatasource;
 
 import java.lang.reflect.Array;
 import java.util.Collection;

@@ -1,11 +1,13 @@
-package model.entity;
+package model.service;
 
 import com.google.inject.Inject;
+import data.StoreDatasource;
+import model.entity.Player;
 
 /**
  * Created by connor on 10/4/15.
  */
-public class Store {
+public class StoreService {
 
     /*private int STARTING_ENERGY = 16;
     private int STARTING_FOOD = 16;
@@ -31,7 +33,7 @@ public class Store {
 
 
     @Inject
-    public Store(StoreDatasource storeDatasource) {
+    public StoreService(StoreDatasource storeDatasource) {
         this.storeDatasource = storeDatasource;
 
         energy = storeDatasource.getEnergy();
@@ -59,6 +61,14 @@ public class Store {
 
     public int getCrystite() {
         return crystite;
+    }
+
+    public int getMuleCount() {
+        return storeDatasource.getMuleCount();
+    }
+
+    public void decrementMuleCount() {
+        storeDatasource.setMuleCount(storeDatasource.getMuleCount() - 1);
     }
 
     /**

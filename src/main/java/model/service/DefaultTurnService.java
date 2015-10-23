@@ -3,8 +3,6 @@ package model.service;
 import com.google.inject.Inject;
 import data.GameInfo;
 import data.Repository;
-import data.StoreInfoHolder;
-import data.TurnEndListener;
 import javafx.application.Platform;
 import model.entity.Player;
 
@@ -62,17 +60,17 @@ public class DefaultTurnService {
     private volatile double stopwatch;
 
     private Repository<Player> playerRepository;
-    private StoreInfoHolder storeInfo;
+    private StoreService storeService;
 
     //players are added to this list after their turns are complete//
     private volatile Collection<Integer> finishedPlayerIds;
 
     @Inject
-    public DefaultTurnService(Repository<Player> playerRepository, StoreInfoHolder storeInfo) {
+    public DefaultTurnService(Repository<Player> playerRepository, StoreService storeService) {
         this.playerRepository = playerRepository;
-        this.storeInfo = storeInfo;
         turnEndListeners = new LinkedList<>();
         finishedPlayerIds = new LinkedList<>();
+        this.storeService = storeService;
     }
 
     /**
@@ -89,7 +87,7 @@ public class DefaultTurnService {
 
         Stream<Player> stream = playerRepository.getAll().stream()
                 .filter(player -> !(finishedPlayerIds.contains(player.getId())));
-        if (storeInfo.getMuleCount() > 7) {
+        if (storeService.getMuleCount() > 7) {
             //next player is highest score if mules remaining > 7//
             currentPlayer = stream
                     .max((p1, p2) -> p1.getScore() - p2.getScore())

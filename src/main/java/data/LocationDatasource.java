@@ -1,4 +1,6 @@
-package model.map;
+package data;
+
+import model.map.Locatable;
 
 import java.util.Collection;
 
