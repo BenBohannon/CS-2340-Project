@@ -172,20 +172,6 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         view.showTurnStartText();
     }
 
-    public void nextTurn() {
-        isListening = false;
-        Platform.runLater(() -> {
-            view.stopMovement();
-            if (!turnService.isAllTurnsOver()) {
-                context.showScreen("map_grid.fxml");
-//                beginTurn();
-//                view.startTurn();
-            } else {
-                switchPresenter("auction.fxml");
-            }
-        });
-    }
-
     private void calcProduction() {
         for (int i = 0; i < map.getRows(); i++) {
             for (int j = 0; j < map.getCols(); j++) {
