@@ -283,18 +283,18 @@ public class DefaultTurnService {
     public void calculateRank() {
         Object[] playersByRank = playerRepository.getAll().toArray();
         for (int i = 0; i < playersByRank.length; i++) {
-            int big = i;
+            int max = i;
             for (int j = i; j < playersByRank.length; j++) {
                 Player p1 = (Player) playersByRank[j];
-                Player p2 = (Player) playersByRank[i];
+                Player p2 = (Player) playersByRank[max];
                 if (p1.getMoney() > p2.getMoney()) {
-                    big = j;
+                    max = j;
                 }
             }
-            if (big != i) {
+            if (max != i) {
                 Player tempPlayer = (Player) playersByRank[i];
-                playersByRank[i] = playersByRank[big];
-                playersByRank[big] = tempPlayer;
+                playersByRank[i] = playersByRank[max];
+                playersByRank[max] = tempPlayer;
             }
         }
         for (int i = 0; i < playersByRank.length; i++) {
