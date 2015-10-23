@@ -15,6 +15,7 @@ import model.service.DefaultTurnService;
 import view.MapView;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,14 +50,40 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             if (turnService.isAllTurnsOver()) {
                 turnService.beginRound();
 
+                //RANDOM EVENT CODE
+
+                //Get random money to add/subtract from a player.
                 Random rand = new Random();
                 int deltaMoney = rand.nextInt(400) - 200;
 
-                Player temp;
+                //Get a winning player.
+                Player eventPlayer = null;
+                List<Player> players = turnService.getAllPlayers().getAll();
+                for (Player p : players) {
+                    if (p.rank >= players.size()/2) {
+                        if (eventPlayer == null) {
+                            eventPlayer = p;
+                        } else if (rand.nextBoolean()) {
+                            eventPlayer = p;
+                        }
+                    }
+                }
 
-                //TODO: MAKE RANDOM EVENT HERE!
-                view.showRandomEventText();
+                //If we failed to pick a player, just start the turn without random events.
+                if (eventPlayer == null) {
+                    beginTurn();
+                    return;
+                }
 
+                //Print the random event to the screen.
+                if (deltaMoney < 0)
+                {
+                    view.showRandomEventText("Random event! " + eventPlayer.getName() + " loses " + deltaMoney + " money!");
+                } else {
+                    view.showRandomEventText("Random event! " + eventPlayer.getName() + " gains " + deltaMoney + " money!");
+                }
+
+                //Start the turn after the text has disappeared.
                 Timer timer = new Timer();
                 timer.schedule(new TimerTask() {
                     @Override
@@ -66,7 +93,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
                             beginTurn();
                         });
                     }
-                }, 5000L);
+                }, 5010L);
 
             } else {
                 beginTurn();
@@ -189,7 +216,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
     private void beginTurn() {
         turnService.beginTurn();
-//        turnService.addTurnEndListener(this);
+        turnService.addTurnEndListener(this);
         isListening = true;
         view.setCharacterImage(turnService.getCurrentPlayer().getRace().getImagePath());
         view.showTurnStartText();

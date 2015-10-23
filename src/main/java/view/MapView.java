@@ -238,7 +238,7 @@ public class MapView extends View<MapPresenter> {
     }
 
     public void showRandomEventText(String eventText) {
-        text = new Text(250, 120, eventText);
+        text = new Text(150, 120, eventText);
         text.setFont(new Font(40));
         pane.getChildren().add(text);
         text.toFront();
