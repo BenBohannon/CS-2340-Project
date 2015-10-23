@@ -176,14 +176,6 @@ public class DefaultTurnService {
     }
 
     /**
-     * The player repository stores the list of all active players
-     * @return playerRespository
-     */
-    public Repository<Player> getAllPlayers() {
-        return playerRepository;
-    }
-
-    /**
      * If no rounds have begun, the round is zero. The first round is one, stretching
      * to the maximum number of rounds, defined in {@link GameInfo#getMaxRounds()}
      * @return the round number

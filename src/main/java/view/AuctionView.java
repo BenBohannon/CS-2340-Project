@@ -28,6 +28,8 @@ public class AuctionView extends View<AuctionPresenter> {
 
     @Inject
     private DefaultTurnService turnService;
+    @Inject
+    private Repository<Player> playerRepository;
     @FXML
     private Pane pane;
 
@@ -41,7 +43,6 @@ public class AuctionView extends View<AuctionPresenter> {
     private ArrayList<ImageView> playerImageList;
     private ArrayList<Text> resourceLists = new ArrayList<Text>();
     private ArrayList<Text> names = new ArrayList<Text>();
-    private Repository<Player> playerRepository;
     private boolean canMove;
     private double BOTTOMLIMIT = 390;
     private double TOPLIMIT = 150;
@@ -49,7 +50,6 @@ public class AuctionView extends View<AuctionPresenter> {
 
     public void initialize() {
         pane.getChildren().add(pane2);
-        playerRepository = turnService.getAllPlayers();
         playerImageList = new ArrayList<>();
         for (int i = 0; i < playerRepository.size(); i++) {
             ImageView playerImage = MapView.createImageView(playerRepository.get(i).getRace().getImagePath(), 50, 50);
@@ -172,10 +172,7 @@ public class AuctionView extends View<AuctionPresenter> {
         timer2.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() ->
-                {
-                    startFoodBidding();
-                });
+                Platform.runLater(AuctionView.this::startFoodBidding);
             }
         }, DURATION + 4000L);
 //        timer.schedule(new TimerTask() {

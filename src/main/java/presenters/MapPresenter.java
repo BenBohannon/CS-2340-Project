@@ -58,7 +58,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
                 //Get a winning player.
                 Player eventPlayer = null;
-                List<Player> players = turnService.getAllPlayers().getAll();
+                List<Player> players = playerRepository.getAll();
                 for (Player p : players) {
                     if (p.rank >= players.size()/2) {
                         if (eventPlayer == null) {

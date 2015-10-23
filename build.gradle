@@ -4,11 +4,16 @@ version '1.0'
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'idea'
+apply plugin: 'checkstyle'
 
 mainClassName = 'Start'
 
 repositories {
     mavenCentral()
+}
+
+checkstyle {
+    toolVersion = "6.1.1"
 }
 
 dependencies {
