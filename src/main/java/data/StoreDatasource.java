@@ -1,4 +1,4 @@
-package model.entity;
+package data;
 
 /**
  * Created by connor on 10/4/15.
@@ -25,5 +25,7 @@ public interface StoreDatasource {
     public int getFoodPrice();
     public int getSmithorePrice();
     public int getCrystitePrice();
+    int getMuleCount();
+    void setMuleCount(int muleCount);
 
 }

@@ -1,4 +1,4 @@
-package data;
+package model.service;
 
 import model.entity.Player;
 

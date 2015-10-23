@@ -3,7 +3,7 @@ package presenters;
 import com.google.inject.Inject;
 import data.MapInfoHolder;
 import data.Repository;
-import data.TurnEndListener;
+import model.service.TurnEndListener;
 import javafx.application.Platform;
 import model.entity.Mule;
 import model.entity.MuleType;
@@ -58,7 +58,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
                 //Get a winning player.
                 Player eventPlayer = null;
-                List<Player> players = turnService.getAllPlayers().getAll();
+                List<Player> players = playerRepository.getAll();
                 for (Player p : players) {
                     if (p.rank >= players.size()/2) {
                         if (eventPlayer == null) {
@@ -88,10 +88,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Platform.runLater(() ->
-                        {
-                            beginTurn();
-                        });
+                        Platform.runLater(MapPresenter.this::beginTurn);
                     }
                 }, 5010L);
 
@@ -176,6 +173,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
             map.add(mulePlacing, tileCoord.x, tileCoord.y);
             view.placeMuleGraphic(tileCoord.y, tileCoord.x, mulePlacing.getType());
         } else {
+            turnService.getCurrentPlayer().mules.remove(mulePlacing);
             System.out.println("Mule Lost");
         }
 
