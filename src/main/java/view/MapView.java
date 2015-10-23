@@ -13,11 +13,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
-import java.awt.Point;
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.entity.Mule;
@@ -26,6 +21,11 @@ import model.entity.Player;
 import model.map.Map;
 import model.map.Tile;
 import presenters.MapPresenter;
+
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -65,15 +65,6 @@ public class MapView extends View<MapPresenter> {
             setCharacterImage(presenter.getCurrentPlayer().getRace().getImagePath());
         }
 
-        timerWhite = new Rectangle(200, 20, Color.WHITE);
-        timerRed = new Rectangle(200, 20, Color.RED);
-        ColorAdjust monochrome = new ColorAdjust();
-        monochrome.setSaturation(-1.0);
-        Blend blush = new Blend(BlendMode.MULTIPLY, monochrome,
-                new ColorInput(0, 0, character.getImage().getWidth(), character.getImage().getHeight(), Color.RED));
-
-        pane.getChildren().addAll(timerWhite, timerRed);
-
         pane.setOnMouseMoved(event -> {
             mouseX = event.getX();
             mouseY = event.getY();
@@ -106,6 +97,15 @@ public class MapView extends View<MapPresenter> {
                 border.setLayoutY(location.getY());
             }
         }
+
+        timerWhite = new Rectangle(200, 20, Color.WHITE);
+        timerRed = new Rectangle(200, 20, Color.RED);
+        ColorAdjust monochrome = new ColorAdjust();
+        monochrome.setSaturation(-1.0);
+        Blend blush = new Blend(BlendMode.MULTIPLY, monochrome,
+                new ColorInput(0, 0, character.getImage().getWidth(), character.getImage().getHeight(), Color.RED));
+
+        pane.getChildren().addAll(timerWhite, timerRed);
 
         if (presenter.isTurnInProgress()) {
             startMovement();
@@ -221,6 +221,8 @@ public class MapView extends View<MapPresenter> {
         text.setFont(new Font(40));
         pane.getChildren().add(text);
         text.toFront();
+        character.setX(340);
+        character.setY(235);
 
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -232,14 +234,35 @@ public class MapView extends View<MapPresenter> {
                     startMovement();
                 });
             }
-        }, 4000L);
+        }, 2000L);
     }
 
-    public void startTurn() {
-        character = createImageView(presenter.getCurrentPlayer().getRace().getImagePath(), 50, 50);
+    public void showRandomEventText(String eventText) {
+        text = new Text(150, 120, eventText);
+        text.setFont(new Font(40));
+        pane.getChildren().add(text);
+        text.toFront();
         character.setX(340);
         character.setY(235);
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() ->
+                {
+                    pane.getChildren().remove(text);
+                    startMovement();
+                });
+            }
+        }, 5000L);
     }
+
+//    public void startTurnTurn() {
+//        character = createImageView(presenter.getCurrentPlayer().getRace().getImagePath(), 50, 50);
+//        character.setX(340);
+//        character.setY(235);
+//    }
 
     /**
      * Sets the character's image on the map to be the input image. (For switching races)

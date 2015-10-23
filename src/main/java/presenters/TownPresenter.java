@@ -20,7 +20,8 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Override
     public void initialize() {
-        turnService.addTurnEndListener(this);
+//        turnService.addTurnEndListener(this);
+        // We had 3 turn end listeners lol. Make sure we don't do this
     }
 
     public void handleMuleClick(ActionEvent event) {
@@ -74,7 +75,9 @@ public class TownPresenter extends Presenter implements TurnEndListener {
             turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
             turnService.endTurn();
         }
+//        turnService.removeTurnEndListener(this);
         if (turnService.isAllTurnsOver()) {
+            System.out.println("show auction screen");
             context.showScreen("auction.fxml");
         } else {
             context.showScreen("map_grid.fxml");
@@ -85,6 +88,6 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Override
     public void onTurnEnd(Player player) {
-        Platform.runLater(() -> returnToMapUninitialized().initialize());
+        Platform.runLater(() -> context.showScreen("map_grid.fxml"));
     }
 }

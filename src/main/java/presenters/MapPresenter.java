@@ -15,7 +15,10 @@ import model.service.DefaultTurnService;
 import view.MapView;
 
 import java.awt.*;
-import java.util.*;
+import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -41,13 +44,60 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
     @Override
     public void initialize() {
         if (turnService.isTurnInProgress()) {
-            turnService.addTurnEndListener(this);
+            turnService.addTurnEndListener(this); // Make sure this only happens ONCE
             isListening = true;
         } else {
             if (turnService.isAllTurnsOver()) {
                 turnService.beginRound();
+
+                //RANDOM EVENT CODE
+
+                //Get random money to add/subtract from a player.
+                Random rand = new Random();
+                int deltaMoney = rand.nextInt(400) - 200;
+
+                //Get a winning player.
+                Player eventPlayer = null;
+                List<Player> players = turnService.getAllPlayers().getAll();
+                for (Player p : players) {
+                    if (p.rank >= players.size()/2) {
+                        if (eventPlayer == null) {
+                            eventPlayer = p;
+                        } else if (rand.nextBoolean()) {
+                            eventPlayer = p;
+                        }
+                    }
+                }
+
+                //If we failed to pick a player, just start the turn without random events.
+                if (eventPlayer == null) {
+                    beginTurn();
+                    return;
+                }
+
+                //Print the random event to the screen.
+                if (deltaMoney < 0)
+                {
+                    view.showRandomEventText("Random event! " + eventPlayer.getName() + " loses " + deltaMoney + " money!");
+                } else {
+                    view.showRandomEventText("Random event! " + eventPlayer.getName() + " gains " + deltaMoney + " money!");
+                }
+
+                //Start the turn after the text has disappeared.
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() ->
+                        {
+                            beginTurn();
+                        });
+                    }
+                }, 5010L);
+
+            } else {
+                beginTurn();
             }
-            beginTurn();
         }
         
         if (isPlacingMule) {

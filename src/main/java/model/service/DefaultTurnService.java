@@ -55,6 +55,7 @@ public class DefaultTurnService {
     private volatile boolean turnInProgress;
     private volatile long turnStartTime;
     private volatile long turnDuration;
+    private volatile long delay;
 
     private volatile Timer timer;
     private volatile Timer timer2;
@@ -106,6 +107,7 @@ public class DefaultTurnService {
         //turnDuration = (int) (currentPlayer.getPTU(GameInfo.BTU(4)) + currentPlayer.getPTU(GameInfo.BTU(91)) * foodRatio);
         turnDuration = 10000L; //TEMPORARY CODE. EVERY PLAYER GETS 10 seconds.
         stopwatch = turnDuration;
+        delay = 2000L;
 
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -113,7 +115,7 @@ public class DefaultTurnService {
             public void run() {
                 endTurn();
             }
-        }, turnDuration + 4000L);
+        }, turnDuration + delay);
 
         timer2 = new Timer();
         timer2.schedule(new TimerTask() {
@@ -126,7 +128,7 @@ public class DefaultTurnService {
                                });
                            }
                        },
-                4050L, 10L);
+                delay, 10L);
 
         turnStartTime = new Date().getTime();
         turnEndListeners = new LinkedList<>();
@@ -195,6 +197,8 @@ public class DefaultTurnService {
      * @return true if all Players' turns have ended, false otherwise
      */
     public boolean isAllTurnsOver() {
+//        System.out.println("finished ids size: " + finishedPlayerIds.size());
+//        System.out.println("player repository size: " + playerRepository.getAll().size());
         return finishedPlayerIds.size() == playerRepository.getAll().size();
     }
 
@@ -276,6 +280,33 @@ public class DefaultTurnService {
         this.roundNumber = roundNumber;
     }
 
+    public void randomEvent() {
+        Player player = currentPlayer;
+    }
+
+    public void calculateRank() {
+        Object[] playersByRank = playerRepository.getAll().toArray();
+        for (int i = 0; i < playersByRank.length; i++) {
+            int big = i;
+            for (int j = i; j < playersByRank.length; j++) {
+                Player p1 = (Player) playersByRank[j];
+                Player p2 = (Player) playersByRank[i];
+                if (p1.getMoney() > p2.getMoney()) {
+                    big = j;
+                }
+            }
+            if (big != i) {
+                Player tempPlayer = (Player) playersByRank[i];
+                playersByRank[i] = playersByRank[big];
+                playersByRank[big] = tempPlayer;
+            }
+        }
+        for (int i = 0; i < playersByRank.length; i++) {
+            Player temp = (Player) playersByRank[i];
+            temp.setRank(i + 1);
+        }
+    }
+
 
     /**
      * Prematurely ends a player's turn, calling all listeners
@@ -284,6 +315,8 @@ public class DefaultTurnService {
     public Player endTurn() {
         stopTimers();
         Player player = currentPlayer;
+        calculateRank();
+        System.out.println(currentPlayer.getRank());
         //currentPlayer = null;
         turnInProgress = false;
         finishedPlayerIds.add(player.getId());
