@@ -7,6 +7,7 @@ import model.map.Map;
  * Created by brian on 9/17/15.
  */
 public class Mule implements Locatable {
+    private int id;
     private Map.Location location;
     private MuleType type;
 
@@ -26,5 +27,13 @@ public class Mule implements Locatable {
     @Override
     public void setLocation(Map.Location location) {
         this.location = location;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

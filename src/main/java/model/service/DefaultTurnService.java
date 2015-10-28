@@ -1,7 +1,7 @@
 package model.service;
 
 import com.google.inject.Inject;
-import data.GameInfo;
+import data.GameInfoDatasource;
 import data.Repository;
 import javafx.application.Platform;
 import model.entity.Player;
@@ -61,16 +61,19 @@ public class DefaultTurnService {
 
     private Repository<Player> playerRepository;
     private StoreService storeService;
+    private GameInfoDatasource gameInfoDatasource;
 
     //players are added to this list after their turns are complete//
     private volatile Collection<Integer> finishedPlayerIds;
 
     @Inject
-    public DefaultTurnService(Repository<Player> playerRepository, StoreService storeService) {
+    public DefaultTurnService(Repository<Player> playerRepository, StoreService storeService,
+                              GameInfoDatasource gameInfoDatasource) {
         this.playerRepository = playerRepository;
         turnEndListeners = new LinkedList<>();
         finishedPlayerIds = new LinkedList<>();
         this.storeService = storeService;
+        this.gameInfoDatasource = gameInfoDatasource;
     }
 
     /**
@@ -81,7 +84,7 @@ public class DefaultTurnService {
         if (turnInProgress) {
             throw new RuntimeException(TURN_IN_PROGRESS);
         }
-        if (roundNumber > GameInfo.getMaxRounds()) {
+        if (roundNumber > gameInfoDatasource.getMaxRounds()) {
             throw new RuntimeException("Max rounds exceeded. Game should be over");
         }
 
@@ -101,8 +104,8 @@ public class DefaultTurnService {
 
 
         //turn time in millis//
-        float foodRatio = (float) currentPlayer.getFood() / GameInfo.getFoodRequirement(roundNumber);
-        //turnDuration = (int) (currentPlayer.getPTU(GameInfo.BTU(4)) + currentPlayer.getPTU(GameInfo.BTU(91)) * foodRatio);
+        float foodRatio = (float) currentPlayer.getFood() / gameInfoDatasource.getFoodRequirement(roundNumber);
+        //turnDuration = (int) (currentPlayer.getPTU(GameInfoDatasource.BTU(4)) + currentPlayer.getPTU(GameInfoDatasource.BTU(91)) * foodRatio);
         turnDuration = 10000L; //TEMPORARY CODE. EVERY PLAYER GETS 10 seconds.
         stopwatch = turnDuration;
         delay = 2000L;
@@ -175,7 +178,7 @@ public class DefaultTurnService {
 
     /**
      * If no rounds have begun, the round is zero. The first round is one, stretching
-     * to the maximum number of rounds, defined in {@link GameInfo#getMaxRounds()}
+     * to the maximum number of rounds, defined in {@link GameInfoDatasource#getMaxRounds()}
      * @return the round number
      */
     public int getRoundNumber() {

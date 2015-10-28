@@ -1,17 +1,15 @@
 import com.google.inject.TypeLiteral;
-import data.MemoryPlayerRepository;
-import data.Repository;
+import data.*;
 import javafx.application.Application;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.entity.Player;
 import model.entity.PlayerRace;
-import data.StoreDatasource;
 import model.map.Locatable;
-import data.LocationDatasource;
 import model.map.Map;
 import model.service.DefaultTurnService;
 import model.service.StoreService;
+import org.h2.jdbcx.JdbcConnectionPool;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -150,11 +148,14 @@ public class StartTileChoice extends Application {
 
         final Map map = new Map(lds);
 
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds));
+        final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
+
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
             binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
+            binder.bind(JdbcConnectionPool.class).toInstance(connectionPool);
 
             //temp
             binder.bind(Map.class).toInstance(map);
