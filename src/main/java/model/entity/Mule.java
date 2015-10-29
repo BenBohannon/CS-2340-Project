@@ -2,14 +2,27 @@ package model.entity;
 
 import model.map.Locatable;
 import model.map.Map;
+import org.hibernate.annotations.Generated;
+
+import javax.persistence.*;
 
 /**
  * Created by brian on 9/17/15.
  */
+
+@Entity
 public class Mule implements Locatable {
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
+    @Embedded
     private Map.Location location;
+    @Enumerated
     private MuleType type;
+
+    public Mule() {
+        //Required default constructor for hibernate//
+    }
 
     public Mule(MuleType type) {
         this.type = type;
@@ -17,6 +30,10 @@ public class Mule implements Locatable {
 
     public MuleType getType() {
         return type;
+    }
+
+    public void setType(MuleType type) {
+        this.type = type;
     }
 
     @Override
@@ -35,5 +52,21 @@ public class Mule implements Locatable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ((obj == null) || !(obj instanceof Mule)) {
+            return false;
+        }
+
+        Mule other = (Mule) obj;
+
+        return other.getId() == id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

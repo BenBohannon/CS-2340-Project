@@ -3,6 +3,9 @@ package model.map;
 import com.google.inject.Inject;
 import data.LocationDatasource;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -149,12 +152,19 @@ public class Map {
      * from a Location instance, the {@link Locatable} essentially retains the ability to
      * manage its own location.
      */
-    public class Location {
+    @Embeddable
+    public static class Location {
 
         private int row, col;
+        @Transient
         private Map map;
 
+        @Transient
         private Collection<Locatable> occupants;
+
+        public Location() {
+            // required default constructor for hibernate //
+        }
 
         private Location(int row, int col, Map map) {
             this.row = row;

@@ -1,5 +1,6 @@
 package data;
 
+import com.google.inject.Inject;
 import model.entity.Mule;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,31 +16,8 @@ import java.util.List;
  */
 public abstract class SqlRepository<T> implements Repository<T> {
 
+    @Inject
     protected SessionFactory sessionFactory;
-
-    public SqlRepository() {
-        try {
-            setUp();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("couldn't connect to SQL database");
-        }
-    }
-
-    protected void setUp() throws Exception {
-        // A SessionFactory is set up once for an application!
-        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure(new File(getClass().getResource("/sql/hibernate.cfg.xml").getFile())) // configures settings from hibernate.cfg.xml
-                .build();
-        try {
-            sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-        }
-        catch (Exception e) {
-            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
-            // so destroy it manually.
-            StandardServiceRegistryBuilder.destroy(registry);
-        }
-    }
 
     protected List<T> getAllRelatedTo(int foreignKey, String tableName, String colName) {
         Session session = sessionFactory.openSession();

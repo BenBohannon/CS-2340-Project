@@ -2,8 +2,11 @@ package model.entity;
 
 import javafx.scene.paint.Color;
 import model.map.Tile;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -11,6 +14,8 @@ import java.util.LinkedList;
 /**
  * Created by brian on 9/17/15.
  */
+
+@Entity
 public class Player {
     private int score;
     private int smithore;
@@ -18,13 +23,20 @@ public class Player {
     private int food;
     private int energy;
     private int money = 2000;
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private int id;
     private PlayerRace race;
     private String name;
+    @Transient
     private Color color;
+    @Transient
     private ArrayList<Tile> ownedProperties = new ArrayList<>();
+    @Transient
     public int rank;
 
+    @OneToMany
+    @Cascade(CascadeType.ALL)
     public Collection<Mule> mules;
 
     public Player() {
@@ -36,6 +48,10 @@ public class Player {
             throw new NullPointerException("mule cannot be null");
         }
         mules.add(mule);
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     public int getMoney() {

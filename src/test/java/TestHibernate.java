@@ -1,4 +1,9 @@
+import javafx.scene.paint.Color;
+import model.entity.Mule;
 import model.entity.MuleType;
+import model.entity.Player;
+import model.entity.PlayerRace;
+import model.map.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by brian on 10/26/15.
@@ -19,18 +25,55 @@ public class TestHibernate {
 
     public static void main(String[] args) {
         try {
+            Player p1 = new Player();
+            p1.setName("P1");
+            p1.setId(-1);
+            p1.setColor(Color.ALICEBLUE);
+            p1.setRace(PlayerRace.Bonzoid);
+
+            Player p2 = new Player();
+            p2.setName("P2");
+            p2.setId(-1);
+            p2.setRace(PlayerRace.Buzzite);
+            p2.setColor(Color.BLANCHEDALMOND);
+
+            Mule m1 = new Mule(MuleType.Crysite);
+            Mule m2 = new Mule(MuleType.Energy);
+
+            m1.setLocation(new Map.Location());
+            m2.setLocation(new Map.Location());
+
+            p1.addMule(m1);
+            p2.addMule(m2);
+
+
+
+
             SessionFactory sessionFactory = new TestHibernate().setUp();
 
             Session session = sessionFactory.openSession();
-            session.save(new TestEntity());
+            session.beginTransaction();
+            session.save(p1);
+            session.save(p2);
+            session.getTransaction().commit();
             session.flush();
             session.close();
 
             session = sessionFactory.openSession();
-            Query query = session.createQuery("FROM TestEntity");
-            System.out.println(query.list().get(0).toString());
+            Query query = session.createQuery("FROM Player");
+            System.out.println(query.list().size());
+            for (Player p : (List<Player>) query.list()) {
+                System.out.println(p);
+                for (Mule m : p.mules) {
+                    System.out.println(m);
+                }
+            }
+            session.close();
+            sessionFactory.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+
         }
 
     }

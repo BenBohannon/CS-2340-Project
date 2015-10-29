@@ -9,16 +9,6 @@ import model.entity.Player;
  */
 public class StoreService {
 
-    /*private int STARTING_ENERGY = 16;
-    private int STARTING_FOOD = 16;
-    private int STARTING_SMITHORE = 0;
-    private int STARTING_CRYSTITE = 0;
-    private int STARTING_ENERGY_PRICE = -25;
-    private int STARTING_FOOD_PRICE = -30;
-    private int STARTING_SMITHORE_PRICE = -50;
-    private int STARTING_CRYSTITE_PRICE = -100;
-    */
-
     private int energy;
     private int food;
     private int smithore;
