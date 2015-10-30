@@ -77,6 +77,8 @@ public class DefaultTurnService {
         this.storeService = storeService;
         this.gameInfoDatasource = gameInfoDatasource;
         this.turnDatasource = turnDatasource;
+
+        initializeFromDatasource();
     }
 
     public static int getFoodRequirement(int round) {
@@ -280,10 +282,6 @@ public class DefaultTurnService {
         this.roundNumber = roundNumber;
     }
 
-    public void randomEvent() {
-        Player player = currentPlayer;
-    }
-
     public void calculateRank() {
         Object[] playersByRank = playerRepository.getAll().toArray();
         for (int i = 0; i < playersByRank.length; i++) {
@@ -330,5 +328,10 @@ public class DefaultTurnService {
             listener.onTurnEnd(player);
         }
         return player;
+    }
+
+    private void initializeFromDatasource() {
+        flushRound(turnDatasource.getRound());
+        finishedPlayerIds = turnDatasource.getFinishedPlayerIds();
     }
 }
