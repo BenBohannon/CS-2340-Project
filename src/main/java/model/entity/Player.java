@@ -24,7 +24,7 @@ public class Player {
     private int energy;
     private int money = 2000;
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private PlayerRace race;
     private String name;

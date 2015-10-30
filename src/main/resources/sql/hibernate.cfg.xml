@@ -17,14 +17,15 @@
         <property name="hibernate.connection.password"></property>
         <property name="hibernate.default_schema">PUBLIC</property>
         <property name="hibernate.dialect">org.hibernate.dialect.H2Dialect</property>
-        <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
+        <property name="hibernate.hbm2ddl.auto">create</property>
 
         <mapping class="model.entity.Player" />
         <mapping class="model.entity.Mule" />
-        <mapping class="data.concretesources.SqlTurnDatasource.TurnRecord" />
+        <mapping class="data.concretesources.TurnRecord" />
+        <mapping class="model.map.Tile" />
 
         <!--this may need to be made public-->
-        <mapping class="data.concretesources.SqlStoreDatasource.StoreRecord" />
+        <mapping class="data.concretesources.StoreRecord" />
 
     </session-factory>
 

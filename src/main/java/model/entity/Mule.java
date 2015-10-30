@@ -2,7 +2,9 @@ package model.entity;
 
 import model.map.Locatable;
 import model.map.Map;
+import model.map.PersistableLocatable;
 import org.hibernate.annotations.Generated;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.*;
 
@@ -11,10 +13,8 @@ import javax.persistence.*;
  */
 
 @Entity
-public class Mule implements Locatable {
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private int id;
+@PrimaryKeyJoinColumn(name="id")
+public class Mule extends PersistableLocatable {
     @Embedded
     private Map.Location location;
     @Enumerated
@@ -44,14 +44,6 @@ public class Mule implements Locatable {
     @Override
     public void setLocation(Map.Location location) {
         this.location = location;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override

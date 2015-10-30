@@ -4,18 +4,28 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import model.entity.Player;
 
+import javax.persistence.*;
 import java.util.Random;
 
 /**
  * Created by Ben 9/14/15.
  * Holds the data of each Tile on the Map.
  */
-public class Tile implements Locatable {
+@Entity
+@PrimaryKeyJoinColumn(name="id")
+public class Tile extends PersistableLocatable {
 
+    @Enumerated
     TileType type;
+    @Embedded
     Map.Location loc;
 
+    @Transient
     private Player owner;
+
+    public Tile() {
+        // required default constructor //
+    }
 
     public Tile(TileType type) {
         this.type = type;

@@ -4,8 +4,6 @@ import com.google.inject.Inject;
 import data.abstractsources.TurnDatasource;
 import org.hibernate.*;
 
-import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,7 +24,7 @@ public class SqlTurnDatasource implements TurnDatasource {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        session.save(record);
+        session.merge(record);
 
         session.getTransaction().commit();
         session.flush();
@@ -73,14 +71,4 @@ public class SqlTurnDatasource implements TurnDatasource {
         return record.finishedPlayerIds;
     }
 
-    @Entity
-    public static class TurnRecord {
-        @Id
-        @GeneratedValue(strategy= GenerationType.AUTO)
-        int id;
-
-        int round;
-        @ElementCollection
-        List<Integer> finishedPlayerIds;
-    }
 }

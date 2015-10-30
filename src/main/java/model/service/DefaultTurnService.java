@@ -66,7 +66,7 @@ public class DefaultTurnService {
     private TurnDatasource turnDatasource;
 
     //players are added to this list after their turns are complete//
-    private volatile Collection<Integer> finishedPlayerIds;
+    private volatile List<Integer> finishedPlayerIds;
 
     @Inject
     public DefaultTurnService(Repository<Player> playerRepository, StoreService storeService,
@@ -219,6 +219,7 @@ public class DefaultTurnService {
             throw new IllegalStateException(TURN_IN_PROGRESS);
         }
         flushRound(roundNumber + 1);
+        turnDatasource.saveRound(roundNumber);
         return roundNumber;
     }
 
@@ -327,6 +328,9 @@ public class DefaultTurnService {
         for (TurnEndListener listener : tempTurnEndListeners) {
             listener.onTurnEnd(player);
         }
+
+        turnDatasource.saveFinishedPlayerIds(finishedPlayerIds);
+
         return player;
     }
 

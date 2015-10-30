@@ -165,7 +165,7 @@ public class Map {
             // required default constructor for hibernate //
         }
 
-        private Location(int row, int col, Map map) {
+        public Location(int row, int col, Map map) {
             this.row = row;
             this.col = col;
             this.map = map;

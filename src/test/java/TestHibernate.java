@@ -4,6 +4,9 @@ import model.entity.MuleType;
 import model.entity.Player;
 import model.entity.PlayerRace;
 import model.map.Map;
+import model.map.PersistableLocatable;
+import model.map.Tile;
+import model.map.TileType;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -53,21 +57,45 @@ public class TestHibernate {
 
             Session session = sessionFactory.openSession();
             session.beginTransaction();
-            session.save(p1);
-            session.save(p2);
+            session.merge(p1);
+            session.merge(p2);
             session.getTransaction().commit();
             session.flush();
             session.close();
 
+//            session = sessionFactory.openSession();
+//            Query query = session.createQuery("FROM Player");
+//            List<Player> playerList = query.list();
+//            System.out.println(query.list().size());
+//            for (Player p : (List<Player>) query.list()) {
+//                System.out.println(p);
+//                for (Mule m : p.mules) {
+//                    System.out.println(m);
+//                }
+//            }
+
             session = sessionFactory.openSession();
-            Query query = session.createQuery("FROM Player");
-            System.out.println(query.list().size());
-            for (Player p : (List<Player>) query.list()) {
-                System.out.println(p);
-                for (Mule m : p.mules) {
-                    System.out.println(m);
-                }
+            Query locatableQuery = session.createQuery("FROM PersistableLocatable");
+            Query muleQuery = session.createQuery("FROM Mule");
+            List<Mule> mules  = muleQuery.list();
+            System.out.println(String.format("locatables:%d mules:%d", locatableQuery.list().size(), muleQuery.list().size()));
+
+            session.beginTransaction();
+            for (Mule m : mules) {
+                PersistableLocatable p = new Mule(m.getType());
+                p.setLocation(new Map.Location());
+                p.setId(m.getId());
+                session.merge(p);
             }
+
+            Tile tile = new Tile(TileType.MOUNTAIN_1);
+            tile.setLocation(new Map.Location());
+            session.merge(tile);
+
+            session.getTransaction().commit();
+
+            System.out.println("new size" + session.createQuery("FROM PersistableLocatable").list().size());
+
             session.close();
             sessionFactory.close();
         } catch (Exception e) {
@@ -95,5 +123,4 @@ public class TestHibernate {
         }
         return sessionFactory;
     }
-
 }

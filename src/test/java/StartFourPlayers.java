@@ -6,6 +6,7 @@ import data.abstractsources.LocationDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.StoreDatasource;
 import data.concretesources.MemoryPlayerRepository;
+import data.concretesources.SqlTurnDatasource;
 import model.entity.Player;
 import model.entity.PlayerRace;
 import model.map.Locatable;
@@ -155,7 +156,7 @@ public class StartFourPlayers extends Application {
         final Map map = new Map(lds);
 
         final DefaultTurnService turnService =
-                new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
+                new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource(), new SqlTurnDatasource());
 
         final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
 

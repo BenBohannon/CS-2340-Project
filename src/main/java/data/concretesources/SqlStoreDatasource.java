@@ -6,10 +6,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.List;
 
 /**
@@ -30,7 +26,7 @@ public class SqlStoreDatasource implements StoreDatasource {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        session.save(record);
+        session.merge(record);
 
         session.getTransaction().commit();
         session.flush();
@@ -139,22 +135,4 @@ public class SqlStoreDatasource implements StoreDatasource {
         persist();
     }
 
-    @Entity
-    public static class StoreRecord {
-        @Id
-        @GeneratedValue(strategy= GenerationType.AUTO)
-        int id;
-
-        int food;
-        int crystite;
-        int energy;
-        int smithore;
-        int energyPrice;
-        int foodPrice;
-        int crystitePrice;
-        int smithorePrice;
-
-        int muleCount;
-
-    }
 }

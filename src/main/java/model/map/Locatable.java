@@ -1,5 +1,9 @@
 package model.map;
 
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+
 /**
  * Created by brian on 9/13/15.
  *
