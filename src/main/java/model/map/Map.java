@@ -1,10 +1,9 @@
 package model.map;
 
 import com.google.inject.Inject;
-import data.LocationDatasource;
+import data.abstractsources.LocationDatasource;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.lang.reflect.Array;
 import java.util.Collection;

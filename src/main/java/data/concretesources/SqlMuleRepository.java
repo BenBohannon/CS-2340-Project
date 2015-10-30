@@ -1,12 +1,12 @@
-package data;
+package data.concretesources;
 
+import data.abstractsources.SqlRepository;
 import model.entity.Mule;
 import model.entity.MuleType;
 import org.hibernate.Session;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import java.util.List;
 
@@ -40,11 +40,6 @@ public class SqlMuleRepository extends SqlRepository<Mule> {
     @Override
     public int size() {
         return 0;
-    }
-
-    @Override
-    List<Mule> getAllRelatedTo(int foreignKey) {
-        return getAllRelatedTo(foreignKey, "MuleRecord", "playerId");
     }
 
     private Mule parseMuleRecord(MuleRecord muleRecord) {

@@ -1,14 +1,10 @@
-package data;
+package data.abstractsources;
 
 import com.google.inject.Inject;
-import model.entity.Mule;
+import data.abstractsources.Repository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -25,6 +21,4 @@ public abstract class SqlRepository<T> implements Repository<T> {
         session.close();
         return list;
     }
-
-    abstract List<T> getAllRelatedTo(int foreignKey);
 }

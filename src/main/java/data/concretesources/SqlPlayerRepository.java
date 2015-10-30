@@ -1,25 +1,14 @@
-package data;
+package data.concretesources;
 
 import com.google.inject.Inject;
-import javafx.scene.paint.Color;
+import data.abstractsources.SqlRepository;
 import model.entity.Mule;
 import model.entity.Player;
 import model.entity.PlayerRace;
-import model.map.Tile;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.annotations.Table;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -53,11 +42,6 @@ public class SqlPlayerRepository extends SqlRepository<Player> {
     @Override
     public int size() {
         return 0;
-    }
-
-    @Override
-    List<Player> getAllRelatedTo(int foreignKey) {
-        return null;
     }
 
     @Entity

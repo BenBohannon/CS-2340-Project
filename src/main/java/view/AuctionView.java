@@ -1,7 +1,7 @@
 package view;
 
 import com.google.inject.Inject;
-import data.Repository;
+import data.abstractsources.Repository;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,7 +12,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.entity.Player;
-import model.service.DefaultTurnService;
 import presenters.AuctionPresenter;
 
 import java.util.ArrayList;

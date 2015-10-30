@@ -1,6 +1,7 @@
-package data;
+package data.concretesources;
 
 import com.google.inject.Inject;
+import data.abstractsources.StoreDatasource;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,7 +23,7 @@ public class SqlStoreDatasource implements StoreDatasource {
     StoreRecord record;
 
     public SqlStoreDatasource() {
-        queryLatest();
+        populateRecord();
     }
 
     private void persist() {
@@ -36,7 +37,7 @@ public class SqlStoreDatasource implements StoreDatasource {
         session.close();
     }
 
-    private void queryLatest() {
+    private void populateRecord() {
         Session session = sessionFactory.openSession();
         Query query = session.createQuery("FROM StoreRecord");
         List<StoreRecord> list = query.list();
@@ -70,63 +71,63 @@ public class SqlStoreDatasource implements StoreDatasource {
 
     @Override
     public int getEnergy() {
-        queryLatest();
+        populateRecord();
 
         return record.energy;
     }
 
     @Override
     public int getFood() {
-        queryLatest();
+        populateRecord();
 
         return record.food;
     }
 
     @Override
     public int getSmithore() {
-        queryLatest();
+        populateRecord();
 
         return record.smithore;
     }
 
     @Override
     public int getCrystite() {
-        queryLatest();
+        populateRecord();
 
         return record.crystite;
     }
 
     @Override
     public int getEnergyPrice() {
-        queryLatest();
+        populateRecord();
 
         return record.energyPrice;
     }
 
     @Override
     public int getFoodPrice() {
-        queryLatest();
+        populateRecord();
 
         return record.foodPrice;
     }
 
     @Override
     public int getSmithorePrice() {
-        queryLatest();
+        populateRecord();
 
         return record.smithorePrice;
     }
 
     @Override
     public int getCrystitePrice() {
-        queryLatest();
+        populateRecord();
 
         return record.crystitePrice;
     }
 
     @Override
     public int getMuleCount() {
-        queryLatest();
+        populateRecord();
 
         return record.muleCount;
     }
@@ -139,7 +140,7 @@ public class SqlStoreDatasource implements StoreDatasource {
     }
 
     @Entity
-    private class StoreRecord {
+    public static class StoreRecord {
         @Id
         @GeneratedValue(strategy= GenerationType.AUTO)
         int id;

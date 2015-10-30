@@ -1,7 +1,7 @@
 package model.service;
 
 import com.google.inject.Inject;
-import data.StoreDatasource;
+import data.abstractsources.StoreDatasource;
 import model.entity.Player;
 
 /**

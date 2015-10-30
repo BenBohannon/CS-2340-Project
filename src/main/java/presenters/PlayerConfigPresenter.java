@@ -1,9 +1,7 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.Repository;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.RadioButton;
+import data.abstractsources.Repository;
 import javafx.scene.paint.Color;
 import model.entity.Player;
 import model.entity.PlayerRace;

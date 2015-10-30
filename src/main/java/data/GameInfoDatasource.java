@@ -32,10 +32,6 @@ public class GameInfoDatasource {
         this.round = round;
     }
 
-    public int getFoodRequirement(int round) {
-        return (round / 4) + 3;
-    }
-
     public static int BTU(int numBTU) {
         return numBTU * 15;
     }

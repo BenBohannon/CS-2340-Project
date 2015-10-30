@@ -2,7 +2,7 @@ package presenters;
 
 import com.google.inject.Inject;
 import data.MapInfoHolder;
-import data.Repository;
+import data.abstractsources.Repository;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

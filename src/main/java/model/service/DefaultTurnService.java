@@ -2,7 +2,8 @@ package model.service;
 
 import com.google.inject.Inject;
 import data.GameInfoDatasource;
-import data.Repository;
+import data.abstractsources.Repository;
+import data.abstractsources.TurnDatasource;
 import javafx.application.Platform;
 import model.entity.Player;
 
@@ -62,18 +63,24 @@ public class DefaultTurnService {
     private Repository<Player> playerRepository;
     private StoreService storeService;
     private GameInfoDatasource gameInfoDatasource;
+    private TurnDatasource turnDatasource;
 
     //players are added to this list after their turns are complete//
     private volatile Collection<Integer> finishedPlayerIds;
 
     @Inject
     public DefaultTurnService(Repository<Player> playerRepository, StoreService storeService,
-                              GameInfoDatasource gameInfoDatasource) {
+                              GameInfoDatasource gameInfoDatasource, TurnDatasource turnDatasource) {
         this.playerRepository = playerRepository;
         turnEndListeners = new LinkedList<>();
         finishedPlayerIds = new LinkedList<>();
         this.storeService = storeService;
         this.gameInfoDatasource = gameInfoDatasource;
+        this.turnDatasource = turnDatasource;
+    }
+
+    public static int getFoodRequirement(int round) {
+        return (round / 4) + 3;
     }
 
     /**
@@ -104,7 +111,7 @@ public class DefaultTurnService {
 
 
         //turn time in millis//
-        float foodRatio = (float) currentPlayer.getFood() / gameInfoDatasource.getFoodRequirement(roundNumber);
+        float foodRatio = (float) currentPlayer.getFood() / getFoodRequirement(roundNumber);
         //turnDuration = (int) (currentPlayer.getPTU(GameInfoDatasource.BTU(4)) + currentPlayer.getPTU(GameInfoDatasource.BTU(91)) * foodRatio);
         turnDuration = 10000L; //TEMPORARY CODE. EVERY PLAYER GETS 10 seconds.
         stopwatch = turnDuration;

@@ -4,6 +4,13 @@
 
 import com.google.inject.TypeLiteral;
 import data.*;
+import data.abstractsources.LocationDatasource;
+import data.abstractsources.Repository;
+import data.abstractsources.StoreDatasource;
+import data.abstractsources.TurnDatasource;
+import data.concretesources.MemoryPlayerRepository;
+import data.concretesources.SqlStoreDatasource;
+import data.concretesources.SqlTurnDatasource;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.entity.Player;
@@ -11,7 +18,6 @@ import model.map.Locatable;
 import model.map.Map;
 import model.service.DefaultTurnService;
 import model.service.StoreService;
-import org.h2.jdbcx.JdbcConnectionPool;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -55,7 +61,7 @@ public class Start extends Application {
         final Map map = new Map(lds);
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
-                new StoreService(new SqlStoreDatasource()), new GameInfoDatasource());
+                new StoreService(new SqlStoreDatasource()), new GameInfoDatasource(), new SqlTurnDatasource());
 
         // A SessionFactory is set up once for an application!
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
@@ -75,6 +81,7 @@ public class Start extends Application {
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
+            binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
 
             binder.bind(LocationDatasource.class).toInstance(lds);
             binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);

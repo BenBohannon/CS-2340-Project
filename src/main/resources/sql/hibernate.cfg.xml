@@ -21,6 +21,10 @@
 
         <mapping class="model.entity.Player" />
         <mapping class="model.entity.Mule" />
+        <mapping class="data.concretesources.SqlTurnDatasource.TurnRecord" />
+
+        <!--this may need to be made public-->
+        <mapping class="data.concretesources.SqlStoreDatasource.StoreRecord" />
 
     </session-factory>
 

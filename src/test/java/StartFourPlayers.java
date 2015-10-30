@@ -2,6 +2,10 @@ import com.google.inject.TypeLiteral;
 
 import data.*;
 
+import data.abstractsources.LocationDatasource;
+import data.abstractsources.Repository;
+import data.abstractsources.StoreDatasource;
+import data.concretesources.MemoryPlayerRepository;
 import model.entity.Player;
 import model.entity.PlayerRace;
 import model.map.Locatable;

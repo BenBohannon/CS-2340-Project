@@ -1,6 +1,7 @@
-package data;
+package data.concretesources;
 
 
+import data.abstractsources.LocationDatasource;
 import model.map.Locatable;
 
 import java.util.Collection;

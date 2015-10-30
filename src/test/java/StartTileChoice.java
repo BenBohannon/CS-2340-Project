@@ -1,5 +1,9 @@
 import com.google.inject.TypeLiteral;
 import data.*;
+import data.abstractsources.LocationDatasource;
+import data.abstractsources.Repository;
+import data.abstractsources.StoreDatasource;
+import data.concretesources.MemoryPlayerRepository;
 import javafx.application.Application;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
