@@ -21,4 +21,20 @@ public abstract class PersistableLocatable implements Locatable {
     public int getId() {
         return id;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ((obj == null) || !(obj instanceof PersistableLocatable)) {
+            return false;
+        }
+
+        PersistableLocatable other = (PersistableLocatable) obj;
+
+        return id == other.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }
