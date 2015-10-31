@@ -16,12 +16,13 @@ import java.util.stream.Collectors;
  */
 public class SqlLocationDatasource implements LocationDatasource {
 
-    @Inject
     SessionFactory sessionFactory;
 
     Set<PersistableLocatable> records;
 
-    public SqlLocationDatasource() {
+    @Inject
+    public SqlLocationDatasource(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
         populateRecords();
     }
 

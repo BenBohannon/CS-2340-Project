@@ -5,7 +5,9 @@ import model.entity.Player;
 
 import java.util.ArrayList;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by brian on 9/24/15.
@@ -21,8 +23,10 @@ public class MemoryPlayerRepository implements Repository<Player> {
     }
 
     @Override
-    public List<Player> getAll() {
-        return players;
+    public Set<Player> getAll() {
+        HashSet set = new HashSet<>();
+        set.addAll(players);
+        return set;
     }
 
     @Override

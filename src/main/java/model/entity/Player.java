@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by brian on 9/17/15.
@@ -28,10 +29,11 @@ public class Player {
     private int id;
     private PlayerRace race;
     private String name;
-    @Transient
+    @Convert(converter = ColorConverter.class)
     private Color color;
-    @Transient
-    private ArrayList<Tile> ownedProperties = new ArrayList<>();
+    @OneToMany
+    @Cascade(CascadeType.ALL)
+    private List<Tile> ownedProperties;
     @Transient
     public int rank;
 
@@ -41,6 +43,7 @@ public class Player {
 
     public Player() {
         mules = new LinkedList<>();
+        ownedProperties = new ArrayList<>();
     }
 
     public void addMule(Mule mule) {
@@ -152,7 +155,7 @@ public class Player {
      * Gets and returns the properties that the player owns
      * @return the properties the player owns
      */
-    public ArrayList<Tile> getOwnedProperties() {
+    public List<Tile> getOwnedProperties() {
         return ownedProperties;
     }
 
@@ -216,9 +219,6 @@ public class Player {
         return ownedProperties.contains(property);
     }
 
-    //TODO implement ownership of land
-
-
     @Override
     public boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof Player)) {
@@ -251,5 +251,24 @@ public class Player {
 
     public int getScore() {
         return score;
+    }
+
+    @Converter
+    public static class ColorConverter implements AttributeConverter<Color, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(Color attribute) {
+            return attribute.hashCode();
+        }
+
+        @Override
+        public Color convertToEntityAttribute(Integer dbData) {
+            int lowBits = 0x0000FF;
+            int r = ((dbData >> 16) & lowBits);
+            int g = (dbData >> 8) & lowBits;
+            int b = (dbData & lowBits);
+            return Color.color((double) r / 255, (double) g / 255, (double) b / 255);
+        }
+
     }
 }

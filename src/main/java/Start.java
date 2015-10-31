@@ -60,9 +60,6 @@ public class Start extends Application {
 
         final Map map = new Map(lds);
 
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
-                new StoreService(new SqlStoreDatasource()), new GameInfoDatasource(), new SqlTurnDatasource());
-
         // A SessionFactory is set up once for an application!
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure(new File(getClass().getResource("/sql/hibernate.cfg.xml").getFile())) // configures settings from hibernate.cfg.xml
@@ -78,6 +75,10 @@ public class Start extends Application {
             StandardServiceRegistryBuilder.destroy(registry);
         }
         final SessionFactory finalSessionFactory = sessionFactory;
+
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
+                new StoreService(new SqlStoreDatasource(finalSessionFactory)), new GameInfoDatasource(),
+                new SqlTurnDatasource(finalSessionFactory));
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);

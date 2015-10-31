@@ -13,12 +13,13 @@ import java.util.List;
  */
 public class SqlStoreDatasource implements StoreDatasource {
 
-    @Inject
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     StoreRecord record;
 
-    public SqlStoreDatasource() {
+    @Inject
+    public SqlStoreDatasource(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
         populateRecord();
     }
 

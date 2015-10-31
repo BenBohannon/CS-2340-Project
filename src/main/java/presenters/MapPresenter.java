@@ -15,10 +15,8 @@ import model.service.DefaultTurnService;
 import view.MapView;
 
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 /**
@@ -58,7 +56,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
                 //Get a winning player.
                 Player eventPlayer = null;
-                List<Player> players = playerRepository.getAll();
+                Set<Player> players = playerRepository.getAll();
                 for (Player p : players) {
                     if (p.rank >= players.size()/2) {
                         if (eventPlayer == null) {

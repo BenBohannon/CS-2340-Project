@@ -3,6 +3,8 @@ package presenters;
 import com.google.inject.Inject;
 import data.MapInfoHolder;
 import data.abstractsources.Repository;
+import data.concretesources.MemoryLocationDatasource;
+import data.concretesources.MemoryPlayerRepository;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

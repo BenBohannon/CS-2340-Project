@@ -1,68 +1,121 @@
 package data.concretesources;
 
 import com.google.inject.Inject;
-import data.abstractsources.SqlRepository;
-import model.entity.Mule;
+import data.abstractsources.Repository;
 import model.entity.Player;
-import model.entity.PlayerRace;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by brian on 10/26/15.
  */
-public class SqlPlayerRepository extends SqlRepository<Player> {
+public class SqlPlayerRepository implements Repository<Player> {
+
+    private SessionFactory sessionFactory;
+
+    private Set<Player> records;
 
     @Inject
-    SqlRepository<Mule> muleSqlRepository;
+    public SqlPlayerRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+        populateRecords();
+    }
+
+    private void populateRecords() {
+        if (records == null) {
+            records = new HashSet<>();
+        }
+
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("FROM Player");
+
+        records.clear();
+        if (query.list() != null) {
+            records.addAll(query.list());
+        }
+        session.close();
+    }
+
+    private void persist() {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        if (records != null) {
+            for (Player p : records) {
+                session.merge(p);
+            }
+        }
+
+        session.getTransaction().commit();
+        session.flush();
+        session.close();
+    }
 
     @Override
-    public List<Player> getAll() {
-        return null;
+    public Set<Player> getAll() {
+        populateRecords();
+        return records;
     }
 
     @Override
     public Player get(Object id) {
-        return null;
+        populateRecords();
+
+        if (id == null || !(id instanceof Integer)) {
+            throw new IllegalArgumentException("id null or not int");
+        }
+
+        int targetId = (Integer) id;
+
+        Optional<Player> p = records.stream()
+                .filter(player -> player.getId() == targetId)
+                .findFirst();
+        return p.isPresent() ? p.get() : null;
     }
 
     @Override
     public Player save(Player entity) {
-        return null;
+        populateRecords();
+        if (records.stream()
+                .anyMatch(player -> player.getId() == entity.getId())) {
+            records.remove(entity);
+        }
+
+        records.add(entity);
+        persist();
+
+        return get(entity.getId());
     }
 
     @Override
     public Player delete(Object id) {
-        return null;
+        populateRecords();
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Player p = get(id);
+        if (p != null) {
+            records.remove(p);
+        }
+
+        session.delete(p);
+
+        session.getTransaction().commit();
+        session.flush();
+        session.close();
+
+        populateRecords();
+
+        return p;
     }
 
     @Override
     public int size() {
-        return 0;
-    }
+        populateRecords();
 
-    @Entity
-    class PlayerRecord {
-        @Id
-        int id;
-        String name;
-        int score;
-        int smithore;
-        int crystite;
-        int food;
-        int energy;
-        int money;
-        @Enumerated
-        PlayerRace race;
-        int color;
-
-        int gameInfoId;
-
-        //ArrayList<Tile> ownedProperties = new ArrayList<>();
-
-        //Collection<Mule> mules;
+        return records.size();
     }
 }

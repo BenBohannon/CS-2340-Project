@@ -11,12 +11,13 @@ import java.util.List;
  */
 public class SqlTurnDatasource implements TurnDatasource {
 
-    @Inject
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     private TurnRecord record;
 
-    public SqlTurnDatasource() {
+    @Inject
+    public SqlTurnDatasource(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
         populateRecord();
     }
 
