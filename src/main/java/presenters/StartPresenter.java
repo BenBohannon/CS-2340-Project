@@ -12,6 +12,13 @@ public class StartPresenter extends Presenter {
     @FXML
     protected void handleStartEvent(ActionEvent event) {
         context.showScreen("config_screen.fxml");
-        //this presenter's view will now be removed, and the config_screen's started//
+
     }
+
+    @FXML
+    protected void handleLoadEvent(ActionEvent event) {
+        context.showScreen("map_grid_tile_select.fxml");
+    }
+
+
 }
