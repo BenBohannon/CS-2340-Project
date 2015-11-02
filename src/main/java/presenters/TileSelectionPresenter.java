@@ -3,8 +3,6 @@ package presenters;
 import com.google.inject.Inject;
 import data.MapInfoHolder;
 import data.abstractsources.Repository;
-import data.concretesources.MemoryLocationDatasource;
-import data.concretesources.MemoryPlayerRepository;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,8 +22,8 @@ import model.map.Tile;
 import view.MapView;
 
 import java.awt.*;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.List;
 
 
 /**
@@ -76,55 +74,59 @@ public class TileSelectionPresenter extends Presenter {
             }
         }
 
-        pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                Player player = null;
-                Point location = getCoords(border.getTranslateX(), border.getTranslateY());
-                Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
-                boolean tileIsOwned = playerRepository.getAll().stream()
-                        .anyMatch(p -> p.getOwnedProperties().contains(tile));
-                if (!tileIsOwned && tileID != 22) {
-                    switch (event.getCode()) {
-                        case A:
-                            player = playerRepository.get(0);
-                            if (!playerHasChosen[0]) { // && if tile is free && if player exists
-                                player = playerRepository.get(0);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border1);
-                                playerHasChosen[0] = true;
-                                // assign tile to player
-                            }
-                            break;
-                        case S:
-                            if (playerRepository.getAll().size() > 1 && !playerHasChosen[1]) {
-                                player = playerRepository.get(1);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border2);
-                                playerHasChosen[1] = true;
-                            }
-                            break;
-                        case D:
-                            if (playerRepository.getAll().size() > 2 && !playerHasChosen[2]) {
-                                player = playerRepository.get(2);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border3);
-                                playerHasChosen[2] = true;
-                            }
-                            break;
-                        case F:
-                            if (playerRepository.getAll().size() > 3 && !playerHasChosen[3]) {
-                                player = playerRepository.get(3);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border4);
-                                playerHasChosen[3] = true;
-                            }
-                            break;
-                    }
+        pane.setOnKeyPressed(event -> {
+            Player player = null;
+            Point location = getCoords(border.getTranslateX(), border.getTranslateY());
+            Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
+
+            List<Player> players = new ArrayList<>(playerRepository.getAll().size());
+            players.addAll(playerRepository.getAll());
+
+            boolean tileIsOwned = players.stream()
+                    .anyMatch(p -> p.getOwnedProperties().contains(tile));
+            if (!tileIsOwned && tileID != 22) {
+                switch (event.getCode()) {
+                    case A:
+                        player = playerRepository.get(players.get(0).getId()); // TODO check if this line should be edited
+                        if (!playerHasChosen[0]) { // && if tile is free && if player exists
+                            player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                            playerRepository.save(player);
+                            Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                            pane.getChildren().add(border1);
+                            playerHasChosen[0] = true;
+                            // assign tile to player
+                        }
+                        break;
+                    case S:
+                        if (playerRepository.getAll().size() > 1 && !playerHasChosen[1]) {
+                            player = playerRepository.get(players.get(1).getId());
+                            player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                            playerRepository.save(player);
+                            Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                            pane.getChildren().add(border2);
+                            playerHasChosen[1] = true;
+                        }
+                        break;
+                    case D:
+                        if (playerRepository.getAll().size() > 2 && !playerHasChosen[2]) {
+                            player = playerRepository.get(players.get(2).getId());
+                            player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                            playerRepository.save(player);
+                            Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                            pane.getChildren().add(border3);
+                            playerHasChosen[2] = true;
+                        }
+                        break;
+                    case F:
+                        if (playerRepository.getAll().size() > 3 && !playerHasChosen[3]) {
+                            player = playerRepository.get(players.get(3).getId());
+                            player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                            playerRepository.save(player);
+                            Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                            pane.getChildren().add(border4);
+                            playerHasChosen[3] = true;
+                        }
+                        break;
                 }
             }
         });
@@ -132,9 +134,6 @@ public class TileSelectionPresenter extends Presenter {
         pane.getChildren().add(border);
 
         pane.setOnMousePressed(event -> onClick());
-
-        //Start iterating through tiles to select
-        iterateTiles();
 
         //Create a map.
         for (int i = 0; i < 9; i++) {
@@ -152,6 +151,9 @@ public class TileSelectionPresenter extends Presenter {
                 }
             }
         }
+
+        //Start iterating through tiles to select
+        iterateTiles();
     }
 
     private void iterateTiles() {

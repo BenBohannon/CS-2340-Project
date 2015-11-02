@@ -58,7 +58,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
                 Player eventPlayer = null;
                 Set<Player> players = playerRepository.getAll();
                 for (Player p : players) {
-                    if (p.rank >= players.size()/2) {
+                    if (p.rank >= players.size() / 2) {
                         if (eventPlayer == null) {
                             eventPlayer = p;
                         } else if (rand.nextBoolean()) {
@@ -160,7 +160,8 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
                 .anyMatch(t -> t.getLocation().getCol() == tileCoord.y && t.getLocation().getRow() == tileCoord.x);
         */
         Tile[] tile = map.getOccupants(tileCoord.x, tileCoord.y, Tile.class);
-        boolean owned = (getCurrentPlayer() == tile[0].ownedBy());
+        Player temp = getCurrentPlayer();
+        boolean owned = (getCurrentPlayer().equals(tile[0].ownedBy()));
 
         //check for another mule//
         boolean occupied = map.getOccupants(tileCoord.x, tileCoord.y, Mule.class).length > 0;

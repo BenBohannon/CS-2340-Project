@@ -31,13 +31,13 @@ public class Player {
     private String name;
     @Convert(converter = ColorConverter.class)
     private Color color;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @Cascade(CascadeType.ALL)
     private List<Tile> ownedProperties;
     @Transient
     public int rank;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @Cascade(CascadeType.ALL)
     public Collection<Mule> mules;
 

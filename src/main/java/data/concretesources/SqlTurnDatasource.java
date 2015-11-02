@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import data.abstractsources.TurnDatasource;
 import org.hibernate.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -34,10 +35,11 @@ public class SqlTurnDatasource implements TurnDatasource {
 
     private void populateRecord() {
         Session session = sessionFactory.openSession();
-        org.hibernate.Query query = session.createQuery("FROM StoreRecord");
+        org.hibernate.Query query = session.createQuery("FROM TurnRecord");
         List<TurnRecord> list = query.list();
         if (list == null || list.size() < 1) {
             record = new TurnRecord();
+            record.finishedPlayerIds = new LinkedList<>();
         } else {
             record = list.get(0);
         }

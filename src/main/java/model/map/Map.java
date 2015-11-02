@@ -22,11 +22,15 @@ public class Map {
 
     private LocationDatasource datasource;
 
+    private int rows;
+    private int cols;
+
     @Inject
     public Map(LocationDatasource lds) {
         datasource = lds;
-        int rows = 5;
-        int cols = 9;
+
+        rows = 5;
+        cols = 9;
 
         if (rows < 1 || cols < 1) {
             throw new IllegalArgumentException("model.map must have positive integer rows and columns");
@@ -38,7 +42,10 @@ public class Map {
             for (int j = 0; j < rows; j++) {
                 locationGrid[i][j] = new Location(i, j, this);
                 Collection<Locatable> occupants = datasource.get(i, j);
+
                 for (Locatable e : occupants) {
+                    // Location property was instantiated by hibernate, but we want to use the ones in our grid //
+                    e.setLocation(null);
                     add(e, i, j);
                 }
             }
@@ -54,6 +61,7 @@ public class Map {
      * @return an array with the type of the Objects requested
      */
     public <T extends Locatable> T[] getOccupants(int row, int col, Class<T> type) {
+        refreshFromDatasource();
         return locationGrid[row][col].getOccupants(type);
     }
 
@@ -84,12 +92,14 @@ public class Map {
             throw new IllegalArgumentException("row or col value is out of bounds.");
         }
 
+
         Location newLocation = locationGrid[row][col];
+        locatable.setLocation(newLocation);
+
+        datasource.save(row, col, locatable);
         if (!newLocation.addOccupant(locatable)) {
             throw new RuntimeException("internal issue");
         }
-
-        locatable.setLocation(newLocation);
     }
 
     /**
@@ -97,6 +107,7 @@ public class Map {
      * @param locatable locatable to be removed from the model.map grid
      */
     public void remove(Locatable locatable) {
+        datasource.remove(locatable);
         if (!locatable.getLocation().removeOccupant(locatable)) {
             throw new RuntimeException("internal issue");
         }
@@ -134,6 +145,24 @@ public class Map {
     private boolean isInBounds(int row, int col) {
         return row >= 0  && row < getRows()
                 && col >= 0 && col < getCols();
+    }
+
+    private void refreshFromDatasource() {
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+
+                for (Locatable pastEle : locationGrid[i][j].getOccupants()) {
+                    locationGrid[i][j].removeOccupant(pastEle);
+                }
+
+                Collection<Locatable> occupants = datasource.get(i, j);
+                for (Locatable e : occupants) {
+                    // Location property was instantiated by hibernate, but we want to use the ones in our grid //
+                    e.setLocation(null);
+                    add(e, i, j);
+                }
+            }
+        }
     }
 
 //=================================================================================

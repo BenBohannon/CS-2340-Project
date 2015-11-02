@@ -20,7 +20,7 @@ public class Tile extends PersistableLocatable {
     @Embedded
     Map.Location loc;
 
-    @Transient
+    @OneToOne(fetch = FetchType.EAGER)
     private Player owner;
 
     public Tile() {

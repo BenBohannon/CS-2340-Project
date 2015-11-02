@@ -201,6 +201,7 @@ public class DefaultTurnService {
     public boolean isAllTurnsOver() {
 //        System.out.println("finished ids size: " + finishedPlayerIds.size());
 //        System.out.println("player repository size: " + playerRepository.getAll().size());
+        //TODO something null here
         return finishedPlayerIds.size() == playerRepository.getAll().size();
     }
 

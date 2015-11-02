@@ -56,6 +56,11 @@ public class StartTileChoice extends Application {
             public void saveAll(int row, int col, Collection<Locatable> locatables) {
                 throw new NotImplementedException();
             }
+
+            @Override
+            public void remove(Locatable locatable) {
+
+            }
         };
 
 

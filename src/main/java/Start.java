@@ -8,11 +8,10 @@ import data.abstractsources.LocationDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.StoreDatasource;
 import data.abstractsources.TurnDatasource;
-import data.concretesources.MemoryPlayerRepository;
-import data.concretesources.SqlStoreDatasource;
-import data.concretesources.SqlTurnDatasource;
+import data.concretesources.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import model.entity.Mule;
 import model.entity.Player;
 import model.map.Locatable;
 import model.map.Map;
@@ -22,6 +21,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.loader.custom.sql.SQLQueryParser;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -38,29 +38,7 @@ public class Start extends Application {
     @Override
     public void start(Stage stage) {
 
-        //empty datasource for model.map//
-        LocationDatasource lds = new LocationDatasource() {
-            @Override
-            public Collection<Locatable> get(int row, int col) {
-                return new ArrayList<>();
-            }
-
-            @Override
-            public void save(int row, int col, Locatable locatable) {
-                throw new NotImplementedException();
-            }
-
-            @Override
-            public void saveAll(int row, int col, Collection<Locatable> locatables) {
-                throw new NotImplementedException();
-            }
-        };
-
-        final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
-
-        final Map map = new Map(lds);
-
-        // A SessionFactory is set up once for an application!
+        // A SessionFactory is set up once for an application //
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure(new File(getClass().getResource("/sql/hibernate.cfg.xml").getFile())) // configures settings from hibernate.cfg.xml
                 .build();
@@ -76,20 +54,18 @@ public class Start extends Application {
         }
         final SessionFactory finalSessionFactory = sessionFactory;
 
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
+        final DefaultTurnService turnService = new DefaultTurnService(new SqlPlayerRepository(finalSessionFactory),
                 new StoreService(new SqlStoreDatasource(finalSessionFactory)), new GameInfoDatasource(),
                 new SqlTurnDatasource(finalSessionFactory));
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
             binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
+            binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
+            binder.bind(new TypeLiteral<Repository<Player>>(){}).to(SqlPlayerRepository.class);
+            binder.bind(new TypeLiteral<Repository<Mule>>(){}).to(SqlMuleRepository.class);
 
-            binder.bind(LocationDatasource.class).toInstance(lds);
-            binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
             binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
-
-            //temp
-            binder.bind(Map.class).toInstance(map);
             binder.bind(DefaultTurnService.class).toInstance(turnService);
         }, stage);
 

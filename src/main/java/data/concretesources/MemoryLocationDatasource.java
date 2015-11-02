@@ -27,4 +27,9 @@ public class MemoryLocationDatasource implements LocationDatasource {
     public void saveAll(int row, int col, Collection<Locatable> locatables) {
 
     }
+
+    @Override
+    public void remove(Locatable locatable) {
+
+    }
 }

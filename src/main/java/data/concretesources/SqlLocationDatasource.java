@@ -99,4 +99,24 @@ public class SqlLocationDatasource implements LocationDatasource {
 
         persist();
     }
+
+    @Override
+    public void remove(Locatable locatable) {
+        if (locatable == null || !(locatable instanceof PersistableLocatable)) {
+            throw new IllegalArgumentException("argument must be non-null instance of PersistableLocatable");
+        }
+
+        populateRecords();
+
+        if (records.contains(locatable)) {
+            Session session = sessionFactory.openSession();
+            session.beginTransaction();
+
+            session.delete(locatable);
+
+            session.getTransaction().commit();
+            session.flush();
+            session.close();
+        }
+    }
 }
