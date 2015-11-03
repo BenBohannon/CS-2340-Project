@@ -61,7 +61,6 @@ public class Map {
      * @return an array with the type of the Objects requested
      */
     public <T extends Locatable> T[] getOccupants(int row, int col, Class<T> type) {
-        refreshFromDatasource();
         return locationGrid[row][col].getOccupants(type);
     }
 
@@ -147,7 +146,7 @@ public class Map {
                 && col >= 0 && col < getCols();
     }
 
-    private void refreshFromDatasource() {
+    public void refreshFromDatasource() {
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
 

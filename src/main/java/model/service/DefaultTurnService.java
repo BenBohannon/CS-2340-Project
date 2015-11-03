@@ -250,6 +250,9 @@ public class DefaultTurnService {
         if (!turnInProgress) {
             throw new IllegalStateException(TURN_NOT_IN_PROGRESS);
         }
+        if (turnEndListeners.contains(listener)) {
+            throw new IllegalArgumentException("You have already registered this turn end listener");
+        }
         turnEndListeners.add(listener);
     }
 

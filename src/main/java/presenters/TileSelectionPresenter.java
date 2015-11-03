@@ -77,6 +77,7 @@ public class TileSelectionPresenter extends Presenter {
         pane.setOnKeyPressed(event -> {
             Player player = null;
             Point location = getCoords(border.getTranslateX(), border.getTranslateY());
+            map.refreshFromDatasource();
             Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
 
             List<Player> players = new ArrayList<>(playerRepository.getAll().size());
