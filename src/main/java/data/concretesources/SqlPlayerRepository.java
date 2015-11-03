@@ -87,7 +87,7 @@ public class SqlPlayerRepository implements Repository<Player> {
         records.add(entity);
         persist();
 
-        return get(entity.getId());
+        return null;
     }
 
     @Override

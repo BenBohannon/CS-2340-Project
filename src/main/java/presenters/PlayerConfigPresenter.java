@@ -7,6 +7,8 @@ import model.entity.Player;
 import model.entity.PlayerRace;
 import view.PlayerConfigView;
 
+import java.util.Set;
+
 /**
  * Created by brian on 9/10/15.
  */
@@ -65,6 +67,10 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             }
             p.setId(-1);
             playerRepository.save(p);
+
+            String color = String.format("%h", playerColor.hashCode());
+
+            Set<Player> playerSet = playerRepository.getAll();
 
             if (numPlayersLeft > 0) {
                 PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) context.showScreen("player_config.fxml");

@@ -17,7 +17,7 @@
         <property name="hibernate.connection.password"></property>
         <property name="hibernate.default_schema">PUBLIC</property>
         <property name="hibernate.dialect">org.hibernate.dialect.H2Dialect</property>
-        <property name="hibernate.hbm2ddl.auto">create</property>
+        <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
 
         <mapping class="model.entity.Player" />
         <mapping class="model.entity.Mule" />

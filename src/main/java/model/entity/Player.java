@@ -263,10 +263,11 @@ public class Player {
 
         @Override
         public Color convertToEntityAttribute(Integer dbData) {
-            int lowBits = 0x0000FF;
-            int r = ((dbData >> 16) & lowBits);
-            int g = (dbData >> 8) & lowBits;
-            int b = (dbData & lowBits);
+            String dbDataStr = String.format("%h", dbData);
+            int lowBits = 0x000000FF;
+            int r = ((dbData >> 24) & lowBits);
+            int g = (dbData >> 16) & lowBits;
+            int b = (dbData >> 8) & lowBits;
             return Color.color((double) r / 255, (double) g / 255, (double) b / 255);
         }
 
