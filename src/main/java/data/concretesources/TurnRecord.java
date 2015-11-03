@@ -13,6 +13,6 @@ public class TurnRecord {
     int id;
 
     int round;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     List<Integer> finishedPlayerIds;
 }
