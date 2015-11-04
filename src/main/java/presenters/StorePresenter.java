@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import model.entity.Store;
+import model.service.StoreService;
 import model.service.DefaultTurnService;
 
 /**
@@ -16,7 +16,7 @@ public class StorePresenter extends Presenter {
     DefaultTurnService turnService;
 
     @Inject
-    Store store;
+    StoreService storeService;
 
     @FXML
     private Label crystiteLabel;
@@ -36,42 +36,42 @@ public class StorePresenter extends Presenter {
     }
 
     public void handleSmithoreBuyClick(ActionEvent event) {
-        store.sellSmithore(turnService.getCurrentPlayer());
+        storeService.sellSmithore(turnService.getCurrentPlayer());
         updateSmithoreLabel();
     }
 
     public void handleSmithoreSellClick(ActionEvent event) {
-        store.buySmithore(turnService.getCurrentPlayer(), 10);      //temp price
+        storeService.buySmithore(turnService.getCurrentPlayer(), 10);      //temp price
         updateSmithoreLabel();
     }
 
     public void handleCrystiteBuyClick(ActionEvent event) {
-        store.sellCrystite(turnService.getCurrentPlayer());
+        storeService.sellCrystite(turnService.getCurrentPlayer());
         updateCrysLabel();
     }
 
     public void handleCrystiteSellClick(ActionEvent event) {
-        store.buyCrystite(turnService.getCurrentPlayer(), 20);
+        storeService.buyCrystite(turnService.getCurrentPlayer(), 20);
         updateCrysLabel();
     }
 
     public void handleFoodBuyClick(ActionEvent event) {
-        store.sellFood(turnService.getCurrentPlayer());
+        storeService.sellFood(turnService.getCurrentPlayer());
         updateFoodLabel();
     }
 
     public void handleFoodSellClick(ActionEvent event) {
-        store.buyFood(turnService.getCurrentPlayer(), 5);
+        storeService.buyFood(turnService.getCurrentPlayer(), 5);
         updateFoodLabel();
     }
 
     public void handleEnergyBuyClick(ActionEvent event) {
-        store.sellEnergy(turnService.getCurrentPlayer());
+        storeService.sellEnergy(turnService.getCurrentPlayer());
         updateEnergyLabel();
     }
 
     public void handleEnergySellClick(ActionEvent event) {
-        store.buyEnergy(turnService.getCurrentPlayer(), 10);
+        storeService.buyEnergy(turnService.getCurrentPlayer(), 10);
         updateEnergyLabel();
     }
 
@@ -80,18 +80,18 @@ public class StorePresenter extends Presenter {
     }
 
     private void updateCrysLabel() {
-        crystiteLabel.setText("Crystite: " + store.getCrystite());
+        crystiteLabel.setText("Crystite: " + storeService.getCrystite());
     }
 
     private void updateFoodLabel() {
-        foodLabel.setText("Food: " + store.getFood());
+        foodLabel.setText("Food: " + storeService.getFood());
     }
 
     private void updateEnergyLabel() {
-        energyLabel.setText("Energy: " + store.getEnergy());
+        energyLabel.setText("Energy: " + storeService.getEnergy());
     }
 
     private void updateSmithoreLabel() {
-        smithoreLabel.setText("Smithore: " + store.getSmithore());
+        smithoreLabel.setText("Smithore: " + storeService.getSmithore());
     }
 }

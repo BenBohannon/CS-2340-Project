@@ -1,22 +1,23 @@
 import com.google.inject.TypeLiteral;
-import data.MemoryPlayerRepository;
-import data.Repository;
-import data.StoreInfoHolder;
-import javafx.application.Application;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
+
+import data.*;
+
 import model.entity.Player;
 import model.entity.PlayerRace;
-import model.entity.StoreDatasource;
 import model.map.Locatable;
-import model.map.LocationDatasource;
 import model.map.Map;
 import model.service.DefaultTurnService;
+import model.service.StoreService;
+import org.h2.jdbcx.JdbcConnectionPool;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import javafx.application.Application;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
 
 /**
  * Created by brian on 10/5/15.
@@ -32,7 +33,7 @@ public class StartFourPlayers extends Application {
     public void start(Stage stage) {
 
         //empty datasource for model.map//
-        LocationDatasource lds = new LocationDatasource() {
+        final LocationDatasource lds = new LocationDatasource() {
             @Override
             public Collection<Locatable> get(int row, int col) {
                 return new ArrayList<>();
@@ -58,8 +59,9 @@ public class StartFourPlayers extends Application {
 
             private int energyStorePrice = energyPrice;
             private int foodStorePrice = foodPrice;
-            private int smithoreStorePrice= smithorePrice;
+            private int smithoreStorePrice = smithorePrice;
             private int crystiteStorePrice = crystitePrice;
+            private int muleCount = 10;
 
             @Override
             public void saveAmount(int energy, int food, int smithore, int crystite) {
@@ -70,7 +72,8 @@ public class StartFourPlayers extends Application {
             }
 
             @Override
-            public void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice) {
+            public void savePrice(int energyPrice, int foodPrice,
+                                  int smithorePrice, int crystitePrice) {
                 energyStorePrice = energyPrice;
                 foodStorePrice = foodPrice;
                 smithoreStorePrice = smithorePrice;
@@ -116,6 +119,16 @@ public class StartFourPlayers extends Application {
             public int getCrystitePrice() {
                 return crystiteStorePrice;
             }
+
+            @Override
+            public int getMuleCount() {
+                return muleCount;
+            }
+
+            @Override
+            public void setMuleCount(int muleCount) {
+                this.muleCount = muleCount;
+            }
         };
 
 
@@ -135,33 +148,22 @@ public class StartFourPlayers extends Application {
         p2.setColor(Color.BLANCHEDALMOND);
         playerRepository.save(p2);
 
-//        Player p3 = new Player();
-//        p3.setName("P3");
-//        p3.setId(2);
-//        p3.setColor(Color.AQUAMARINE);
-//        p3.setRace(PlayerRace.Ugaite);
-//        playerRepository.save(p3);
-//
-//        Player p4 = new Player();
-//        p4.setName("P4");
-//        p4.setId(3);
-//        p4.setRace(PlayerRace.Human);
-//        p4.setColor(Color.BLACK);
-//        playerRepository.save(p4);
-
-
         final Map map = new Map(lds);
 
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreInfoHolder());
+        final DefaultTurnService turnService =
+                new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
+
+        final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
 
         PresenterContext context = new PresenterContext((binder) -> {
-            binder.bind(LocationDatasource.class).toInstance(lds);
-            binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
+                binder.bind(LocationDatasource.class).toInstance(lds);
+                binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
+            binder.bind(JdbcConnectionPool.class).toInstance(connectionPool);
 
-            //temp
-            binder.bind(Map.class).toInstance(map);
-            binder.bind(StoreDatasource.class).toInstance(sds);
-            binder.bind(DefaultTurnService.class).toInstance(turnService);
+                //temp
+                binder.bind(Map.class).toInstance(map);
+                binder.bind(StoreDatasource.class).toInstance(sds);
+                binder.bind(DefaultTurnService.class).toInstance(turnService);
         }, stage);
 
         context.showScreen("/presenters/map_grid_tile_select.fxml");

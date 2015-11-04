@@ -1,7 +1,8 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.TurnEndListener;
+import model.service.StoreService;
+import model.service.TurnEndListener;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import model.entity.Player;
@@ -17,6 +18,9 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Inject
     DefaultTurnService turnService;
+
+    @Inject
+    StoreService storeService;
 
     @Override
     public void initialize() {
@@ -36,6 +40,7 @@ public class TownPresenter extends Presenter implements TurnEndListener {
         } else if (buttonText.equals("CRYSTITE MULES")) {
             mule = new Mule(MuleType.Crysite);
         }
+        storeService.decrementMuleCount();
         turnService.getCurrentPlayer().addMule(mule);
         MapPresenter presenter = returnToMapUninitialized();
         presenter.setIsPlacingMule(true, mule);

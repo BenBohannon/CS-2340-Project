@@ -2,7 +2,6 @@ package data;
 
 
 import model.map.Locatable;
-import model.map.LocationDatasource;
 
 import java.util.Collection;
 

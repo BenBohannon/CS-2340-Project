@@ -1,17 +1,15 @@
 import com.google.inject.TypeLiteral;
-import data.MemoryPlayerRepository;
-import data.Repository;
-import data.StoreInfoHolder;
+import data.*;
 import javafx.application.Application;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.entity.Player;
 import model.entity.PlayerRace;
-import model.entity.StoreDatasource;
 import model.map.Locatable;
-import model.map.LocationDatasource;
 import model.map.Map;
 import model.service.DefaultTurnService;
+import model.service.StoreService;
+import org.h2.jdbcx.JdbcConnectionPool;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -60,6 +58,8 @@ public class StartTileChoice extends Application {
             private int foodStorePrice = foodPrice;
             private int smithoreStorePrice= smithorePrice;
             private int crystiteStorePrice = crystitePrice;
+
+            private int muleCount = 10;
 
             @Override
             public void saveAmount(int energy, int food, int smithore, int crystite) {
@@ -116,6 +116,16 @@ public class StartTileChoice extends Application {
             public int getCrystitePrice() {
                 return crystiteStorePrice;
             }
+
+            @Override
+            public int getMuleCount() {
+                return muleCount;
+            }
+
+            @Override
+            public void setMuleCount(int muleCount) {
+                this.muleCount = muleCount;
+            }
         };
 
 
@@ -138,11 +148,14 @@ public class StartTileChoice extends Application {
 
         final Map map = new Map(lds);
 
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreInfoHolder());
+        final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
+
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
             binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
+            binder.bind(JdbcConnectionPool.class).toInstance(connectionPool);
 
             //temp
             binder.bind(Map.class).toInstance(map);
