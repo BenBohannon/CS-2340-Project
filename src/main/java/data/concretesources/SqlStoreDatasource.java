@@ -43,6 +43,10 @@ public class SqlStoreDatasource implements StoreDatasource {
         } else {
             record = list.get(0);
         }
+        record.smithore = StoreDatasource.smithore;
+        record.food = StoreDatasource.food;
+        record.energy = StoreDatasource.energy;
+        record.crystite = StoreDatasource.crystite;
         session.close();
     }
 

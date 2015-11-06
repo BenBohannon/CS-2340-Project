@@ -46,6 +46,12 @@ public class Player {
         ownedProperties = new ArrayList<>();
     }
 
+    public Player(int money) {
+        this.money = money;
+        mules = new LinkedList<>();
+        ownedProperties = new ArrayList<>();
+    }
+
     public void addMule(Mule mule) {
         if (mule == null) {
             throw new NullPointerException("mule cannot be null");

@@ -64,6 +64,7 @@ public class DefaultTurnService {
     private StoreService storeService;
     private GameInfoDatasource gameInfoDatasource;
     private TurnDatasource turnDatasource;
+    private Object[] players;
 
     //players are added to this list after their turns are complete//
     private volatile List<Integer> finishedPlayerIds;
@@ -77,6 +78,7 @@ public class DefaultTurnService {
         this.storeService = storeService;
         this.gameInfoDatasource = gameInfoDatasource;
         this.turnDatasource = turnDatasource;
+        players = playerRepository.getAll().toArray();
 
         initializeFromDatasource();
     }
@@ -287,25 +289,25 @@ public class DefaultTurnService {
         this.roundNumber = roundNumber;
     }
 
-    public void calculateRank() {
-        Object[] playersByRank = playerRepository.getAll().toArray();
-        for (int i = 0; i < playersByRank.length; i++) {
+    public static void calculateRank(Object[] players) {
+        //Object[] playersByRank = playerRepository.getAll().toArray();
+        for (int i = 0; i < players.length; i++) {
             int big = i;
-            for (int j = i; j < playersByRank.length; j++) {
-                Player p1 = (Player) playersByRank[j];
-                Player p2 = (Player) playersByRank[i];
+            for (int j = i; j < players.length; j++) {
+                Player p1 = (Player) players[j];
+                Player p2 = (Player) players[big];
                 if (p1.getMoney() > p2.getMoney()) {
                     big = j;
                 }
             }
             if (big != i) {
-                Player tempPlayer = (Player) playersByRank[i];
-                playersByRank[i] = playersByRank[big];
-                playersByRank[big] = tempPlayer;
+                Player tempPlayer = (Player) players[i];
+                players[i] = players[big];
+                players[big] = tempPlayer;
             }
         }
-        for (int i = 0; i < playersByRank.length; i++) {
-            Player temp = (Player) playersByRank[i];
+        for (int i = 0; i < players.length; i++) {
+            Player temp = (Player) players[i];
             temp.setRank(i + 1);
         }
     }
@@ -318,7 +320,7 @@ public class DefaultTurnService {
     public Player endTurn() {
         stopTimers();
         Player player = currentPlayer;
-        calculateRank();
+        DefaultTurnService.calculateRank(players);
         System.out.println(currentPlayer.getRank());
         //currentPlayer = null;
         turnInProgress = false;
