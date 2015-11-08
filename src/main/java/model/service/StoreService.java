@@ -23,8 +23,8 @@ public class StoreService {
 
 
     @Inject
-    public StoreService(StoreDatasource storeDatasource) {
-        this.storeDatasource = storeDatasource;
+    public StoreService(StoreDatasource pStoreDatasource) {
+        storeDatasource = pStoreDatasource;
 
         energy = storeDatasource.getEnergy();
         food = storeDatasource.getFood();
@@ -37,35 +37,35 @@ public class StoreService {
         crystitePrice = storeDatasource.getCrystitePrice();
     }
 
-    public int getEnergy() {
+    public final int getEnergy() {
         return energy;
     }
 
-    public int getFood() {
+    public final int getFood() {
         return food;
     }
 
-    public int getSmithore() {
+    public final int getSmithore() {
         return smithore;
     }
 
-    public int getCrystite() {
+    public final int getCrystite() {
         return crystite;
     }
 
-    public int getMuleCount() {
+    public final int getMuleCount() {
         return storeDatasource.getMuleCount();
     }
 
-    public void decrementMuleCount() {
+    public final void decrementMuleCount() {
         storeDatasource.setMuleCount(storeDatasource.getMuleCount() - 1);
     }
 
     /**
-     * Sells 1 energy unit to the specified player, at the going rate
-     * @param player The player buying the energy
+     * Sells 1 ENERGY unit to the specified player, at the going rate
+     * @param player The player buying the ENERGY
      */
-    public void sellEnergy(Player player) {
+    public final void sellEnergy(Player player) {
         if (energy > 0) {
             if (player.getMoney() + energyPrice >= 0) {
                 energy--;
@@ -78,11 +78,11 @@ public class StoreService {
     }
 
     /**
-     * Buys 1 unit of energy from the player at the going rate
-     * @param player The player who is selling the energy
+     * Buys 1 unit of ENERGY from the player at the going rate
+     * @param player The player who is selling the ENERGY
      * @param price The price it is being sold for
      */
-    public void buyEnergy(Player player, int price) {
+    public final void buyEnergy(Player player, int price) {
         if (player.getEnergy() > 0) {
             energy++;
             player.offsetEnergy(-1);
@@ -92,10 +92,10 @@ public class StoreService {
     }
 
     /**
-     * Sells 1 unit of food to the specified player at the going rate
-     * @param player The player buying the food
+     * Sells 1 unit of FOOD to the specified player at the going rate
+     * @param player The player buying the FOOD
      */
-    public void sellFood(Player player) {
+    public final void sellFood(Player player) {
         if (food > 0) {
             if (player.getMoney() + foodPrice >= 0) {
                 food--;
@@ -107,11 +107,11 @@ public class StoreService {
     }
 
     /**
-     * Buys 1 unit of food from the specified player at the going rate
-     * @param player The player selling the food
+     * Buys 1 unit of FOOD from the specified player at the going rate
+     * @param player The player selling the FOOD
      * @param price The price it is being sold for
      */
-    public void buyFood(Player player, int price) {
+    public final void buyFood(Player player, int price) {
         if (player.getFood() > 0) {
             food++;
             player.offsetFood(-1);
@@ -121,10 +121,10 @@ public class StoreService {
     }
 
     /**
-     * Sells 1 unit of smithore to the specified player at the going rate
-     * @param player The player buying the smithore
+     * Sells 1 unit of SMITHORE to the specified player at the going rate
+     * @param player The player buying the SMITHORE
      */
-    public void sellSmithore(Player player) {
+    public final void sellSmithore(Player player) {
         if (smithore > 0) {
             if (player.getMoney() + smithorePrice >= 0) {
                 smithore--;
@@ -136,11 +136,11 @@ public class StoreService {
     }
 
     /**
-     * Buys 1 unit of smithore from the specified player at the going rate
-     * @param player The player selling the smithore
+     * Buys 1 unit of SMITHORE from the specified player at the going rate
+     * @param player The player selling the SMITHORE
      * @param price The price it is being sold for
      */
-    public void buySmithore(Player player, int price) {
+    public final void buySmithore(Player player, int price) {
         if (player.getSmithore() > 0) {
             smithore++;
             player.offsetSmithore(-1);
@@ -150,10 +150,10 @@ public class StoreService {
     }
 
     /**
-     * Sells 1 unit of crystite to the specified player at the going rate
-     * @param player The player buying the crystite
+     * Sells 1 unit of CRYSTITE to the specified player at the going rate
+     * @param player The player buying the CRYSTITE
      */
-    public void sellCrystite(Player player) {
+    public final void sellCrystite(Player player) {
         if (crystite > 0) {
             if (player.getMoney() + crystitePrice >= 0) {
                 crystite--;
@@ -165,11 +165,11 @@ public class StoreService {
     }
 
     /**
-     * Buys 1 unit of crystite from the specified player at the going rate
-     * @param player The player selling the crystite
+     * Buys 1 unit of CRYSTITE from the specified player at the going rate
+     * @param player The player selling the CRYSTITE
      * @param price The price it is being sold for
      */
-    public void buyCrystite(Player player, int price) {
+    public final void buyCrystite(Player player, int price) {
         if (player.getCrystite() > 0) {
             crystite++;
             player.offsetCrystite(-1);
@@ -178,35 +178,35 @@ public class StoreService {
         }
     }
 
-    public int getEnergyPrice() {
+    public final int getEnergyPrice() {
         return energyPrice;
     }
 
-    public void setEnergyPrice(int energyPrice) {
-        this.energyPrice = energyPrice;
+    public final void setEnergyPrice(int pEnergyPrice) {
+        this.energyPrice = pEnergyPrice;
     }
 
-    public int getFoodPrice() {
+    public final int getFoodPrice() {
         return foodPrice;
     }
 
-    public void setFoodPrice(int foodPrice) {
-        this.foodPrice = foodPrice;
+    public final void setFoodPrice(int pFoodPrice) {
+        this.foodPrice = pFoodPrice;
     }
 
-    public int getSmithorePrice() {
+    public final int getSmithorePrice() {
         return smithorePrice;
     }
 
-    public void setSmithorePrice(int smithorePrice) {
-        this.smithorePrice = smithorePrice;
+    public final void setSmithorePrice(int pSmithorePrice) {
+        this.smithorePrice = pSmithorePrice;
     }
 
-    public int getCrystitePrice() {
+    public final int getCrystitePrice() {
         return crystitePrice;
     }
 
-    public void setCrystitePrice(int crystitePrice) {
-        this.crystitePrice = crystitePrice;
+    public final void setCrystitePrice(int pCrystitePrice) {
+        this.crystitePrice = pCrystitePrice;
     }
 }

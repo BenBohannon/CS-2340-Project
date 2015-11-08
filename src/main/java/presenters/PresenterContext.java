@@ -80,8 +80,8 @@ public class PresenterContext {
         if (handler instanceof View) {
             //If fxml designated a view, give injected presenter a ref to the view//
             View view = (View) handler;
-            view.presenter.view = view;
-            return view.presenter;
+            view.getPresenter().setView(view);
+            return view.getPresenter();
         } else {
             //If fxml designated a Presenter, simply return it//
             Presenter p = (Presenter) handler;
@@ -102,7 +102,7 @@ public class PresenterContext {
      */
     public Presenter showScreen(String fxmlFileName) {
         Presenter p = showScreenUninitialized(fxmlFileName);
-        if (p.view != null) {
+        if (p.getView() != null) {
             p.initialize();
         }
         return p;

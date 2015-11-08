@@ -1,14 +1,8 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.concretesources.StoreRecord;
-import data.concretesources.TurnRecord;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import model.entity.Mule;
-import model.entity.Player;
-import model.map.PersistableLocatable;
-import model.map.Tile;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,7 +17,14 @@ public class StartPresenter extends Presenter {
     SessionFactory sessionFactory;
 
     @FXML
-    protected void handleStartEvent(ActionEvent event) {
+    /**
+     * reads past game state from db and starts
+     *
+     * NOTE: Cyclomatic complexity is high, but the code is easy to follow.
+     *  This will be replaced by loading a single GameState object when
+     *  multiple saves are implemented
+     */
+    protected final void handleStartEvent(ActionEvent event) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
@@ -74,12 +75,12 @@ public class StartPresenter extends Presenter {
         session.flush();
         session.close();
 
-        context.showScreen("config_screen.fxml");
+        getContext().showScreen("config_screen.fxml");
     }
 
     @FXML
-    protected void handleLoadEvent(ActionEvent event) {
-        context.showScreen("map_grid_tile_select.fxml");
+    protected final void handleLoadEvent(ActionEvent event) {
+        getContext().showScreen("map_grid_tile_select.fxml");
     }
 
 

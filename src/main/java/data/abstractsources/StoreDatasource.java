@@ -5,26 +5,26 @@ package data.abstractsources;
  */
 public interface StoreDatasource {
 
-    public int energy = 16;
-    public int food = 16;
-    public int smithore = 0;
-    public int crystite = 0;
+    int ENERGY = 16;
+    int FOOD = 16;
+    int SMITHORE = 0;
+    int CRYSTITE = 0;
 
-    public int energyPrice = -2500;
-    public int foodPrice = -3000;
-    public int smithorePrice = -5000;
-    public int crystitePrice = -10000;
+    int ENERGY_PRICE = -2500;
+    int FOOD_PRICE = -3000;
+    int SMITHORE_PRICE = -5000;
+    int CRYSTITE_PRICE = -10000;
 
-    public void saveAmount(int energy, int food, int smithore, int crystite);
-    public void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice);
-    public int getEnergy();
-    public int getFood();
-    public int getSmithore();
-    public int getCrystite();
-    public int getEnergyPrice();
-    public int getFoodPrice();
-    public int getSmithorePrice();
-    public int getCrystitePrice();
+    void saveAmount(int energy, int food, int smithore, int crystite);
+    void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice);
+    int getEnergy();
+    int getFood();
+    int getSmithore();
+    int getCrystite();
+    int getEnergyPrice();
+    int getFoodPrice();
+    int getSmithorePrice();
+    int getCrystitePrice();
     int getMuleCount();
     void setMuleCount(int muleCount);
 

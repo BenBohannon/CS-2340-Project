@@ -7,7 +7,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 import presenters.GameConfigPresenter;
-import presenters.PlayerConfigPresenter;
 
 /**
  * Created by brian on 10/18/15.
@@ -15,19 +14,20 @@ import presenters.PlayerConfigPresenter;
 public class GameConfigView extends View<GameConfigPresenter> {
 
     //FXML textFills//
+    // not using getters and setters to avoid clutter //
     @FXML
     Color transparent;
     @FXML
     Color red;
 
     @FXML
-    Label difficulty_validation_label;
+    Label difficultyValidationLabel;
     @FXML
-    Label map_validation_label;
+    Label mapValidationLabel;
     @FXML
-    Label numPlayers_validation_label;
+    Label numPlayersValidationLabel;
     @FXML
-    Label main_validation_label;
+    Label mainValidationLabel;
 
     @FXML
     ToggleGroup difficultyToggleGroup;
@@ -37,11 +37,11 @@ public class GameConfigView extends View<GameConfigPresenter> {
     ToggleGroup numPlayersToggleGroup;
 
     @FXML
-    protected void handleFinishButtonAction(ActionEvent event) {
+    public final void handleFinishButtonAction(ActionEvent event) {
         if (validateForm()) {
-            presenter.finishConfigure(((RadioButton) difficultyToggleGroup.getSelectedToggle()).getText(),
-                ((RadioButton) mapToggleGroup.getSelectedToggle()).getText(),
-                Integer.parseInt(((RadioButton) numPlayersToggleGroup.getSelectedToggle()).getText()));
+            getPresenter().finishConfigure(((RadioButton) difficultyToggleGroup.getSelectedToggle()).getText(),
+                    ((RadioButton) mapToggleGroup.getSelectedToggle()).getText(),
+                    Integer.parseInt(((RadioButton) numPlayersToggleGroup.getSelectedToggle()).getText()));
         }
     }
 
@@ -50,27 +50,27 @@ public class GameConfigView extends View<GameConfigPresenter> {
         boolean allValid = true;
 
         if (difficultyToggleGroup.getSelectedToggle() == null) {
-            difficulty_validation_label.setTextFill(red);
+            difficultyValidationLabel.setTextFill(red);
             allValid = false;
         } else {
-            difficulty_validation_label.setTextFill(transparent);
+            difficultyValidationLabel.setTextFill(transparent);
         }
 
         if (mapToggleGroup.getSelectedToggle() == null) {
-            map_validation_label.setTextFill(red);
+            mapValidationLabel.setTextFill(red);
             allValid = false;
         } else {
-            map_validation_label.setTextFill(transparent);
+            mapValidationLabel.setTextFill(transparent);
         }
 
         if (numPlayersToggleGroup.getSelectedToggle() == null) {
-            numPlayers_validation_label.setTextFill(red);
+            numPlayersValidationLabel.setTextFill(red);
             allValid = false;
         } else {
-            numPlayers_validation_label.setTextFill(transparent);
+            numPlayersValidationLabel.setTextFill(transparent);
         }
 
-        main_validation_label.setTextFill(allValid ? transparent : red);
+        mainValidationLabel.setTextFill(allValid ? transparent : red);
         return allValid;
     }
 }

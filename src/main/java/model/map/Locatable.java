@@ -1,8 +1,5 @@
 package model.map;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 
 /**
  * Created by brian on 9/13/15.
@@ -18,12 +15,12 @@ public interface Locatable {
      * info about the a client Object.
      * @return
      */
-    public Map.Location getLocation();
+    Map.Location getLocation();
 
     /**
      * Should assign the privately defined {@link model.map.Map.Location} instance.
      * Used internally by the Map class to move Locatables.
      * Calling this method anywhere else will cause an error.
      */
-    public void setLocation(Map.Location location);
+    void setLocation(Map.Location location);
 }

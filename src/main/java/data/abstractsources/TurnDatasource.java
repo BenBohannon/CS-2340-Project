@@ -1,8 +1,5 @@
 package data.abstractsources;
 
-import model.entity.Player;
-
-import java.util.Collection;
 import java.util.List;
 
 /**

@@ -46,6 +46,8 @@ public class DefaultTurnService {
 
     private static final String TURN_IN_PROGRESS = "A turn is currently in progress.";
     private static final String TURN_NOT_IN_PROGRESS = "No turn is currently in progress";
+    private static final long TURN_LENGTH_DEFAULT = 10000L;
+    private static final long TURN_START_DELAY_DEFAULT = 2000L;
 
     private volatile int roundNumber;
     private volatile Collection<TurnEndListener> turnEndListeners;
@@ -57,8 +59,6 @@ public class DefaultTurnService {
     private volatile long delay;
 
     private volatile Timer timer;
-    private volatile Timer timer2;
-    private volatile double stopwatch;
 
     private Repository<Player> playerRepository;
     private StoreService storeService;
@@ -113,11 +113,10 @@ public class DefaultTurnService {
 
 
         //turn time in millis//
-        float foodRatio = (float) currentPlayer.getFood() / getFoodRequirement(roundNumber);
-        //turnDuration = (int) (currentPlayer.getPTU(GameInfoDatasource.BTU(4)) + currentPlayer.getPTU(GameInfoDatasource.BTU(91)) * foodRatio);
-        turnDuration = 10000L; //TEMPORARY CODE. EVERY PLAYER GETS 10 seconds.
-        stopwatch = turnDuration;
-        delay = 2000L;
+        //float foodRatio = (float) currentPlayer.getFood() / getFoodRequirement(roundNumber);
+        //turnDuration = (int) (currentPlayer.getPTU(GameInfoDatasource.getBTU(4)) + currentPlayer.getPTU(GameInfoDatasource.getBTU(91)) * foodRatio);
+        turnDuration = TURN_LENGTH_DEFAULT;
+        delay = TURN_START_DELAY_DEFAULT;
 
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -126,19 +125,6 @@ public class DefaultTurnService {
                 endTurn();
             }
         }, turnDuration + delay);
-
-        timer2 = new Timer();
-        timer2.schedule(new TimerTask() {
-                           @Override
-                           public void run() {
-                               Platform.runLater(() ->
-                               {
-                                   stopwatch -= 11;
-                                   if (stopwatch <= 0) { stopwatch = turnDuration; timer2.cancel(); }
-                               });
-                           }
-                       },
-                delay, 10L);
 
         turnStartTime = new Date().getTime();
         turnEndListeners = new LinkedList<>();
@@ -155,18 +141,20 @@ public class DefaultTurnService {
             timer.cancel();
             timer = null;
         }
-        if (timer2 != null) {
-            timer2.cancel();
-            timer2 = null;
-        }
     }
 
     /**
-     * Get time remaining in turn
+     * Get fraction of time remaining in turn from 0.0 to 1.0
      * @return stopwatch
      */
-    public double getTimeRemaining() {
-        return stopwatch / turnDuration;
+    public double getFractionRemaining() {
+        if (isTurnInProgress()) {
+            double now = new Date().getTime();
+            double elapsed = now - turnStartTime;
+            return (turnDuration - elapsed) / turnDuration;
+        } else {
+            throw new IllegalStateException("No turn in progress.");
+        }
     }
 
     /**

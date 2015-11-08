@@ -53,7 +53,7 @@
     </VBox>
     <!--<ColorPicker GridPane.columnIndex="1" GridPane.rowIndex="4" />-->
     <Button mnemonicParsing="false" onAction="#handleFinishButtonAction" text="Finish" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
-    <Label fx:id="difficulty_validation_label" text="required!" textFill="$transparent" GridPane.columnIndex="2" GridPane.rowIndex="1">
+    <Label fx:id="difficultyValidationLabel" text="required!" textFill="$transparent" GridPane.columnIndex="2" GridPane.rowIndex="1">
       <font>
         <Font size="10.0" fx:id="x1" />
       </font>
@@ -64,9 +64,9 @@
           <Color blue="0.000" green="0.000" opacity="1" red="1.000" fx:id="red" />
        </textFill>
     </Label>
-    <Label fx:id="map_validation_label" font="$x1" text="required!" textFill="$transparent" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-    <Label fx:id="numPlayers_validation_label" font="$x1" text="required!" textFill="$transparent" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-    <Label fx:id="main_validation_label" font="$x1" prefWidth="157.0" text="some items are missing!" textFill="$transparent" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    <Label fx:id="mapValidationLabel" font="$x1" text="required!" textFill="$transparent" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+    <Label fx:id="numPlayersValidationLabel" font="$x1" text="required!" textFill="$transparent" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+    <Label fx:id="mainValidationLabel" font="$x1" prefWidth="157.0" text="some items are missing!" textFill="$transparent" GridPane.columnIndex="1" GridPane.rowIndex="5" />
   </children>
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />

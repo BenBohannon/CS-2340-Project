@@ -1,10 +1,7 @@
 package model.entity;
 
-import model.map.Locatable;
 import model.map.Map;
 import model.map.PersistableLocatable;
-import org.hibernate.annotations.Generated;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.*;
 
@@ -24,41 +21,40 @@ public class Mule extends PersistableLocatable {
         //Required default constructor for hibernate//
     }
 
-    public Mule(MuleType type) {
-        this.type = type;
+    public Mule(MuleType pType) {
+        this.type = pType;
     }
 
-    public MuleType getType() {
+    public final MuleType getType() {
         return type;
     }
 
-    public void setType(MuleType type) {
-        this.type = type;
+    public final void setType(MuleType pType) {
+        this.type = pType;
     }
 
     @Override
-    public Map.Location getLocation() {
+    public final Map.Location getLocation() {
         return location;
     }
 
     @Override
-    public void setLocation(Map.Location location) {
-        this.location = location;
+    public final void setLocation(Map.Location pLocation) {
+        this.location = pLocation;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    /**
+     * We can keep the definition of hashcode() from super, as our
+     * implementation here would be equivalent
+     */
+    public final boolean equals(Object obj) {
         if ((obj == null) || !(obj instanceof Mule)) {
             return false;
         }
 
         Mule other = (Mule) obj;
 
-        return other.getId() == id;
-    }
-
-    @Override
-    public int hashCode() {
-        return id;
+        return other.getId() == getId();
     }
 }

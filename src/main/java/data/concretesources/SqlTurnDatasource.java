@@ -17,8 +17,8 @@ public class SqlTurnDatasource implements TurnDatasource {
     private TurnRecord record;
 
     @Inject
-    public SqlTurnDatasource(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SqlTurnDatasource(SessionFactory pSessionFactory) {
+        this.sessionFactory = pSessionFactory;
         populateRecord();
     }
 
@@ -47,28 +47,28 @@ public class SqlTurnDatasource implements TurnDatasource {
     }
 
     @Override
-    public void saveRound(int round) {
+    public final void saveRound(int round) {
         record.round = round;
 
         persist();
     }
 
     @Override
-    public void saveFinishedPlayerIds(List<Integer> finishedPlayerIds) {
+    public final void saveFinishedPlayerIds(List<Integer> finishedPlayerIds) {
         record.finishedPlayerIds = finishedPlayerIds;
 
         persist();
     }
 
     @Override
-    public int getRound() {
+    public final int getRound() {
         populateRecord();
 
         return record.round;
     }
 
     @Override
-    public List<Integer> getFinishedPlayerIds() {
+    public final List<Integer> getFinishedPlayerIds() {
         populateRecord();
 
         return record.finishedPlayerIds;

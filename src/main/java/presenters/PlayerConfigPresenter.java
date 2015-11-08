@@ -36,14 +36,14 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             //show validation labels in view//
             allUnique = false;
             //NOTICE: view is already of correct type
-            view.showColorAlreadyChosen();
+            getView().showColorAlreadyChosen();
         }
 
         //check if name has already been used//
         if (playerRepository.getAll().stream().anyMatch(player -> player.getName().equals(playerName))) {
             //show validation labels in view//
             allUnique = false;
-            view.showNameAlreadyChosen();
+            getView().showNameAlreadyChosen();
         }
 
         //check if race has already been used//
@@ -51,7 +51,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             //show validation labels in view//
             allUnique = false;
             //NOTICE: view is already of correct type
-            view.showRaceAlreadyChosen();
+            getView().showRaceAlreadyChosen();
         }
 
 
@@ -68,15 +68,11 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             p.setId(-1);
             playerRepository.save(p);
 
-            String color = String.format("%h", playerColor.hashCode());
-
-            Set<Player> playerSet = playerRepository.getAll();
-
             if (numPlayersLeft > 0) {
-                PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) context.showScreen("player_config.fxml");
+                PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) getContext().showScreen("player_config.fxml");
                 nextPresenter.setNumPlayersLeft(--numPlayersLeft);
             } else {
-                context.showScreen("map_grid_tile_select.fxml");
+                getContext().showScreen("map_grid_tile_select.fxml");
             }
         }
     }

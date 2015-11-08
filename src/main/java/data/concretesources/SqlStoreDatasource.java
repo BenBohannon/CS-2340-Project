@@ -15,11 +15,11 @@ public class SqlStoreDatasource implements StoreDatasource {
 
     private SessionFactory sessionFactory;
 
-    StoreRecord record;
+    private StoreRecord record;
 
     @Inject
-    public SqlStoreDatasource(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SqlStoreDatasource(SessionFactory pSessionFactory) {
+        this.sessionFactory = pSessionFactory;
         populateRecord();
     }
 
@@ -47,7 +47,7 @@ public class SqlStoreDatasource implements StoreDatasource {
     }
 
     @Override
-    public void saveAmount(int energy, int food, int smithore, int crystite) {
+    public final void saveAmount(int energy, int food, int smithore, int crystite) {
         record.energy = energy;
         record.food = food;
         record.smithore = smithore;
@@ -57,7 +57,7 @@ public class SqlStoreDatasource implements StoreDatasource {
     }
 
     @Override
-    public void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice) {
+    public final void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice) {
         record.energyPrice = energyPrice;
         record.foodPrice = foodPrice;
         record.smithorePrice = smithorePrice;
@@ -67,70 +67,70 @@ public class SqlStoreDatasource implements StoreDatasource {
     }
 
     @Override
-    public int getEnergy() {
+    public final int getEnergy() {
         populateRecord();
 
         return record.energy;
     }
 
     @Override
-    public int getFood() {
+    public final int getFood() {
         populateRecord();
 
         return record.food;
     }
 
     @Override
-    public int getSmithore() {
+    public final int getSmithore() {
         populateRecord();
 
         return record.smithore;
     }
 
     @Override
-    public int getCrystite() {
+    public final int getCrystite() {
         populateRecord();
 
         return record.crystite;
     }
 
     @Override
-    public int getEnergyPrice() {
+    public final int getEnergyPrice() {
         populateRecord();
 
         return record.energyPrice;
     }
 
     @Override
-    public int getFoodPrice() {
+    public final int getFoodPrice() {
         populateRecord();
 
         return record.foodPrice;
     }
 
     @Override
-    public int getSmithorePrice() {
+    public final int getSmithorePrice() {
         populateRecord();
 
         return record.smithorePrice;
     }
 
     @Override
-    public int getCrystitePrice() {
+    public final int getCrystitePrice() {
         populateRecord();
 
         return record.crystitePrice;
     }
 
     @Override
-    public int getMuleCount() {
+    public final int getMuleCount() {
         populateRecord();
 
         return record.muleCount;
     }
 
     @Override
-    public void setMuleCount(int muleCount) {
+    public final void setMuleCount(int muleCount) {
         record.muleCount = muleCount;
 
         persist();

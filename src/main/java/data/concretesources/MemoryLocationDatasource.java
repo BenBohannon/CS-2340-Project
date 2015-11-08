@@ -11,10 +11,10 @@ import java.util.Collection;
  */
 public class MemoryLocationDatasource implements LocationDatasource {
 
-    public Collection<Locatable>[][] dataGrid;
+    private Collection<Locatable>[][] dataGrid;
 
     @Override
-    public Collection<Locatable> get(int row, int col) {
+    public final Collection<Locatable> get(int row, int col) {
         return dataGrid[row][col];
     }
 

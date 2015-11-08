@@ -1,18 +1,13 @@
 package data;
 
-import com.google.inject.Inject;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-
-import java.io.File;
-
 /**
  * Created by brian on 9/23/15.
  */
 public class GameInfoDatasource {
+
+    private static final int MAX_ROUNDS_DEFAULT = 12;
+
+    private static final int BTU_TO_SECONDS_RATIO = 15;
 
     public GameInfoDatasource() {
 
@@ -20,19 +15,19 @@ public class GameInfoDatasource {
 
     private int round;
 
-    public int getMaxRounds() {
-        return 12;
+    public final int getMaxRounds() {
+        return MAX_ROUNDS_DEFAULT;
     }
 
-    public int getRound() {
+    public final int getRound() {
         return round;
     }
 
-    public void setRound() {
-        this.round = round;
+    public final void setRound(int pRound) {
+        this.round = pRound;
     }
 
-    public static int BTU(int numBTU) {
-        return numBTU * 15;
+    public static int getBTU(int numBTU) {
+        return numBTU * BTU_TO_SECONDS_RATIO;
     }
 }

@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class AuctionView extends View<AuctionPresenter> {
 
-    //TODO: fix holding down buttons, put in store, put in buy/sell option for players, make food/energy rounds, timer
+    //TODO: fix holding down buttons, put in store, put in buy/sell option for players, make FOOD/ENERGY rounds, timer
     @Inject
     private Repository<Player> playerRepository;
     @FXML
@@ -30,6 +30,7 @@ public class AuctionView extends View<AuctionPresenter> {
     private Group pane2 = new Group();
     private Timer timer;
     private Timer timer2;
+    // will be used in future versions //
     private Timer timer3;
     private Timer timer4;
     private Timer timer5;
@@ -58,7 +59,7 @@ public class AuctionView extends View<AuctionPresenter> {
             playerName.setTranslateX(150 + 150 * i);
             playerName.setTranslateY(370);
             Text resources = new Text(playerList.get(i).getCrystite() + " Crystite\n"
-                    + playerList.get(i).getEnergy() + " Energy\n"
+                    + playerList.get(i).getEnergy() + " ENERGY\n"
                     + playerList.get(i).getFood() + " Food");
             resourceLists.add(resources);
             resources.setTranslateX(150 + 150 * i);
@@ -139,7 +140,7 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     public void handleContinueButtonAction() {
-        presenter.switchPresenter("map_grid_tile_select.fxml");
+        getPresenter().switchPresenter("map_grid_tile_select.fxml");
     }
 
     public void startSmithoreBidding() {

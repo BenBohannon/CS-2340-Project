@@ -15,6 +15,9 @@ import java.util.Set;
 public class MemoryPlayerRepository implements Repository<Player> {
 
     private static int nextPlayerId = 0;
+    private static int getNextPlayerId() {
+        return nextPlayerId++;
+    }
 
     private ArrayList<Player> players;
 
@@ -44,7 +47,7 @@ public class MemoryPlayerRepository implements Repository<Player> {
     @Override
     public Player save(Player entity) {
         if (entity.getId() == -1) {
-            entity.setId(nextPlayerId++);
+            entity.setId(getNextPlayerId());
         }
         if (players.contains(entity)) {
             //no action needed in memory//

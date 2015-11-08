@@ -11,11 +11,11 @@ public class AuctionPresenter extends Presenter<AuctionView> {
      * Loads the input .fxml file and gives up control to it.
      * @param str
      */
-    public void switchPresenter(String str) {
+    public final void switchPresenter(String str) {
 //        if (isListening) {
 //            turnService.removeTurnEndListener(listener);
 //            isListening = false;
 //        }
-        context.showScreen(str);
+        getContext().showScreen(str);
     }
 }

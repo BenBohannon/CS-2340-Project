@@ -4,11 +4,9 @@ import com.google.inject.Inject;
 import data.MapInfoHolder;
 import data.abstractsources.Repository;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -45,8 +43,8 @@ public class TileSelectionPresenter extends Presenter {
 
     final private Group border = createBorder(0, 0, Color.WHITE);
     private Timer timer;
-    private double mouseX;
-    private double mouseY;
+    // private double mouseX;
+    // private double mouseY;
     private volatile int tileID;
     private boolean[] playerHasChosen = new boolean[4];
 
@@ -61,10 +59,10 @@ public class TileSelectionPresenter extends Presenter {
 
         tileID = 0;
 
-        pane.setOnMouseMoved(event -> {
-            mouseX = event.getX();
-            mouseY = event.getY();
-        });
+//        pane.setOnMouseMoved(event -> {
+//            mouseX = event.getX();
+//            mouseY = event.getY();
+//        });
 
         for (Player player : playerRepository.getAll()) {
             for (Tile tile : player.getOwnedProperties()) {
@@ -207,14 +205,14 @@ public class TileSelectionPresenter extends Presenter {
             if (tileID % 45 == 0) {
                 border.setTranslateY(border.getTranslateY() - 500);
                 stopMovement();
-                context.showScreen("map_grid.fxml");
+                getContext().showScreen("map_grid.fxml");
             }
             border.setTranslateX(border.getTranslateX() + 100);
 
             //If everyone has already selected, quit.
             if (doneSelecting()) {
                 stopMovement();
-                context.showScreen("map_grid.fxml");
+                getContext().showScreen("map_grid.fxml");
             }
         });
     }

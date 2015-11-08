@@ -61,8 +61,8 @@ public class MapView extends View<MapPresenter> {
         character = createImageView("/races/Human.png", 25, 25);
         addImageToPane(character, 340, 235);
 
-        if (presenter.isTurnInProgress()) {
-            setCharacterImage(presenter.getCurrentPlayer().getRace().getImagePath());
+        if (getPresenter().isTurnInProgress()) {
+            setCharacterImage(getPresenter().getCurrentPlayer().getRace().getImagePath());
         }
 
         pane.setOnMouseMoved(event -> {
@@ -70,9 +70,9 @@ public class MapView extends View<MapPresenter> {
             mouseY = event.getY();
         });
 
-        pane.setOnMousePressed(event -> presenter.onClick(getImageCoordinates(character)));
+        pane.setOnMousePressed(event -> getPresenter().onClick(getImageCoordinates(character)));
 
-        Map map = presenter.getMap();
+        Map map = getPresenter().getMap();
         //Create a model.map.
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 5; j++) {
@@ -88,7 +88,7 @@ public class MapView extends View<MapPresenter> {
             }
         }
 
-        for (Player player : presenter.getPlayerRepository().getAll()) {
+        for (Player player : getPresenter().getPlayerRepository().getAll()) {
             for (Tile tile : player.getOwnedProperties()) {
                 Group border = createBorder(player.getColor());
                 pane.getChildren().add(border);
@@ -102,12 +102,12 @@ public class MapView extends View<MapPresenter> {
         timerRed = new Rectangle(200, 20, Color.RED);
         ColorAdjust monochrome = new ColorAdjust();
         monochrome.setSaturation(-1.0);
-        Blend blush = new Blend(BlendMode.MULTIPLY, monochrome,
-                new ColorInput(0, 0, character.getImage().getWidth(), character.getImage().getHeight(), Color.RED));
+//        Blend blush = new Blend(BlendMode.MULTIPLY, monochrome,
+//                new ColorInput(0, 0, character.getImage().getWidth(), character.getImage().getHeight(), Color.RED));
 
         pane.getChildren().addAll(timerWhite, timerRed);
 
-        if (presenter.isTurnInProgress()) {
+        if (getPresenter().isTurnInProgress()) {
             startMovement();
         }
     }
@@ -137,7 +137,7 @@ public class MapView extends View<MapPresenter> {
         //If the player is on the town tile, enter the town.
         Point temp = getImageCoordinates(character);
         if (temp.getX() == 4 && temp.getY() == 2) { //&& !isLandSelectPhase) {
-            Platform.runLater(presenter::enterCity);
+            Platform.runLater(getPresenter()::enterCity);
         }
     }
 
@@ -146,7 +146,7 @@ public class MapView extends View<MapPresenter> {
      */
     private void updateTimer() {
         Platform.runLater(() -> {
-            double timerPerc = presenter.getTimeRemaining();
+            double timerPerc = getPresenter().getFractionRemaining();
             timerRed.setWidth(timerPerc * 200);
         });
     }
@@ -218,7 +218,7 @@ public class MapView extends View<MapPresenter> {
      * Starts the turn with an intermission text, then allows movement.
      */
     public void showTurnStartText() {
-        text = new Text(250, 120, presenter.getCurrentPlayer().getName() + "'s Turn! Get Ready!");
+        text = new Text(250, 120, getPresenter().getCurrentPlayer().getName() + "'s Turn! Get Ready!");
         text.setFont(new Font(40));
         pane.getChildren().add(text);
         text.toFront();

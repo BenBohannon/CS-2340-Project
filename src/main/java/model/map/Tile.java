@@ -1,11 +1,9 @@
 package model.map;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import model.entity.Player;
 
 import javax.persistence.*;
-import java.util.Random;
 
 /**
  * Created by Ben 9/14/15.
@@ -27,41 +25,41 @@ public class Tile extends PersistableLocatable {
         // required default constructor //
     }
 
-    public Tile(TileType type) {
-        this.type = type;
+    public Tile(TileType pType) {
+        this.type = pType;
     }
 
     /**
      * Sets the owner of the tile
-     * @param owner The new owner of the tile
+     * @param pOwner The new owner of the tile
      */
-    public void setOwner(Player owner) {
-        this.owner = owner;
+    public final void setOwner(Player pOwner) {
+        owner = pOwner;
     }
 
     /**
      * Returns the owner if the tile is owned, and null if it is not
      * @return The owner of the tile
      */
-    public Player ownedBy() {
+    public final Player ownedBy() {
         return owner;
     }
 
-    public TileType getTileType() {
+    public final TileType getTileType() {
         return type;
     }
 
     /**
      * @see Locatable
      */
-    public Map.Location getLocation() {
+    public final Map.Location getLocation() {
         return loc;
     }
 
     /**
      * @see Locatable
      */
-    public void setLocation(Map.Location location) {
+    public final void setLocation(Map.Location location) {
         loc = location;
     }
 
@@ -69,7 +67,7 @@ public class Tile extends PersistableLocatable {
      * Returns the natively sized image for this Tile's TileType.
      * @return Image of this tile.
      */
-    public Image getImage() {
+    public final Image getImage() {
         return new Image(type.getImagePath());
     }
 
@@ -79,7 +77,22 @@ public class Tile extends PersistableLocatable {
      * @param height height of the image in pixels
      * @return Image of this tile.
      */
-    public Image getImage(int width, int height) {
+    public final Image getImage(int width, int height) {
         return new Image(type.getImagePath(), width, height, true, false);
+    }
+
+    @Override
+    /**
+     * We can keep the definition of hashcode() from super, as our
+     * implementation here would be equivalent
+     */
+    public final boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Tile)) {
+            return false;
+        }
+
+        Tile other = (Tile) obj;
+
+        return other.getId() == getId();
     }
 }

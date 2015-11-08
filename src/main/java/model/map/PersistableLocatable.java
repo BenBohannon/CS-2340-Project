@@ -1,6 +1,5 @@
 package model.map;
 
-import data.abstractsources.LocationDatasource;
 
 import javax.persistence.*;
 
@@ -12,29 +11,21 @@ import javax.persistence.*;
 public abstract class PersistableLocatable implements Locatable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
+    private int id;
 
-    public void setId(int id) {
-        this.id = id;
+    public final void setId(int pId) {
+        id = pId;
     }
 
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof PersistableLocatable)) {
-            return false;
-        }
-
-        PersistableLocatable other = (PersistableLocatable) obj;
-
-        return id == other.getId();
-    }
+    public abstract boolean equals(Object obj);
 
     @Override
-    public int hashCode() {
-        return id;
+    public final int hashCode() {
+        return getId();
     }
 }

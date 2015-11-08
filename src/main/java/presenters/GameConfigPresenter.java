@@ -1,9 +1,5 @@
 package presenters;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
 import view.GameConfigView;
 
 /**
@@ -11,11 +7,11 @@ import view.GameConfigView;
  */
 public class GameConfigPresenter extends Presenter<GameConfigView> {
 
-    public void finishConfigure(String difficulty, String map, int numPlayers) {
+    public final void finishConfigure(String difficulty, String map, int numPlayers) {
         //returns presenter of view passed, after stage has been set//
-        PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) context.showScreen("player_config.fxml");
+        PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) getContext().showScreen("player_config.fxml");
 
         //can pass info to next presenter//
-        nextPresenter.setNumPlayersLeft(--numPlayers);
+        nextPresenter.setNumPlayersLeft(numPlayers - 1);
     }
 }
