@@ -275,6 +275,9 @@ public class Player {
 
         @Override
         public final Integer convertToDatabaseColumn(Color attribute) {
+            if (attribute == null) {
+                return 0;
+            }
             return attribute.hashCode();
         }
 
