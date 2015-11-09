@@ -45,7 +45,7 @@ public class StorePresenter extends Presenter {
     }
 
     public final void handleSmithoreSellClick(ActionEvent event) {
-        storeService.buySmithore(turnService.getCurrentPlayer(), storeService.getSmithorePrice());      //temp price
+        storeService.buySmithore(turnService.getCurrentPlayer());
         updateSmithoreLabel();
     }
 
@@ -55,7 +55,7 @@ public class StorePresenter extends Presenter {
     }
 
     public final void handleCrystiteSellClick(ActionEvent event) {
-        storeService.buyCrystite(turnService.getCurrentPlayer(), storeService.getCrystitePrice());
+        storeService.buyCrystite(turnService.getCurrentPlayer());
         updateCrysLabel();
     }
 
@@ -65,7 +65,7 @@ public class StorePresenter extends Presenter {
     }
 
     public final void handleFoodSellClick(ActionEvent event) {
-        storeService.buyFood(turnService.getCurrentPlayer(), storeService.getFoodPrice());
+        storeService.buyFood(turnService.getCurrentPlayer());
         updateFoodLabel();
     }
 
@@ -75,7 +75,7 @@ public class StorePresenter extends Presenter {
     }
 
     public final void handleEnergySellClick(ActionEvent event) {
-        storeService.buyEnergy(turnService.getCurrentPlayer(), storeService.getEnergyPrice());
+        storeService.buyEnergy(turnService.getCurrentPlayer());
         updateEnergyLabel();
     }
 
@@ -84,11 +84,11 @@ public class StorePresenter extends Presenter {
     }
 
     private void updateCrysLabel() {
-        int temp = storeService.getCrystite();
         crystiteLabel.setText("Crystite: " + storeService.getCrystite());
     }
 
     private void updateFoodLabel() {
+        int temp = storeService.getFood();
         foodLabel.setText("Food: " + storeService.getFood());
     }
 

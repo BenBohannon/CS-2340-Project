@@ -1,6 +1,7 @@
 package presenters;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import data.abstractsources.Repository;
 import javafx.scene.paint.Color;
 import model.entity.Player;
@@ -16,6 +17,10 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
 
     @Inject
     Repository<Player> playerRepository;
+
+    @Inject
+    @Named("InitialPlayerMoney")
+    int initialPlayerMoney;
 
     private int numPlayersLeft;
 
@@ -65,6 +70,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
                     p.setRace(race);
                 }
             }
+            p.setMoney(initialPlayerMoney);
             p.setId(-1);
             playerRepository.save(p);
 

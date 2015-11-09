@@ -77,8 +77,6 @@ public class DefaultTurnService {
         this.storeService = storeService;
         this.gameInfoDatasource = gameInfoDatasource;
         this.turnDatasource = turnDatasource;
-
-        initializeFromDatasource();
     }
 
     public static int getFoodRequirement(int round) {
@@ -259,9 +257,9 @@ public class DefaultTurnService {
      * Cancels this round and sets the turnmanager's state as if the round had just begun.
      * This includes removing all TurnEndListeners.
      * Additionally, sets the round number.
-     * @param roundNumber the new round number
+     * @param pRoundNumber the new round number
      */
-    public void flushRound(int roundNumber) {
+    public void flushRound(int pRoundNumber) {
         if (timer != null) {
             timer.cancel();
             timer = null;
@@ -272,7 +270,7 @@ public class DefaultTurnService {
         turnEndListeners = new LinkedList<>();
         turnStartTime = -1;
         turnDuration = -1;
-        this.roundNumber = roundNumber;
+        this.roundNumber = pRoundNumber;
     }
 
     public void calculateRank() {
@@ -326,7 +324,7 @@ public class DefaultTurnService {
         return player;
     }
 
-    private void initializeFromDatasource() {
+    public void initializeFromDatasource() {
         flushRound(turnDatasource.getRound());
         finishedPlayerIds = turnDatasource.getFinishedPlayerIds();
     }

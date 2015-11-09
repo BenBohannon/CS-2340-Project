@@ -3,6 +3,7 @@ package presenters;
 import com.google.inject.Inject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import model.service.DefaultTurnService;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,10 +15,12 @@ import org.hibernate.SessionFactory;
 public class StartPresenter extends Presenter {
 
     private SessionFactory sessionFactory;
+    private DefaultTurnService turnService;
 
     @Inject
-    public StartPresenter(SessionFactory pSessionFactory) {
+    public StartPresenter(SessionFactory pSessionFactory, DefaultTurnService pTurnService) {
         sessionFactory = pSessionFactory;
+        turnService = pTurnService;
     }
 
     @FXML
@@ -84,6 +87,7 @@ public class StartPresenter extends Presenter {
 
     @FXML
     protected final void handleLoadEvent(ActionEvent event) {
+        turnService.initializeFromDatasource();
         getContext().showScreen("map_grid_tile_select.fxml");
     }
 

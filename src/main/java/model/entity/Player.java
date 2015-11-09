@@ -19,8 +19,6 @@ import java.util.List;
 @Entity
 public class Player {
 
-    private static final int STARTING_MONEY = 2000;
-
     private int score;
     private int smithore;
     private int crystite;
@@ -47,9 +45,6 @@ public class Player {
     public Player() {
         setMules(new LinkedList<>());
         ownedProperties = new ArrayList<>();
-
-        // starting amount //
-        money = STARTING_MONEY;
     }
 
     public final void addMule(Mule mule) {

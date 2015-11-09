@@ -76,6 +76,9 @@ public class Start extends Application {
             binder.bind(DefaultTurnService.class).toInstance(turnService);
 
             // constants / config //
+            binder.bindConstant()
+                    .annotatedWith(Names.named("InitialPlayerMoney"))
+                    .to(10000);
             binder.bind(StoreRecord.class)
                     .annotatedWith(Names.named("InitialStoreState"))
                     .toInstance(getInitialStoreState());
@@ -89,10 +92,10 @@ public class Start extends Application {
         record.setFood(16);
         record.setEnergy(16);
 
-        record.setFoodPrice(-3000);
-        record.setEnergyPrice(-2500);
-        record.setSmithorePrice(-5000);
-        record.setCrystitePrice(-10000);
+        record.setFoodPrice(3000);
+        record.setEnergyPrice(2500);
+        record.setSmithorePrice(5000);
+        record.setCrystitePrice(10000);
 
         return record;
     }
