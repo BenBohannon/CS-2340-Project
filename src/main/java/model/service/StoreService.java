@@ -1,6 +1,7 @@
 package model.service;
 
 import com.google.inject.Inject;
+import data.abstractsources.Repository;
 import data.abstractsources.StoreDatasource;
 import model.entity.Player;
 
@@ -20,11 +21,13 @@ public class StoreService {
     private int crystitePrice;
 
     private StoreDatasource storeDatasource;
+    private Repository<Player> playerRepository;
 
 
     @Inject
-    public StoreService(StoreDatasource pStoreDatasource) {
+    public StoreService(StoreDatasource pStoreDatasource, Repository<Player> pPlayerRepository) {
         storeDatasource = pStoreDatasource;
+        playerRepository = pPlayerRepository;
 
         energy = storeDatasource.getEnergy();
         food = storeDatasource.getFood();
@@ -72,6 +75,7 @@ public class StoreService {
                 player.offsetEnergy(1);
                 player.offsetMoney(-(energyPrice));
                 storeDatasource.saveAmount(energy, food, smithore, crystite);
+                playerRepository.save(player);
             }
         }
     }
@@ -86,6 +90,7 @@ public class StoreService {
             player.offsetEnergy(-1);
             player.offsetMoney(energyPrice);
             storeDatasource.saveAmount(energy, food, smithore, crystite);
+            playerRepository.save(player);
         }
     }
 
@@ -100,6 +105,7 @@ public class StoreService {
                 player.offsetFood(1);
                 player.offsetMoney(-(foodPrice));
                 storeDatasource.saveAmount(energy, food, smithore, crystite);
+                playerRepository.save(player);
             }
         }
     }
@@ -114,6 +120,7 @@ public class StoreService {
             player.offsetFood(-1);
             player.offsetMoney(foodPrice);
             storeDatasource.saveAmount(energy, food, smithore, crystite);
+            playerRepository.save(player);
         }
     }
 
@@ -128,6 +135,7 @@ public class StoreService {
                 player.offsetSmithore(1);
                 player.offsetMoney(-(smithorePrice));
                 storeDatasource.saveAmount(energy, food, smithore, crystite);
+                playerRepository.save(player);
             }
         }
     }
@@ -142,6 +150,7 @@ public class StoreService {
             player.offsetSmithore(-1);
             player.offsetMoney(smithorePrice);
             storeDatasource.saveAmount(energy, food, smithore, crystite);
+            playerRepository.save(player);
         }
     }
 
@@ -156,6 +165,7 @@ public class StoreService {
                 player.offsetCrystite(1);
                 player.offsetMoney(-(crystitePrice));
                 storeDatasource.saveAmount(energy, food, smithore, crystite);
+                playerRepository.save(player);
             }
         }
     }
@@ -170,6 +180,7 @@ public class StoreService {
             player.offsetCrystite(-1);
             player.offsetMoney(crystitePrice);
             storeDatasource.saveAmount(energy, food, smithore, crystite);
+            playerRepository.save(player);
         }
     }
 

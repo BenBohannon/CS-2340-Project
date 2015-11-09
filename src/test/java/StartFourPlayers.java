@@ -162,8 +162,8 @@ public class StartFourPlayers extends Application {
         final Map map = new Map(lds);
 
         final DefaultTurnService turnService =
-                new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource(),
-                        new SqlTurnDatasource(null));
+                new DefaultTurnService(playerRepository, new StoreService(sds, playerRepository),
+                        new GameInfoDatasource(), new SqlTurnDatasource(null));
 
         final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
 

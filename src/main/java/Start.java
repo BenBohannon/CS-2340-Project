@@ -58,10 +58,11 @@ public class Start extends Application {
             StandardServiceRegistryBuilder.destroy(registry);
         }
         final SessionFactory finalSessionFactory = sessionFactory;
+        Repository<Player> playerRepository = new SqlPlayerRepository(finalSessionFactory);
 
-        final DefaultTurnService turnService = new DefaultTurnService(new SqlPlayerRepository(finalSessionFactory),
-                new StoreService(new SqlStoreDatasource(finalSessionFactory)), new GameInfoDatasource(),
-                new SqlTurnDatasource(finalSessionFactory));
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
+                new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository)
+                , new GameInfoDatasource(), new SqlTurnDatasource(finalSessionFactory));
 
         PresenterContext context = new PresenterContext(binder -> {
             // class level bindings //
