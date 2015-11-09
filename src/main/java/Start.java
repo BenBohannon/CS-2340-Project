@@ -2,7 +2,12 @@
  * Created by brian on 9/10/15.
  */
 
+import com.google.inject.Binder;
+import com.google.inject.Module;
+import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import data.*;
 import data.abstractsources.LocationDatasource;
 import data.abstractsources.Repository;
@@ -58,19 +63,38 @@ public class Start extends Application {
                 new StoreService(new SqlStoreDatasource(finalSessionFactory)), new GameInfoDatasource(),
                 new SqlTurnDatasource(finalSessionFactory));
 
-        PresenterContext context = new PresenterContext((binder) -> {
+        PresenterContext context = new PresenterContext(binder -> {
+            // class level bindings //
             binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
             binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
             binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
             binder.bind(new TypeLiteral<Repository<Player>>(){}).to(SqlPlayerRepository.class);
             binder.bind(new TypeLiteral<Repository<Mule>>(){}).to(SqlMuleRepository.class);
 
+            // instance level bindings //
             binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
             binder.bind(DefaultTurnService.class).toInstance(turnService);
+
+            // constants / config //
+            binder.bind(StoreRecord.class)
+                    .annotatedWith(Names.named("InitialStoreState"))
+                    .toInstance(getInitialStoreState());
         }, stage);
 
         context.showScreen("home_screen.fxml");
     }
 
+    private final StoreRecord getInitialStoreState() {
+        StoreRecord record = new StoreRecord();
+        record.setFood(16);
+        record.setEnergy(16);
+
+        record.setFoodPrice(-3000);
+        record.setEnergyPrice(-2500);
+        record.setSmithorePrice(-5000);
+        record.setCrystitePrice(-10000);
+
+        return record;
+    }
 
 }

@@ -62,17 +62,18 @@ public class StartFourPlayers extends Application {
 
         final StoreDatasource sds = new StoreDatasource() {
 
-            private int energyAmount = ENERGY;
-            private int foodAmount = FOOD;
-            private int smithoreAmount = SMITHORE;
-            private int crystiteAmount = CRYSTITE;
+            private int foodAmount = 16;
+            private int energyAmount = 16;
+            private int smithoreAmount = 0;
+            private int crystiteAmount = 0;
 
-            private int energyStorePrice = ENERGY_PRICE;
-            private int foodStorePrice = FOOD_PRICE;
-            private int smithoreStorePrice = SMITHORE_PRICE;
-            private int crystiteStorePrice = CRYSTITE_PRICE;
+
+            private int foodStorePrice = -3000;
+            private int energyStorePrice = -2500;
+            private int smithoreStorePrice = -5000;
+            private int crystiteStorePrice = -10000;
+
             private int muleCount = 10;
-
             @Override
             public void saveAmount(int energy, int food, int smithore, int crystite) {
                 energyAmount = energy;

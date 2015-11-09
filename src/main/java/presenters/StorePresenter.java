@@ -12,10 +12,7 @@ import model.service.DefaultTurnService;
  */
 public class StorePresenter extends Presenter {
 
-    @Inject
     private DefaultTurnService turnService;
-
-    @Inject
     private StoreService storeService;
 
     @FXML
@@ -27,11 +24,11 @@ public class StorePresenter extends Presenter {
     @FXML
     private Label energyLabel;
 
+    @Inject
     public StorePresenter(DefaultTurnService pTurnService, StoreService pStoreService) {
         turnService = pTurnService;
         storeService = pStoreService;
     }
-
 
     @FXML
     @Override
@@ -87,6 +84,7 @@ public class StorePresenter extends Presenter {
     }
 
     private void updateCrysLabel() {
+        int temp = storeService.getCrystite();
         crystiteLabel.setText("Crystite: " + storeService.getCrystite());
     }
 
