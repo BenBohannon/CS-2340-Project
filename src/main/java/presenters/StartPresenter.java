@@ -13,8 +13,12 @@ import org.hibernate.SessionFactory;
  */
 public class StartPresenter extends Presenter {
 
+    private SessionFactory sessionFactory;
+
     @Inject
-    SessionFactory sessionFactory;
+    public StartPresenter(SessionFactory pSessionFactory) {
+        sessionFactory = pSessionFactory;
+    }
 
     @FXML
     /**

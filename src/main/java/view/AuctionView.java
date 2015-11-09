@@ -30,11 +30,13 @@ public class AuctionView extends View<AuctionPresenter> {
     private Group pane2 = new Group();
     private Timer timer;
     private Timer timer2;
+
     // will be used in future versions //
     private Timer timer3;
     private Timer timer4;
     private Timer timer5;
     private Timer timer6;
+
     private ArrayList<ImageView> playerImageList;
     private ArrayList<Text> resourceLists = new ArrayList<Text>();
     private ArrayList<Text> names = new ArrayList<Text>();

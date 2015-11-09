@@ -14,9 +14,9 @@ import javax.persistence.*;
 public class Tile extends PersistableLocatable {
 
     @Enumerated
-    TileType type;
+    private TileType type;
     @Embedded
-    Map.Location loc;
+    private Map.Location location;
 
     @OneToOne(fetch = FetchType.EAGER)
     private Player owner;
@@ -26,7 +26,7 @@ public class Tile extends PersistableLocatable {
     }
 
     public Tile(TileType pType) {
-        this.type = pType;
+        this.setType(pType);
     }
 
     /**
@@ -46,21 +46,21 @@ public class Tile extends PersistableLocatable {
     }
 
     public final TileType getTileType() {
-        return type;
+        return getType();
     }
 
     /**
      * @see Locatable
      */
     public final Map.Location getLocation() {
-        return loc;
+        return location;
     }
 
     /**
      * @see Locatable
      */
-    public final void setLocation(Map.Location location) {
-        loc = location;
+    public final void setLocation(Map.Location pLocation) {
+        location = pLocation;
     }
 
     /**
@@ -68,7 +68,7 @@ public class Tile extends PersistableLocatable {
      * @return Image of this tile.
      */
     public final Image getImage() {
-        return new Image(type.getImagePath());
+        return new Image(getType().getImagePath());
     }
 
     /**
@@ -78,7 +78,7 @@ public class Tile extends PersistableLocatable {
      * @return Image of this tile.
      */
     public final Image getImage(int width, int height) {
-        return new Image(type.getImagePath(), width, height, true, false);
+        return new Image(getType().getImagePath(), width, height, true, false);
     }
 
     @Override
@@ -94,5 +94,13 @@ public class Tile extends PersistableLocatable {
         Tile other = (Tile) obj;
 
         return other.getId() == getId();
+    }
+
+    public final TileType getType() {
+        return type;
+    }
+
+    public final void setType(TileType pType) {
+        this.type = pType;
     }
 }

@@ -15,27 +15,27 @@ public class PlayerConfigView extends View<PlayerConfigPresenter> {
     //FXML textFills//
     // not using getters and setters to avoid clutter //
     @FXML
-    Color transparent;
+    private Color transparent;
     @FXML
-    Color red;
+    private Color red;
 
     //validation labels//
     @FXML
-    Label mainValidationLabel;
+    private Label mainValidationLabel;
     @FXML
-    Label raceValidationLabel;
+    private Label raceValidationLabel;
     @FXML
-    Label nameValidationLabel;
+    private Label nameValidationLabel;
     @FXML
-    Label colorValidationLabel;
+    private Label colorValidationLabel;
 
     //controls//
     @FXML
-    ColorPicker colorPicker;
+    private ColorPicker colorPicker;
     @FXML
-    ToggleGroup raceToggleGroup;
+    private ToggleGroup raceToggleGroup;
     @FXML
-    TextField nameTextField;
+    private TextField nameTextField;
 
 
     /**

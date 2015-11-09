@@ -39,7 +39,7 @@ public class SqlTurnDatasource implements TurnDatasource {
         List<TurnRecord> list = query.list();
         if (list == null || list.size() < 1) {
             record = new TurnRecord();
-            record.finishedPlayerIds = new LinkedList<>();
+            record.setFinishedPlayerIds(new LinkedList<>());
         } else {
             record = list.get(0);
         }
@@ -48,14 +48,14 @@ public class SqlTurnDatasource implements TurnDatasource {
 
     @Override
     public final void saveRound(int round) {
-        record.round = round;
+        record.setRound(round);
 
         persist();
     }
 
     @Override
     public final void saveFinishedPlayerIds(List<Integer> finishedPlayerIds) {
-        record.finishedPlayerIds = finishedPlayerIds;
+        record.setFinishedPlayerIds(finishedPlayerIds);
 
         persist();
     }
@@ -64,14 +64,14 @@ public class SqlTurnDatasource implements TurnDatasource {
     public final int getRound() {
         populateRecord();
 
-        return record.round;
+        return record.getRound();
     }
 
     @Override
     public final List<Integer> getFinishedPlayerIds() {
         populateRecord();
 
-        return record.finishedPlayerIds;
+        return record.getFinishedPlayerIds();
     }
 
 }

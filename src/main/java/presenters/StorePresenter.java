@@ -13,10 +13,10 @@ import model.service.DefaultTurnService;
 public class StorePresenter extends Presenter {
 
     @Inject
-    DefaultTurnService turnService;
+    private DefaultTurnService turnService;
 
     @Inject
-    StoreService storeService;
+    private StoreService storeService;
 
     @FXML
     private Label crystiteLabel;
@@ -26,6 +26,12 @@ public class StorePresenter extends Presenter {
     private Label smithoreLabel;
     @FXML
     private Label energyLabel;
+
+    public StorePresenter(DefaultTurnService pTurnService, StoreService pStoreService) {
+        turnService = pTurnService;
+        storeService = pStoreService;
+    }
+
 
     @FXML
     @Override

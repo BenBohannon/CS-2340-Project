@@ -16,25 +16,25 @@ public class GameConfigView extends View<GameConfigPresenter> {
     //FXML textFills//
     // not using getters and setters to avoid clutter //
     @FXML
-    Color transparent;
+    private Color transparent;
     @FXML
-    Color red;
+    private Color red;
 
     @FXML
-    Label difficultyValidationLabel;
+    private Label difficultyValidationLabel;
     @FXML
-    Label mapValidationLabel;
+    private Label mapValidationLabel;
     @FXML
-    Label numPlayersValidationLabel;
+    private Label numPlayersValidationLabel;
     @FXML
-    Label mainValidationLabel;
+    private Label mainValidationLabel;
 
     @FXML
-    ToggleGroup difficultyToggleGroup;
+    private ToggleGroup difficultyToggleGroup;
     @FXML
-    ToggleGroup mapToggleGroup;
+    private ToggleGroup mapToggleGroup;
     @FXML
-    ToggleGroup numPlayersToggleGroup;
+    private ToggleGroup numPlayersToggleGroup;
 
     @FXML
     public final void handleFinishButtonAction(ActionEvent event) {
