@@ -29,7 +29,7 @@ import java.util.TimerTask;
 /**
  * Created by Ben 9/14/2015
  */
-public class TileSelectionPresenter extends Presenter {
+public class TileSelectionPresenter extends Presenter implements EventHandler<KeyEvent> {
 
     @Inject
     public Map map;
@@ -74,70 +74,9 @@ public class TileSelectionPresenter extends Presenter {
             }
         }
 
-        pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                Player player = null;
-                Point location = getCoords(border.getTranslateX(), border.getTranslateY());
-                Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
-                boolean tileIsOwned = playerRepository.getAll().stream()
-                        .anyMatch(p -> p.getOwnedProperties().contains(tile));
-                if (!tileIsOwned && tileID != 22) {
-                    switch (event.getCode()) {
-                        case A:
-                            player = playerRepository.get(0);
-                            if (!playerHasChosen[0]) { // && if tile is free && if player exists
-                                player = playerRepository.get(0);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                if (selectionRound > 1) {
-                                    System.out.println("money -= 300 player " + player.getId());
-                                }
-                                Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border1);
-                                playerHasChosen[0] = true;
-                                // assign tile to player
-                            }
-                            break;
-                        case S:
-                            if (playerRepository.getAll().size() > 1 && !playerHasChosen[1]) {
-                                player = playerRepository.get(1);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                if (selectionRound > 1) {
-                                    System.out.println("money -= 300 player " + player.getId());
-                                }
-                                Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border2);
-                                playerHasChosen[1] = true;
-                            }
-                            break;
-                        case D:
-                            if (playerRepository.getAll().size() > 2 && !playerHasChosen[2]) {
-                                player = playerRepository.get(2);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                if (selectionRound > 1) {
-                                    System.out.println("money -= 300 player " + player.getId());
-                                }
-                                Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border3);
-                                playerHasChosen[2] = true;
-                            }
-                            break;
-                        case F:
-                            if (playerRepository.getAll().size() > 3 && !playerHasChosen[3]) {
-                                player = playerRepository.get(3);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                if (selectionRound > 1) {
-                                    System.out.println("money -= 300 player " + player.getId());
-                                }
-                                Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border4);
-                                playerHasChosen[3] = true;
-                            }
-                            break;
-                    }
-                }
-            }
-        });
+        pane.setOnKeyPressed(this);
+
+        //TODO what is the below?
         boolean thisDoesntNeedToBeHere = noneSelected();
 
         pane.getChildren().add(border);
@@ -281,5 +220,68 @@ public class TileSelectionPresenter extends Presenter {
         view.setX(x);
         view.setY(y);
         pane.getChildren().add(view);
+    }
+
+    @Override
+    public void handle(KeyEvent event) {
+        Player player = null;
+        Point location = getCoords(border.getTranslateX(), border.getTranslateY());
+        Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
+        boolean tileIsOwned = playerRepository.getAll().stream()
+                .anyMatch(p -> p.getOwnedProperties().contains(tile));
+        if (!tileIsOwned && tileID != 22) {
+            switch (event.getCode()) {
+                case A:
+                    player = playerRepository.get(0);
+                    if (!playerHasChosen[0]) { // && if tile is free && if player exists
+                        player = playerRepository.get(0);
+                        player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                        if (selectionRound > 1) {
+                            System.out.println("money -= 300 player " + player.getId());
+                        }
+                        Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                        pane.getChildren().add(border1);
+                        playerHasChosen[0] = true;
+                        // assign tile to player
+                    }
+                    break;
+                case S:
+                    if (playerRepository.getAll().size() > 1 && !playerHasChosen[1]) {
+                        player = playerRepository.get(1);
+                        player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                        if (selectionRound > 1) {
+                            System.out.println("money -= 300 player " + player.getId());
+                        }
+                        Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                        pane.getChildren().add(border2);
+                        playerHasChosen[1] = true;
+                    }
+                    break;
+                case D:
+                    if (playerRepository.getAll().size() > 2 && !playerHasChosen[2]) {
+                        player = playerRepository.get(2);
+                        player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                        if (selectionRound > 1) {
+                            System.out.println("money -= 300 player " + player.getId());
+                        }
+                        Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                        pane.getChildren().add(border3);
+                        playerHasChosen[2] = true;
+                    }
+                    break;
+                case F:
+                    if (playerRepository.getAll().size() > 3 && !playerHasChosen[3]) {
+                        player = playerRepository.get(3);
+                        player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                        if (selectionRound > 1) {
+                            System.out.println("money -= 300 player " + player.getId());
+                        }
+                        Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                        pane.getChildren().add(border4);
+                        playerHasChosen[3] = true;
+                    }
+                    break;
+            }
+        }
     }
 }
