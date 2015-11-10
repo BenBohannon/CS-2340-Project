@@ -34,9 +34,9 @@ public class TileSelectionPresenter extends Presenter {
     @Inject
     public Map map;
     @Inject
-    MapInfoHolder mapInfo;
+    private MapInfoHolder mapInfo;
     @Inject
-    Repository<Player> playerRepository;
+    private Repository<Player> playerRepository;
 
     @FXML
     private GridPane grid;
@@ -138,6 +138,7 @@ public class TileSelectionPresenter extends Presenter {
                 }
             }
         });
+        boolean thisDoesntNeedToBeHere = noneSelected();
 
         pane.getChildren().add(border);
 
@@ -243,14 +244,17 @@ public class TileSelectionPresenter extends Presenter {
         return tempBorder;
     }
 
-    private boolean doneSelecting() {
+    public boolean doneSelecting() {
         for (int i = 0; i < playerRepository.getAll().size(); i++) {
             if (!playerHasChosen[i]) { return false; }
         }
         return true;
     }
 
-    private boolean noneSelected() {
+    public boolean noneSelected() {
+        if (playerRepository == null) {
+            System.out.println("no playerRepository");
+        }
         for (int i = 0; i < playerRepository.getAll().size(); i++) {
             if (playerHasChosen[i]) {
                 return false;

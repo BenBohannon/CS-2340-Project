@@ -383,9 +383,12 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     public void setLines() {
+        double high = highestBuyer();
+        double low = lowestSeller();
+        double line = bottomBidLine.getTranslateY();
         bottomBidLine.setTranslateY(highestBuyer());
         topBidLine.setTranslateY(lowestSeller());
-        bottomBidLine.setTranslateY(bottomBidLine.getTranslateY() + 10);
+
     }
 
     private double highestBuyer() {
