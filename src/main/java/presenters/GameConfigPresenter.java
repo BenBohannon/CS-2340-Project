@@ -3,7 +3,7 @@ package presenters;
 import view.GameConfigView;
 
 /**
- * Created by brian on 9/10/15.
+ * Presenter that displays the configuration screen for setting up the game options.
  */
 public class GameConfigPresenter extends Presenter<GameConfigView> {
 

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
@@ -24,32 +22,26 @@
       <fx:define>
         <ToggleGroup fx:id="difficultyToggleGroup" />
       </fx:define>
-      <children>
-        <RadioButton text="Easy" toggleGroup="$difficultyToggleGroup" />
-        <RadioButton text="Medium" toggleGroup="$difficultyToggleGroup" />
-        <RadioButton text="Large" toggleGroup="$difficultyToggleGroup" />
-      </children>
+      <RadioButton text="Easy" toggleGroup="$difficultyToggleGroup" />
+      <RadioButton text="Medium" toggleGroup="$difficultyToggleGroup" />
+      <RadioButton text="Large" toggleGroup="$difficultyToggleGroup" />
     </VBox>
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
       <fx:define>
         <ToggleGroup fx:id="mapToggleGroup" />
       </fx:define>
-      <children>
-        <RadioButton text="Desert" toggleGroup="$mapToggleGroup" />
-        <RadioButton text="Tundra" toggleGroup="$mapToggleGroup" />
-        <RadioButton text="Aquatic" toggleGroup="$mapToggleGroup" />
-      </children>
+      <RadioButton text="Desert" toggleGroup="$mapToggleGroup" />
+      <RadioButton text="Tundra" toggleGroup="$mapToggleGroup" />
+      <RadioButton text="Aquatic" toggleGroup="$mapToggleGroup" />
     </VBox>
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="3">
       <fx:define>
         <ToggleGroup fx:id="numPlayersToggleGroup" />
       </fx:define>
-      <children>
-        <RadioButton text="1" toggleGroup="$numPlayersToggleGroup" />
-        <RadioButton text="2" toggleGroup="$numPlayersToggleGroup" />
-        <RadioButton text="3" toggleGroup="$numPlayersToggleGroup" />
-        <RadioButton text="4" toggleGroup="$numPlayersToggleGroup" />
-      </children>
+      <RadioButton text="1" toggleGroup="$numPlayersToggleGroup" />
+      <RadioButton text="2" toggleGroup="$numPlayersToggleGroup" />
+      <RadioButton text="3" toggleGroup="$numPlayersToggleGroup" />
+      <RadioButton text="4" toggleGroup="$numPlayersToggleGroup" />
     </VBox>
     <!--<ColorPicker GridPane.columnIndex="1" GridPane.rowIndex="4" />-->
     <Button mnemonicParsing="false" onAction="#handleFinishButtonAction" text="Finish" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />

@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import data.GameInfoDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.TurnDatasource;
-import javafx.application.Platform;
 import model.entity.Player;
 
 import java.util.*;
@@ -56,7 +55,6 @@ public class DefaultTurnService {
     private volatile boolean turnInProgress;
     private volatile long turnStartTime;
     private volatile long turnDuration;
-    private volatile long delay;
 
     private volatile Timer timer;
 
@@ -116,7 +114,7 @@ public class DefaultTurnService {
         //float foodRatio = (float) currentPlayer.getFood() / getFoodRequirement(roundNumber);
         //turnDuration = (int) (currentPlayer.getPTU(GameInfoDatasource.getBTU(4)) + currentPlayer.getPTU(GameInfoDatasource.getBTU(91)) * foodRatio);
         turnDuration = TURN_LENGTH_DEFAULT;
-        delay = TURN_START_DELAY_DEFAULT;
+        long delay = TURN_START_DELAY_DEFAULT;
 
         timer = new Timer();
         timer.schedule(new TimerTask() {

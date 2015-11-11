@@ -6,11 +6,12 @@ import model.entity.Player;
 import java.util.ArrayList;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
- * Created by brian on 9/24/15.
+ * Temporary implementation of a Repository<Player> that we can use
+ * while testing the application. Must be bound as a singleton in
+ * the DI container, as it does not persist anything to disk.
  */
 public class MemoryPlayerRepository implements Repository<Player> {
 
@@ -27,7 +28,7 @@ public class MemoryPlayerRepository implements Repository<Player> {
 
     @Override
     public Set<Player> getAll() {
-        HashSet set = new HashSet<>();
+        HashSet<Player> set = new HashSet<>();
         set.addAll(players);
         return set;
     }

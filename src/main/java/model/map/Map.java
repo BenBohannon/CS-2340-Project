@@ -22,15 +22,12 @@ public class Map {
 
     private LocationDatasource datasource;
 
-    private int rows;
-    private int cols;
+    private int rows = 5;
+    private int cols = 9;
 
     @Inject
     public Map(LocationDatasource lds) {
         datasource = lds;
-
-        rows = 5;
-        cols = 9;
 
         if (rows < 1 || cols < 1) {
             throw new IllegalArgumentException("model.map must have positive integer rows and columns");
@@ -238,6 +235,7 @@ public class Map {
         public <T extends Locatable> T[] getOccupants(Class<T> type) {
             return occupants.stream()
                     .filter(type::isInstance)
+                    // this is always going to work //
                     .toArray(size -> (T[]) Array.newInstance(type, size));
         }
 

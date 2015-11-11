@@ -5,7 +5,7 @@ import model.map.Locatable;
 import java.util.Collection;
 
 /**
- * Created by brian on 9/13/15.
+ * Abstract interface for the Map's datasource, used for loose coupling.
  */
 public interface LocationDatasource {
     Collection<Locatable> get(int row, int col);

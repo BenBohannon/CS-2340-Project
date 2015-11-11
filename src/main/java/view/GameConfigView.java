@@ -9,7 +9,8 @@ import javafx.scene.paint.Color;
 import presenters.GameConfigPresenter;
 
 /**
- * Created by brian on 10/18/15.
+ * View that manages the validation and other UI elements for the screen that allows
+ * players to configure the game.
  */
 public class GameConfigView extends View<GameConfigPresenter> {
 

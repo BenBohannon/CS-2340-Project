@@ -103,7 +103,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
     /**
      * Loads the input .fxml file and gives up control to it.
-     * @param str
+     * @param str the path of the fxml file relative to the presenters directory
      */
     private void switchPresenter(String str) {
         if (isListening) {
@@ -205,7 +205,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
     /**
      * should be called by townPresenter
-     * @param isPlacingMule
+     * @param isPlacingMule the boolean of whether this mule is being placed or not.
      */
     public void setIsPlacingMule(boolean isPlacingMule, Mule mule) {
         this.mulePlacing = mule;

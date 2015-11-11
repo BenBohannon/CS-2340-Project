@@ -1,7 +1,8 @@
 package data;
 
 /**
- * Created by brian on 9/23/15.
+ * InfoHolder class that serves as a place to define constants and
+ * utility methods for the game.
  */
 public class GameInfoDatasource {
 

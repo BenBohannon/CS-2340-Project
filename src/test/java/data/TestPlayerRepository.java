@@ -3,7 +3,6 @@ package data;
 import data.abstractsources.Repository;
 import model.entity.Player;
 
-import java.util.List;
 import java.util.Set;
 
 /**

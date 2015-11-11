@@ -7,8 +7,6 @@ import model.entity.Player;
 import model.entity.PlayerRace;
 import view.PlayerConfigView;
 
-import java.util.Set;
-
 /**
  * Created by brian on 9/10/15.
  */
@@ -27,7 +25,9 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
      * @param playerColor player's color
      * @param playerName player's name, totally valid thank to the View
      */
-    public void finish(Color playerColor, String playerName, String playerRace) {
+    public void finish(Color playerColor, String playerName, String playerRaceStr) {
+
+        PlayerRace playerRace = PlayerRace.valueOf(playerRaceStr);
 
         boolean allUnique = true;
 
@@ -61,7 +61,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             p.setColor(playerColor);
             p.setName(playerName);
             for (PlayerRace race : PlayerRace.values()) {
-                if (race.toString().toLowerCase().equals(playerRace.trim().toLowerCase())) {
+                if (race.toString().toLowerCase().equals(playerRaceStr.trim().toLowerCase())) {
                     p.setRace(race);
                 }
             }
