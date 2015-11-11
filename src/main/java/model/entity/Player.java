@@ -54,7 +54,7 @@ public class Player {
 
     public final void addMule(Mule mule) {
         if (mule == null) {
-            throw new NullPointerException("mule cannot be null");
+            throw new IllegalArgumentException("mule cannot be null");
         }
         getMules().add(mule);
     }
@@ -124,7 +124,6 @@ public class Player {
 
     public final void offsetFood(int amount) {
         food += amount;
-        System.out.println(food);
     }
 
     /**

@@ -129,7 +129,6 @@ public class StoreService {
         if (energy > 0) {
             if (player.getMoney() + energyPrice >= 0) {
                 energy--;
-                System.out.println(energy);
                 player.offsetEnergy(1);
                 player.offsetMoney(energyPrice);
                 storeDatasource.saveAmount(energy, food, smithore, crystite);
