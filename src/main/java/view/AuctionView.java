@@ -79,72 +79,72 @@ public final class AuctionView extends View<AuctionPresenter> {
         pane.setOnKeyPressed(event -> {
             if (canMove) {
                 switch (event.getCode()) {
-                    case Q:
-                        if (playerImageList.size() > 0 && playerImageList.
-                                get(0).getTranslateY() > toplimit) {
-                            playerImageList.get(0).setTranslateY(
-                                    playerImageList.get(0).getTranslateY()
-                                            - 10);
-                        }
-                        break;
-                    case Z:
-                        if (playerImageList.size() > 0 && playerImageList.
-                                get(0).getTranslateY() < bottomlimit) {
-                            playerImageList.get(0).setTranslateY(
-                                    playerImageList.get(0).getTranslateY()
-                                            + 10);
-                        }
-                        break;
-                    case W:
-                        if (playerImageList.size() > 1 && playerImageList.
-                                get(1).getTranslateY() > toplimit) {
-                            playerImageList.get(1).setTranslateY(
-                                    playerImageList.get(1).getTranslateY()
-                                            - 10);
-                        }
-                        break;
-                    case X:
-                        if (playerImageList.size() > 1 && playerImageList.
-                                get(1).getTranslateY() < bottomlimit) {
-                            playerImageList.get(1).setTranslateY(
-                                    playerImageList.get(1).getTranslateY()
-                                            + 10);
-                        }
-                        break;
-                    case E:
-                        if (playerImageList.size() > 2 && playerImageList.
-                                get(2).getTranslateY() > toplimit) {
-                            playerImageList.get(2).setTranslateY(
-                                    playerImageList.get(2).getTranslateY()
-                                            - 10);
-                        }
-                        break;
-                    case C:
-                        if (playerImageList.size() > 2 && playerImageList.
-                                get(2).getTranslateY() < bottomlimit) {
-                            playerImageList.get(2).setTranslateY(
-                                    playerImageList.get(2).getTranslateY()
-                                            + 10);
-                        }
-                        break;
-                    case R:
-                        if (playerImageList.size() > 3 && playerImageList.
-                                get(3).getTranslateY() > toplimit) {
-                            playerImageList.get(3).setTranslateY(
-                                    playerImageList.get(3).getTranslateY()
-                                            - 10);
-                        }
-                        break;
-                    case V:
-                        if (playerImageList.size() > 3 && playerImageList.
-                                get(3).getTranslateY() < bottomlimit) {
-                            playerImageList.get(3).setTranslateY(
-                                    playerImageList.get(3).getTranslateY()
-                                            + 10);
-                        }
-                        break;
-                    default:
-                        break;
+                case Q:
+                    if (playerImageList.size() > 0 && playerImageList.
+                            get(0).getTranslateY() > toplimit) {
+                        playerImageList.get(0).setTranslateY(
+                                playerImageList.get(0).getTranslateY()
+                                        - 10);
+                    }
+                    break;
+                case Z:
+                    if (playerImageList.size() > 0 && playerImageList.
+                            get(0).getTranslateY() < bottomlimit) {
+                        playerImageList.get(0).setTranslateY(
+                                playerImageList.get(0).getTranslateY()
+                                        + 10);
+                    }
+                    break;
+                case W:
+                    if (playerImageList.size() > 1 && playerImageList.
+                            get(1).getTranslateY() > toplimit) {
+                        playerImageList.get(1).setTranslateY(
+                                playerImageList.get(1).getTranslateY()
+                                        - 10);
+                    }
+                    break;
+                case X:
+                    if (playerImageList.size() > 1 && playerImageList.
+                            get(1).getTranslateY() < bottomlimit) {
+                        playerImageList.get(1).setTranslateY(
+                                playerImageList.get(1).getTranslateY()
+                                        + 10);
+                    }
+                    break;
+                case E:
+                    if (playerImageList.size() > 2 && playerImageList.
+                            get(2).getTranslateY() > toplimit) {
+                        playerImageList.get(2).setTranslateY(
+                                playerImageList.get(2).getTranslateY()
+                                        - 10);
+                    }
+                    break;
+                case C:
+                    if (playerImageList.size() > 2 && playerImageList.
+                            get(2).getTranslateY() < bottomlimit) {
+                        playerImageList.get(2).setTranslateY(
+                                playerImageList.get(2).getTranslateY()
+                                        + 10);
+                    }
+                    break;
+                case R:
+                    if (playerImageList.size() > 3 && playerImageList.
+                            get(3).getTranslateY() > toplimit) {
+                        playerImageList.get(3).setTranslateY(
+                                playerImageList.get(3).getTranslateY()
+                                        - 10);
+                    }
+                    break;
+                case V:
+                    if (playerImageList.size() > 3 && playerImageList.
+                            get(3).getTranslateY() < bottomlimit) {
+                        playerImageList.get(3).setTranslateY(
+                                playerImageList.get(3).getTranslateY()
+                                        + 10);
+                    }
+                    break;
+                default:
+                    break;
                 }
             }
         });
