@@ -22,7 +22,7 @@ import model.map.Map;
 import model.map.Tile;
 import presenters.MapPresenter;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -62,7 +62,8 @@ public class MapView extends View<MapPresenter> {
         addImageToPane(character, 340, 235);
 
         if (presenter.isTurnInProgress()) {
-            setCharacterImage(presenter.getCurrentPlayer().getRace().getImagePath());
+            setCharacterImage(presenter.
+                    getCurrentPlayer().getRace().getImagePath());
         }
 
         pane.setOnMouseMoved(event -> {
@@ -70,7 +71,8 @@ public class MapView extends View<MapPresenter> {
             mouseY = event.getY();
         });
 
-        pane.setOnMousePressed(event -> presenter.onClick(getImageCoordinates(character)));
+        pane.setOnMousePressed(event ->
+                presenter.onClick(getImageCoordinates(character)));
 
         Map map = presenter.getMap();
         //Create a model.map.
@@ -92,7 +94,9 @@ public class MapView extends View<MapPresenter> {
             for (Tile tile : player.getOwnedProperties()) {
                 Group border = createBorder(player.getColor());
                 pane.getChildren().add(border);
-                Point location = getPixelOffset(tile.getLocation().getCol(), tile.getLocation().getRow());
+                Point location = getPixelOffset(
+                        tile.getLocation().getCol(),
+                        tile.getLocation().getRow());
                 border.setLayoutX(location.getX());
                 border.setLayoutY(location.getY());
             }
@@ -103,7 +107,8 @@ public class MapView extends View<MapPresenter> {
         ColorAdjust monochrome = new ColorAdjust();
         monochrome.setSaturation(-1.0);
         Blend blush = new Blend(BlendMode.MULTIPLY, monochrome,
-                new ColorInput(0, 0, character.getImage().getWidth(), character.getImage().getHeight(), Color.RED));
+                new ColorInput(0, 0, character.getImage().getWidth(),
+                        character.getImage().getHeight(), Color.RED));
 
         pane.getChildren().addAll(timerWhite, timerRed);
 
@@ -112,13 +117,21 @@ public class MapView extends View<MapPresenter> {
         }
     }
 
+    /**
+     * displays mule in game.
+     */
     public void displayMule() {
         if (mule == null) {
-            mule = new ImageView(new Image("/mule/shrek_donkey.png", 40, 40, true, false));
+            mule = new ImageView(new Image(
+                    "/mule/shrek_donkey.png", 40, 40, true, false));
         }
-        addImageToPane(mule, (int) (character.getX() + 30), (int) (character.getY() + 30));
+        addImageToPane(mule, (int) (character.getX() + 30),
+                (int) (character.getY() + 30));
     }
 
+    /**
+     * stops displaying mule in game.
+     */
     public void stopDisplayingMule() {
         if (mule != null) {
             pane.getChildren().remove(mule);
@@ -152,15 +165,19 @@ public class MapView extends View<MapPresenter> {
     }
 
     /**
-     * Moves the character towards the cursor at a speed of the input number of pixels per second.
+     * Moves the character towards the cursor at a
+     * speed of the input number of pixels per second.
      * @param pixelsPerSecond Speed at which the character moves.
      */
     private void moveCharacter(double pixelsPerSecond) {
         if (character != null) {
-            double deltaX = mouseX - (character.getX() + character.getImage().getWidth()/2);
-            double deltaY = mouseY - (character.getY() + character.getImage().getHeight()/2);
+            double deltaX = mouseX - (character.getX()
+                    + character.getImage().getWidth() / 2);
+            double deltaY = mouseY - (character.getY()
+                    + character.getImage().getHeight() / 2);
 
-            //If our values aren't ready yet, or If we're already close to the cursor, don't move the character.
+            //If our values aren't ready yet, or If we're
+            // already close to the cursor, don't move the character.
             if (Math.abs(deltaX) < 1 && Math.abs(deltaY) < 1) {
                 return;
             }
@@ -173,8 +190,10 @@ public class MapView extends View<MapPresenter> {
             final double newPixelsPerSecond = pixelsPerSecond * 0.016;
 
             Platform.runLater(() -> {
-                character.setX(character.getX() + newDeltaX * newPixelsPerSecond);
-                character.setY(character.getY() + newDeltaY * newPixelsPerSecond);
+                character.setX(character.getX()
+                        + newDeltaX * newPixelsPerSecond);
+                character.setY(character.getY()
+                        + newDeltaY * newPixelsPerSecond);
 
                 //Move mule with character sprite//
                 if (mule != null) {
@@ -196,12 +215,11 @@ public class MapView extends View<MapPresenter> {
         long updateTime = 16L;
 
         timer.schedule(new TimerTask() {
-                           @Override
-                           public void run() {
-                               update();
-                           }
-                       },
-                300L, updateTime);
+            @Override
+            public void run() {
+                update();
+            }
+        }, 300L, updateTime);
     }
 
     /**
@@ -218,7 +236,8 @@ public class MapView extends View<MapPresenter> {
      * Starts the turn with an intermission text, then allows movement.
      */
     public void showTurnStartText() {
-        text = new Text(250, 120, presenter.getCurrentPlayer().getName() + "'s Turn! Get Ready!");
+        text = new Text(250, 120, presenter.getCurrentPlayer().getName()
+                + "'s Turn! Get Ready!");
         text.setFont(new Font(40));
         pane.getChildren().add(text);
         text.toFront();
@@ -238,6 +257,10 @@ public class MapView extends View<MapPresenter> {
         }, 2000L);
     }
 
+    /**
+     * shows the random event that happened to the user
+     * @param eventText text to be shown to user
+     */
     public void showRandomEventText(String eventText) {
         text = new Text(150, 120, eventText);
         text.setFont(new Font(40));
@@ -260,13 +283,15 @@ public class MapView extends View<MapPresenter> {
     }
 
 //    public void startTurnTurn() {
-//        character = createImageView(presenter.getCurrentPlayer().getRace().getImagePath(), 50, 50);
+//        character = createImageView(presenter.getCurrentPlayer()
+//                         .getRace().getImagePath(), 50, 50);
 //        character.setX(340);
 //        character.setY(235);
 //    }
 
     /**
-     * Sets the character's image on the map to be the input image. (For switching races)
+     * Sets the character's image on the map to be
+     * the input image. (For switching races)
      * @param imagePath path of image to set
      */
     public void setCharacterImage(String imagePath) {
@@ -277,6 +302,12 @@ public class MapView extends View<MapPresenter> {
         character.setImage(new Image(imagePath, 25, 25, true, false));
     }
 
+    /**
+     * places the mule graphic on a tile
+     * @param row row of tile
+     * @param col col of tile
+     * @param type tyle of mule
+     */
     public void placeMuleGraphic(int row, int col, MuleType type) {
         Point p = getPixelOffset(row, col);
         ImageView img = createImageView(type.getImagePath(), 100, 100);
@@ -286,26 +317,42 @@ public class MapView extends View<MapPresenter> {
 
     /**
      * @param imageView imageview sprite
-     * @return Point coordinates of the Tile which the imageview is currently over.
+     * @return Point coordinates of the Tile which the
+     *          imageview is currently over.
      */
     public static Point getImageCoordinates(ImageView imageView) {
-        return new Point((int) ((imageView.getX() + imageView.getImage().getWidth() / 2) / 100),
-                (int) ((imageView.getY() + imageView.getImage().getHeight() / 2) / 100));
+        return new Point((int) ((imageView.getX()
+                + imageView.getImage().getWidth() / 2) / 100),
+                (int) ((imageView.getY()
+                        + imageView.getImage().getHeight() / 2) / 100));
     }
 
     /**
-     * returns pixel coordinates of the top left corner of the grid block designated by the grid coordinates
+     * returns pixel coordinates of the top left corner
+     * of the grid block designated by the grid coordinates
+     * @param row row number
+     * @param col col number
+     * @return pixel coordinates
      */
     public static Point getPixelOffset(int row, int col) {
         return new Point(col * 100, row * 100);
     }
 
+    /**
+     * creates border of user tile
+     * @param color color of border
+     * @return border to be added
+     */
     private Group createBorder(Color color) {
         Group border = new Group();
-        javafx.scene.shape.Rectangle top = new javafx.scene.shape.Rectangle(10, 100);
-        javafx.scene.shape.Rectangle bottom = new javafx.scene.shape.Rectangle(10, 100);
-        javafx.scene.shape.Rectangle right = new javafx.scene.shape.Rectangle(100, 10);
-        javafx.scene.shape.Rectangle left = new javafx.scene.shape.Rectangle(100, 10);
+        javafx.scene.shape.Rectangle top =
+                new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle bottom =
+                new javafx.scene.shape.Rectangle(10, 100);
+        javafx.scene.shape.Rectangle right =
+                new javafx.scene.shape.Rectangle(100, 10);
+        javafx.scene.shape.Rectangle left =
+                new javafx.scene.shape.Rectangle(100, 10);
         bottom.setTranslateX(90);
         right.setTranslateY(90);
         border.getChildren().addAll(top, bottom, right, left);
@@ -315,10 +362,24 @@ public class MapView extends View<MapPresenter> {
         return border;
     }
 
-    public static ImageView createImageView(String imagePath, int width, int height) {
+    /**
+     * creates an Image
+     * @param imagePath location of image
+     * @param width width of image
+     * @param height height of image
+     * @return created image object
+     */
+    public static ImageView createImageView(String imagePath,
+                                            int width, int height) {
         return new ImageView(new Image(imagePath, width, height, true, false));
     }
 
+    /**
+     * adds image to pan
+     * @param view Image to be added
+     * @param x x coordinate of where it should be added
+     * @param y y coordinate of where it should be added
+     */
     private void addImageToPane(ImageView view, int x, int y) {
         view.setX(x);
         view.setY(y);
