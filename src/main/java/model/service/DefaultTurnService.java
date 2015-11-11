@@ -81,6 +81,12 @@ public class DefaultTurnService {
     //players are added to this list after their turns are complete//
     private volatile Collection<Integer> finishedPlayerIds;
 
+    /**
+     * initialises turn service
+     * @param playerRepository repository of players
+     * @param storeService store
+     * @param gameInfoDataSource save data
+     */
     @Inject
     public DefaultTurnService(Repository<Player> playerRepository,
                               StoreService storeService,
