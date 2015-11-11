@@ -1,5 +1,6 @@
 package model.map;
 
+
 /**
  * Created by brian on 9/13/15.
  *
@@ -15,7 +16,7 @@ public interface Locatable {
      * info about the a client Object.
      * @return current location
      */
-    public Map.Location getLocation();
+    Map.Location getLocation();
 
     /**
      * Should assign the privately defined
@@ -24,5 +25,5 @@ public interface Locatable {
      * Calling this method anywhere else will cause an error.
      * @param location new location
      */
-    public void setLocation(Map.Location location);
+    void setLocation(Map.Location location);
 }

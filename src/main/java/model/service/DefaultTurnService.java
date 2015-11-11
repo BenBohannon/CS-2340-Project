@@ -1,16 +1,13 @@
 package model.service;
 
 import com.google.inject.Inject;
-import data.GameInfoDataSource;
-import data.Repository;
 import javafx.application.Platform;
+import data.GameInfoDatasource;
+import data.abstractsources.Repository;
+import data.abstractsources.TurnDatasource;
 import model.entity.Player;
 
-import java.util.Collection;
-import java.util.Timer;
-import java.util.LinkedList;
-import java.util.TimerTask;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -60,6 +57,8 @@ public class DefaultTurnService {
             "A turn is currently in progress.";
     private static final String TURN_NOT_IN_PROGRESS =
             "No turn is currently in progress";
+    private static final long TURN_LENGTH_DEFAULT = 10000L;
+    private static final long TURN_START_DELAY_DEFAULT = 2000L;
 
     private volatile int roundNumber;
     private volatile Collection<TurnEndListener> turnEndListeners;
@@ -68,28 +67,33 @@ public class DefaultTurnService {
     private volatile boolean turnInProgress;
     private volatile long turnStartTime;
     private volatile long turnDuration;
-    private volatile long delay;
 
     private volatile Timer timer;
-    private volatile Timer timer2;
-    private volatile double stopwatch;
 
     private Repository<Player> playerRepository;
     private StoreService storeService;
-    private GameInfoDataSource gameInfoDataSource;
+    private GameInfoDatasource gameInfoDatasource;
+    private TurnDatasource turnDatasource;
 
     //players are added to this list after their turns are complete//
-    private volatile Collection<Integer> finishedPlayerIds;
+    private volatile List<Integer> finishedPlayerIds;
 
     @Inject
     public DefaultTurnService(Repository<Player> playerRepository,
                               StoreService storeService,
-                              GameInfoDataSource gameInfoDataSource) {
+                              GameInfoDatasource gameInfoDatasource,
+                              TurnDatasource turnDatasource) {
+
         this.playerRepository = playerRepository;
         turnEndListeners = new LinkedList<>();
         finishedPlayerIds = new LinkedList<>();
         this.storeService = storeService;
-        this.gameInfoDataSource = gameInfoDataSource;
+        this.gameInfoDatasource = gameInfoDatasource;
+        this.turnDatasource = turnDatasource;
+    }
+
+    public static int getFoodRequirement(int round) {
+        return (round / 4) + 3;
     }
 
     /**
@@ -100,7 +104,7 @@ public class DefaultTurnService {
         if (turnInProgress) {
             throw new RuntimeException(TURN_IN_PROGRESS);
         }
-        if (roundNumber > gameInfoDataSource.getMaxRounds()) {
+        if (roundNumber > gameInfoDatasource.getMaxRounds()) {
             throw new RuntimeException(
                     "Max rounds exceeded. Game should be over");
         }
@@ -120,15 +124,13 @@ public class DefaultTurnService {
                     .get();
         }
 
-
-        //turn time in millis//
         float foodRatio = (float) currentPlayer.getFood()
-                / gameInfoDataSource.getFoodRequirement(roundNumber);
+                / gameInfoDatasource.getFoodRequirement(roundNumber);
+
         //turnDuration = (int) (currentPlayer.getPTU(GameInfoDataSource.BTU(4))
         // + currentPlayer.getPTU(GameInfoDataSource.BTU(91)) * foodRatio);
-        turnDuration = 10000L; //TEMPORARY CODE. EVERY PLAYER GETS 10 seconds.
-        stopwatch = turnDuration;
-        delay = 2000L;
+        turnDuration = TURN_LENGTH_DEFAULT;
+        long delay = TURN_START_DELAY_DEFAULT;
 
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -137,21 +139,6 @@ public class DefaultTurnService {
                 endTurn();
             }
         }, turnDuration + delay);
-
-        timer2 = new Timer();
-        timer2.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() ->
-                {
-                    stopwatch -= 11;
-                    if (stopwatch <= 0) {
-                        stopwatch = turnDuration; timer2.cancel();
-                    }
-                });
-            }
-        },
-                delay, 10L);
 
         turnStartTime = new Date().getTime();
         turnEndListeners = new LinkedList<>();
@@ -168,18 +155,20 @@ public class DefaultTurnService {
             timer.cancel();
             timer = null;
         }
-        if (timer2 != null) {
-            timer2.cancel();
-            timer2 = null;
-        }
     }
 
     /**
-     * Get time remaining in turn
+     * Get fraction of time remaining in turn from 0.0 to 1.0
      * @return stopwatch
      */
-    public double getTimeRemaining() {
-        return stopwatch / turnDuration;
+    public double getFractionRemaining() {
+        if (isTurnInProgress()) {
+            double now = new Date().getTime();
+            double elapsed = now - turnStartTime;
+            return (turnDuration - elapsed) / turnDuration;
+        } else {
+            throw new IllegalStateException("No turn in progress.");
+        }
     }
 
     /**
@@ -203,7 +192,7 @@ public class DefaultTurnService {
      * If no rounds have begun, the round is zero.
      * The first round is one, stretching
      * to the maximum number of rounds, defined in
-     * {@link GameInfoDataSource#getMaxRounds()}
+     * {@link GameInfoDatasource#getMaxRounds()}
      * @return the round number
      */
     public int getRoundNumber() {
@@ -216,10 +205,7 @@ public class DefaultTurnService {
      *          false otherwise
      */
     public boolean isAllTurnsOver() {
-//        System.out.println("finished ids size: "
-//                              + finishedPlayerIds.size());
-//        System.out.println("player repository size: "
-//                              + playerRepository.getAll().size());
+        //TODO something null here
         return finishedPlayerIds.size() == playerRepository.getAll().size();
     }
 
@@ -240,6 +226,7 @@ public class DefaultTurnService {
             throw new IllegalStateException(TURN_IN_PROGRESS);
         }
         flushRound(roundNumber + 1);
+        turnDatasource.saveRound(roundNumber);
         return roundNumber;
     }
 
@@ -271,6 +258,9 @@ public class DefaultTurnService {
         if (!turnInProgress) {
             throw new IllegalStateException(TURN_NOT_IN_PROGRESS);
         }
+        if (turnEndListeners.contains(listener)) {
+            throw new IllegalArgumentException("You have already registered this turn end listener");
+        }
         turnEndListeners.add(listener);
     }
 
@@ -290,9 +280,9 @@ public class DefaultTurnService {
      * turnmanager's state as if the round had just begun.
      * This includes removing all TurnEndListeners.
      * Additionally, sets the round number.
-     * @param roundNumber the new round number
+     * @param pRoundNumber the new round number
      */
-    public void flushRound(int roundNumber) {
+    public void flushRound(int pRoundNumber) {
         if (timer != null) {
             timer.cancel();
             timer = null;
@@ -303,14 +293,7 @@ public class DefaultTurnService {
         turnEndListeners = new LinkedList<>();
         turnStartTime = -1;
         turnDuration = -1;
-        this.roundNumber = roundNumber;
-    }
-
-    /**
-     * creates a random event for current player.
-     */
-    public void randomEvent() {
-        Player player = currentPlayer;
+        this.roundNumber = pRoundNumber;
     }
 
     /**
@@ -361,6 +344,14 @@ public class DefaultTurnService {
         for (TurnEndListener listener : tempTurnEndListeners) {
             listener.onTurnEnd(player);
         }
+
+        turnDatasource.saveFinishedPlayerIds(finishedPlayerIds);
+
         return player;
+    }
+
+    public void initializeFromDatasource() {
+        flushRound(turnDatasource.getRound());
+        finishedPlayerIds = turnDatasource.getFinishedPlayerIds();
     }
 }

@@ -8,14 +8,21 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import java.io.File;
 
 /**
- * Created by brian on 9/23/15.
+ * InfoHolder class that serves as a place to define constants and
+ * utility methods for the game.
  */
-public class GameInfoDataSource {
+public class GameInfoDatasource {
+
+
+
+    private static final int MAX_ROUNDS_DEFAULT = 12;
+
+    private static final int BTU_TO_SECONDS_RATIO = 15;
 
     /**
      * saves game
      */
-    public GameInfoDataSource() {
+    public GameInfoDatasource() {
 
     }
 
@@ -48,8 +55,8 @@ public class GameInfoDataSource {
      * gets max num of rounds
      * @return num of rounds
      */
-    public int getMaxRounds() {
-        return 12;
+    public final int getMaxRounds() {
+        return MAX_ROUNDS_DEFAULT;
     }
 
     /**
@@ -77,7 +84,7 @@ public class GameInfoDataSource {
         return (round / 4) + 3;
     }
 
-    public static int BTU(int numBTU) {
-        return numBTU * 15;
+    public static int getBTU(int numBTU) {
+        return numBTU * BTU_TO_SECONDS_RATIO;
     }
 }

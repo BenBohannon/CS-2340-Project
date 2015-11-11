@@ -14,10 +14,10 @@ public enum PlayerRace {
     private String imagePath;
     private int ptu;
 
-    PlayerRace(String raceName, String imagePath, int ptu) {
-        this.raceName = raceName;
-        this.imagePath = imagePath;
-        this.ptu = ptu;
+    PlayerRace(String pRaceName, String pImagePath, int pPtu) {
+        this.raceName = pRaceName;
+        this.imagePath = pImagePath;
+        this.ptu = pPtu;
     }
 
     public String toString() {

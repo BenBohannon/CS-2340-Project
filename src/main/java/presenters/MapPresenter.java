@@ -2,7 +2,7 @@ package presenters;
 
 import com.google.inject.Inject;
 import data.MapInfoHolder;
-import data.Repository;
+import data.abstractsources.Repository;
 import model.service.TurnEndListener;
 import javafx.application.Platform;
 import model.entity.Mule;
@@ -14,16 +14,16 @@ import model.map.TileType;
 import model.service.DefaultTurnService;
 import view.MapView;
 
-
 import java.awt.Point;
-import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.*;
 
 
 /**
- * Created by Ben 9/14/2015.
+ * Presenter that displays the screen that allows the player to move about
+ * the map.
  */
 public class MapPresenter extends Presenter<MapView>
         implements TurnEndListener {
@@ -46,9 +46,12 @@ public class MapPresenter extends Presenter<MapView>
     @Override
     public void initialize() {
         if (turnService.isTurnInProgress()) {
-            turnService.addTurnEndListener(this);
-            // Make sure this only happens ONCE
-            isListening = true;
+
+            if (!isListening) {
+                // Make sure this only happens ONCE
+                turnService.addTurnEndListener(this);
+                isListening = true;
+            }
         } else {
             if (turnService.isAllTurnsOver()) {
                 turnService.beginRound();
@@ -61,9 +64,9 @@ public class MapPresenter extends Presenter<MapView>
 
                 //Get a winning player.
                 Player eventPlayer = null;
-                List<Player> players = playerRepository.getAll();
+                Set<Player> players = playerRepository.getAll();
                 for (Player p : players) {
-                    if (p.rank >= players.size() / 2) {
+                    if (p.getRank() >= players.size() / 2) {
                         if (eventPlayer == null) {
                             eventPlayer = p;
                         } else if (rand.nextBoolean()) {
@@ -80,14 +83,14 @@ public class MapPresenter extends Presenter<MapView>
                 }
 
                 //Print the random event to the screen.
-                if (deltaMoney < 0) {
-                    view.showRandomEventText("Random event! "
-                            + eventPlayer.getName() + " loses "
-                            + deltaMoney + " money!");
+
+                if (deltaMoney < 0)
+                {
+                    getView().showRandomEventText("Random event! "
+                            + eventPlayer.getName() + " loses " + deltaMoney + " money!");
                 } else {
-                    view.showRandomEventText("Random event! "
-                            + eventPlayer.getName() + " gains "
-                            + deltaMoney + " money!");
+                    getView().showRandomEventText("Random event! "
+                            + eventPlayer.getName() + " gains " + deltaMoney + " money!");
                 }
 
                 //Start the turn after the text has disappeared.
@@ -104,13 +107,13 @@ public class MapPresenter extends Presenter<MapView>
             }
         }
         if (isPlacingMule) {
-            view.displayMule();
+            getView().displayMule();
         }
     }
 
     /**
-     * Loads the input.fxml file and gives up control to it.
-     * @param str name of fxml file
+     * Loads the input .fxml file and gives up control to it.
+     * @param str the path of the fxml file relative to the presenters directory
      */
     private void switchPresenter(String str) {
         if (isListening) {
@@ -118,14 +121,14 @@ public class MapPresenter extends Presenter<MapView>
             isListening = false;
         }
 //        turnService.stopTimers();
-        context.showScreen(str);
+        getContext().showScreen(str);
     }
 
     /**
      * Turns control over to the TownPresenter, and stops character movement.
      */
     public void enterCity() {
-        view.stopMovement();
+        getView().stopMovement();
 
         switchPresenter("town.fxml");
     }
@@ -134,12 +137,12 @@ public class MapPresenter extends Presenter<MapView>
     public void onTurnEnd(Player player) {
         isListening = false;
         Platform.runLater(() -> {
-            view.stopMovement();
+            getView().stopMovement();
 
             //Mule is lost if not placed//
             if (isPlacingMule) {
-                player.mules.remove(mulePlacing);
-                view.stopDisplayingMule();
+                player.getMules().remove(mulePlacing);
+                getView().stopDisplayingMule();
                 isPlacingMule = false;
             }
 
@@ -170,7 +173,7 @@ public class MapPresenter extends Presenter<MapView>
                 == tileCoord.y && t.getLocation().getRow() == tileCoord.x);
         */
         Tile[] tile = map.getOccupants(tileCoord.x, tileCoord.y, Tile.class);
-        boolean owned = (getCurrentPlayer() == tile[0].ownedBy());
+        boolean owned = (getCurrentPlayer().equals(tile[0].ownedBy()));
 
         //check for another mule//
         boolean occupied = map.getOccupants(tileCoord.x,
@@ -180,16 +183,16 @@ public class MapPresenter extends Presenter<MapView>
         System.out.println("owned: " + owned + " occupied: " + occupied);
         if (owned && !occupied) {
             map.add(mulePlacing, tileCoord.x, tileCoord.y);
-            view.placeMuleGraphic(tileCoord.y,
+            getView().placeMuleGraphic(tileCoord.y,
                     tileCoord.x, mulePlacing.getType());
         } else {
-            turnService.getCurrentPlayer().mules.remove(mulePlacing);
+            turnService.getCurrentPlayer().getMules().remove(mulePlacing);
             System.out.println("Mule Lost");
         }
 
         mulePlacing = null;
         isPlacingMule = false;
-        view.stopDisplayingMule();
+        getView().stopDisplayingMule();
     }
 
     /**
@@ -236,14 +239,13 @@ public class MapPresenter extends Presenter<MapView>
      * gets time remaining in turn
      * @return time remaining
      */
-    public double getTimeRemaining() {
-        return turnService.getTimeRemaining();
+    public double getFractionRemaining() {
+        return turnService.getFractionRemaining();
     }
 
     /**
-     * should be called by townPresenter.
-     * @param isPlacingMule if placing mule
-     * @param mule mule that is being placed
+     * should be called by townPresenter
+     * @param isPlacingMule the boolean of whether this mule is being placed or not.
      */
     public void setIsPlacingMule(boolean isPlacingMule, Mule mule) {
         this.mulePlacing = mule;
@@ -257,9 +259,9 @@ public class MapPresenter extends Presenter<MapView>
         turnService.beginTurn();
         turnService.addTurnEndListener(this);
         isListening = true;
-        view.setCharacterImage(turnService.
-                getCurrentPlayer().getRace().getImagePath());
-        view.showTurnStartText();
+        getView().setCharacterImage(turnService.getCurrentPlayer()
+                .getRace().getImagePath());
+        getView().showTurnStartText();
     }
 
     /**

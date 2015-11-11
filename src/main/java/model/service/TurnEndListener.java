@@ -7,5 +7,5 @@ import model.entity.Player;
  */
 @FunctionalInterface
 public interface TurnEndListener {
-    public void onTurnEnd(Player player);
+    void onTurnEnd(Player player);
 }

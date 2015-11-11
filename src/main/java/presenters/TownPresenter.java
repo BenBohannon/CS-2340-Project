@@ -37,7 +37,7 @@ public class TownPresenter extends Presenter implements TurnEndListener {
             mule = new Mule(MuleType.Food);
         } else if (buttonText.equals("SMITHORE MULES")) {
             mule = new Mule(MuleType.Smithore);
-        } else if (buttonText.equals("CRYSTITE MULES")) {
+        } else {
             mule = new Mule(MuleType.Crysite);
         }
         storeService.decrementMuleCount();
@@ -52,7 +52,7 @@ public class TownPresenter extends Presenter implements TurnEndListener {
     }
 
     public void handleStoreClick(ActionEvent event) {
-        context.showScreen("store.fxml");
+        getContext().showScreen("store.fxml");
     }
 
     /**
@@ -63,7 +63,7 @@ public class TownPresenter extends Presenter implements TurnEndListener {
         if (turnService.isTurnInProgress()) {
             turnService.removeTurnEndListener(this);
         }
-        return (MapPresenter) context.showScreenUninitialized("map_grid.fxml");
+        return (MapPresenter) getContext().showScreenUninitialized("map_grid.fxml");
     }
 
     public void handlePubClick(ActionEvent event) {
@@ -83,9 +83,9 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 //        turnService.removeTurnEndListener(this);
         if (turnService.isAllTurnsOver()) {
             System.out.println("show auction screen");
-            context.showScreen("auction.fxml");
+            getContext().showScreen("auction.fxml");
         } else {
-            context.showScreen("map_grid.fxml");
+            getContext().showScreen("map_grid.fxml");
             //Turn seems to end on its own idk how
         }
 
@@ -93,6 +93,6 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Override
     public void onTurnEnd(Player player) {
-        Platform.runLater(() -> context.showScreen("map_grid.fxml"));
+        Platform.runLater(() -> getContext().showScreen("map_grid.fxml"));
     }
 }

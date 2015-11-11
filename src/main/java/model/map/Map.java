@@ -1,8 +1,10 @@
 package model.map;
 
 import com.google.inject.Inject;
-import data.LocationDatasource;
+import data.abstractsources.LocationDatasource;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -22,11 +24,12 @@ public class Map {
 
     private LocationDatasource datasource;
 
+    private int rows = 5;
+    private int cols = 9;
+
     @Inject
     public Map(LocationDatasource lds) {
         datasource = lds;
-        int rows = 5;
-        int cols = 9;
 
         if (rows < 1 || cols < 1) {
             throw new IllegalArgumentException(
@@ -39,7 +42,10 @@ public class Map {
             for (int j = 0; j < rows; j++) {
                 locationGrid[i][j] = new Location(i, j, this);
                 Collection<Locatable> occupants = datasource.get(i, j);
+
                 for (Locatable e : occupants) {
+                    // Location property was instantiated by hibernate, but we want to use the ones in our grid //
+                    e.setLocation(null);
                     add(e, i, j);
                 }
             }
@@ -93,12 +99,14 @@ public class Map {
                     "row or col value is out of bounds.");
         }
 
+
         Location newLocation = locationGrid[row][col];
+        locatable.setLocation(newLocation);
+
+        datasource.save(row, col, locatable);
         if (!newLocation.addOccupant(locatable)) {
             throw new RuntimeException("internal issue");
         }
-
-        locatable.setLocation(newLocation);
     }
 
     /**
@@ -106,6 +114,7 @@ public class Map {
      * @param locatable locatable to be removed from the model.map grid
      */
     public void remove(Locatable locatable) {
+        datasource.remove(locatable);
         if (!locatable.getLocation().removeOccupant(locatable)) {
             throw new RuntimeException("internal issue");
         }
@@ -161,7 +170,25 @@ public class Map {
                 && col >= 0 && col < getCols();
     }
 
-//==============================================================================
+    public void refreshFromDatasource() {
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+
+                for (Locatable pastEle : locationGrid[i][j].getOccupants()) {
+                    locationGrid[i][j].removeOccupant(pastEle);
+                }
+
+                Collection<Locatable> occupants = datasource.get(i, j);
+                for (Locatable e : occupants) {
+                    // Location property was instantiated by hibernate, but we want to use the ones in our grid //
+                    e.setLocation(null);
+                    add(e, i, j);
+                }
+            }
+        }
+    }
+
+//=====================================================================
     /**
      * The Location class encapsulates location information for a
      * {@link Locatable} on the model.map, and is used by the
@@ -180,13 +207,23 @@ public class Map {
      * the {@link Locatable} essentially retains the ability to
      * manage its own location.
      */
-    public class Location {
+    @Embeddable
+    public static class Location {
+
 
         private int row;
         private int col;
+        @Transient
         private Map map;
 
+        @Transient
         private Collection<Locatable> occupants;
+
+        /**
+         * required default constructor for hibernate
+         */
+        public Location() {
+        }
 
         /**
          * instantiates a location class object
@@ -194,7 +231,7 @@ public class Map {
          * @param col col of object
          * @param map map on which object is present
          */
-        private Location(int row, int col, Map map) {
+        public Location(int row, int col, Map map) {
             this.row = row;
             this.col = col;
             this.map = map;
@@ -242,6 +279,7 @@ public class Map {
         public <T extends Locatable> T[] getOccupants(Class<T> type) {
             return occupants.stream()
                     .filter(type::isInstance)
+                    // this is always going to work //
                     .toArray(size -> (T[]) Array.newInstance(type, size));
         }
 

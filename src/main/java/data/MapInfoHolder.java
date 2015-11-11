@@ -13,7 +13,8 @@ import model.map.TileType;
  */
 public class MapInfoHolder {
 
-    private static TileType[][] TILE_GRID = {
+
+    private static final TileType[][] TILE_GRID = {
             {TileType.MOUNTAIN_2, TileType.MOUNTAIN_2, TileType.MOUNTAIN_1,
                 TileType.PLAIN, TileType.RIVER, TileType.PLAIN,
                 TileType.PLAIN, TileType.PLAIN, TileType.PLAIN},

@@ -2,13 +2,11 @@ package presenters;
 
 import com.google.inject.Inject;
 import data.MapInfoHolder;
-import data.Repository;
+import data.abstractsources.Repository;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -22,8 +20,8 @@ import model.map.Tile;
 import view.MapView;
 
 import java.awt.*;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.List;
 
 
 /**
@@ -45,8 +43,8 @@ public class TileSelectionPresenter extends Presenter {
 
     final private Group border = createBorder(0, 0, Color.WHITE);
     private Timer timer;
-    private double mouseX;
-    private double mouseY;
+    // private double mouseX;
+    // private double mouseY;
     private volatile int tileID;
     private boolean[] playerHasChosen = new boolean[4];
 
@@ -61,10 +59,10 @@ public class TileSelectionPresenter extends Presenter {
 
         tileID = 0;
 
-        pane.setOnMouseMoved(event -> {
-            mouseX = event.getX();
-            mouseY = event.getY();
-        });
+//        pane.setOnMouseMoved(event -> {
+//            mouseX = event.getX();
+//            mouseY = event.getY();
+//        });
 
         for (Player player : playerRepository.getAll()) {
             for (Tile tile : player.getOwnedProperties()) {
@@ -74,55 +72,60 @@ public class TileSelectionPresenter extends Presenter {
             }
         }
 
-        pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                Player player = null;
-                Point location = getCoords(border.getTranslateX(), border.getTranslateY());
-                Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
-                boolean tileIsOwned = playerRepository.getAll().stream()
-                        .anyMatch(p -> p.getOwnedProperties().contains(tile));
-                if (!tileIsOwned && tileID != 22) {
-                    switch (event.getCode()) {
-                        case A:
-                            player = playerRepository.get(0);
-                            if (!playerHasChosen[0]) { // && if tile is free && if player exists
-                                player = playerRepository.get(0);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border1);
-                                playerHasChosen[0] = true;
-                                // assign tile to player
-                            }
-                            break;
-                        case S:
-                            if (playerRepository.getAll().size() > 1 && !playerHasChosen[1]) {
-                                player = playerRepository.get(1);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border2);
-                                playerHasChosen[1] = true;
-                            }
-                            break;
-                        case D:
-                            if (playerRepository.getAll().size() > 2 && !playerHasChosen[2]) {
-                                player = playerRepository.get(2);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border3);
-                                playerHasChosen[2] = true;
-                            }
-                            break;
-                        case F:
-                            if (playerRepository.getAll().size() > 3 && !playerHasChosen[3]) {
-                                player = playerRepository.get(3);
-                                player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-                                Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
-                                pane.getChildren().add(border4);
-                                playerHasChosen[3] = true;
-                            }
-                            break;
-                    }
+        pane.setOnKeyPressed(event -> {
+            Player player = null;
+            Point location = getCoords(border.getTranslateX(), border.getTranslateY());
+            map.refreshFromDatasource();
+            Tile tile = (Tile) map.getOccupants(location.y, location.x)[0];
+
+            List<Player> players = new ArrayList<>(playerRepository.getAll().size());
+            players.addAll(playerRepository.getAll());
+
+            boolean tileIsOwned = players.stream()
+                    .anyMatch(p -> p.getOwnedProperties().contains(tile));
+            if (!tileIsOwned && tileID != 22) {
+                switch (event.getCode()) {
+                    case A:
+                        player = playerRepository.get(players.get(0).getId()); // TODO check if this line should be edited
+                        if (!playerHasChosen[0]) { // && if tile is free && if player exists
+                            player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                            playerRepository.save(player);
+                            Group border1 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                            pane.getChildren().add(border1);
+                            playerHasChosen[0] = true;
+                            // assign tile to player
+                        }
+                        break;
+                    case S:
+                        if (playerRepository.getAll().size() > 1 && !playerHasChosen[1]) {
+                            player = playerRepository.get(players.get(1).getId());
+                            player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                            playerRepository.save(player);
+                            Group border2 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                            pane.getChildren().add(border2);
+                            playerHasChosen[1] = true;
+                        }
+                        break;
+                    case D:
+                        if (playerRepository.getAll().size() > 2 && !playerHasChosen[2]) {
+                            player = playerRepository.get(players.get(2).getId());
+                            player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                            playerRepository.save(player);
+                            Group border3 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                            pane.getChildren().add(border3);
+                            playerHasChosen[2] = true;
+                        }
+                        break;
+                    case F:
+                        if (playerRepository.getAll().size() > 3 && !playerHasChosen[3]) {
+                            player = playerRepository.get(players.get(3).getId());
+                            player.buyProperty(tile, selectionRound > 1 ? -300 : 0);
+                            playerRepository.save(player);
+                            Group border4 = createBorder(border.getTranslateX(), border.getTranslateY(), player.getColor());
+                            pane.getChildren().add(border4);
+                            playerHasChosen[3] = true;
+                        }
+                        break;
                 }
             }
         });
@@ -131,25 +134,39 @@ public class TileSelectionPresenter extends Presenter {
 
         pane.setOnMousePressed(event -> onClick());
 
-        //Start iterating through tiles to select
-        iterateTiles();
+        //Create tiles and draw map or just draw map if tiles already in place //
+        if (map.getOccupants(0, 0, Tile.class).length == 0) {
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 5; j++) {
+                    Tile tile = new Tile(mapInfo.getTileType(j, i));
+                    //Add tiles to the map.
+                    map.add(tile, i, j);
 
-        //Create a map.
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 5; j++) {
-                Tile tile = new Tile(mapInfo.getTileType(j, i));
-                //Add tiles to the map.
-                map.add(tile, i, j);
+                    //Add tile images to the gridPane
+                    grid.add(new ImageView(tile.getImage(100, 100)), i, j);
 
-                //Add tile images to the gridPane
-                grid.add(new ImageView(tile.getImage(100, 100)), i, j);
+                    Mule[] mules = map.getOccupants(i, j, Mule.class);
+                    if (mules.length != 0) {
+                        placeMuleGraphic(i, j, mules[0].getType());
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 5; j++) {
+                    Tile tile = map.getOccupants(i, j, Tile.class)[0];
+                    grid.add(new ImageView(tile.getImage(100, 100)), i, j);
 
-                Mule[] mules = map.getOccupants(i, j, Mule.class);
-                if (mules.length != 0) {
-                    placeMuleGraphic(i, j, mules[0].getType());
+                    Mule[] mules = map.getOccupants(i, j, Mule.class);
+                    if (mules.length > 0) {
+                        placeMuleGraphic(i, j, mules[0].getType());
+                    }
                 }
             }
         }
+
+        //Start iterating through tiles to select
+        iterateTiles();
     }
 
     private void iterateTiles() {
@@ -188,14 +205,14 @@ public class TileSelectionPresenter extends Presenter {
             if (tileID % 45 == 0) {
                 border.setTranslateY(border.getTranslateY() - 500);
                 stopMovement();
-                context.showScreen("map_grid.fxml");
+                getContext().showScreen("map_grid.fxml");
             }
             border.setTranslateX(border.getTranslateX() + 100);
 
             //If everyone has already selected, quit.
             if (doneSelecting()) {
                 stopMovement();
-                context.showScreen("map_grid.fxml");
+                getContext().showScreen("map_grid.fxml");
             }
         });
     }
