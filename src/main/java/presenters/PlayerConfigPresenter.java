@@ -1,9 +1,8 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.Repository;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.RadioButton;
+import com.google.inject.name.Named;
+import data.abstractsources.Repository;
 import javafx.scene.paint.Color;
 import model.entity.Player;
 import model.entity.PlayerRace;
@@ -17,6 +16,10 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
     @Inject
     Repository<Player> playerRepository;
 
+    @Inject
+    @Named("InitialPlayerMoney")
+    int initialPlayerMoney;
+
     private int numPlayersLeft;
 
 
@@ -27,7 +30,9 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
      * @param playerColor player's color
      * @param playerName player's name, totally valid thank to the View
      */
-    public void finish(Color playerColor, String playerName, String playerRace) {
+    public void finish(Color playerColor, String playerName, String playerRaceStr) {
+
+        PlayerRace playerRace = PlayerRace.valueOf(playerRaceStr);
 
         boolean allUnique = true;
 
@@ -36,14 +41,14 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             //show validation labels in view//
             allUnique = false;
             //NOTICE: view is already of correct type
-            view.showColorAlreadyChosen();
+            getView().showColorAlreadyChosen();
         }
 
         //check if name has already been used//
         if (playerRepository.getAll().stream().anyMatch(player -> player.getName().equals(playerName))) {
             //show validation labels in view//
             allUnique = false;
-            view.showNameAlreadyChosen();
+            getView().showNameAlreadyChosen();
         }
 
         //check if race has already been used//
@@ -51,7 +56,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             //show validation labels in view//
             allUnique = false;
             //NOTICE: view is already of correct type
-            view.showRaceAlreadyChosen();
+            getView().showRaceAlreadyChosen();
         }
 
 
@@ -61,18 +66,19 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             p.setColor(playerColor);
             p.setName(playerName);
             for (PlayerRace race : PlayerRace.values()) {
-                if (race.toString().toLowerCase().equals(playerRace.trim().toLowerCase())) {
+                if (race.toString().toLowerCase().equals(playerRaceStr.trim().toLowerCase())) {
                     p.setRace(race);
                 }
             }
+            p.setMoney(initialPlayerMoney);
             p.setId(-1);
             playerRepository.save(p);
 
             if (numPlayersLeft > 0) {
-                PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) context.showScreen("player_config.fxml");
+                PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) getContext().showScreen("player_config.fxml");
                 nextPresenter.setNumPlayersLeft(--numPlayersLeft);
             } else {
-                context.showScreen("map_grid_tile_select.fxml");
+                getContext().showScreen("map_grid_tile_select.fxml");
             }
         }
     }

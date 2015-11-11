@@ -1,5 +1,6 @@
 package model.map;
 
+
 /**
  * Created by brian on 9/13/15.
  *
@@ -12,14 +13,14 @@ public interface Locatable {
      * Should return the privately defined {@link model.map.Map.Location} instance.
      * Used internally by the {@link Map} class to retreive
      * info about the a client Object.
-     * @return
+     * @return the location
      */
-    public Map.Location getLocation();
+    Map.Location getLocation();
 
     /**
      * Should assign the privately defined {@link model.map.Map.Location} instance.
      * Used internally by the Map class to move Locatables.
      * Calling this method anywhere else will cause an error.
      */
-    public void setLocation(Map.Location location);
+    void setLocation(Map.Location location);
 }

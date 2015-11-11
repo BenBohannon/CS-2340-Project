@@ -1,17 +1,24 @@
-package data;
+package data.concretesources;
 
+import data.abstractsources.Repository;
 import model.entity.Player;
 
 import java.util.ArrayList;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Created by brian on 9/24/15.
+ * Temporary implementation of a Repository<Player> that we can use
+ * while testing the application. Must be bound as a singleton in
+ * the DI container, as it does not persist anything to disk.
  */
 public class MemoryPlayerRepository implements Repository<Player> {
 
     private static int nextPlayerId = 0;
+    private static int getNextPlayerId() {
+        return nextPlayerId++;
+    }
 
     private ArrayList<Player> players;
 
@@ -20,8 +27,10 @@ public class MemoryPlayerRepository implements Repository<Player> {
     }
 
     @Override
-    public List<Player> getAll() {
-        return players;
+    public Set<Player> getAll() {
+        HashSet<Player> set = new HashSet<>();
+        set.addAll(players);
+        return set;
     }
 
     @Override
@@ -39,7 +48,7 @@ public class MemoryPlayerRepository implements Repository<Player> {
     @Override
     public Player save(Player entity) {
         if (entity.getId() == -1) {
-            entity.setId(nextPlayerId++);
+            entity.setId(getNextPlayerId());
         }
         if (players.contains(entity)) {
             //no action needed in memory//

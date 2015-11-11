@@ -12,11 +12,8 @@ import model.service.DefaultTurnService;
  */
 public class StorePresenter extends Presenter {
 
-    @Inject
-    DefaultTurnService turnService;
-
-    @Inject
-    StoreService storeService;
+    private DefaultTurnService turnService;
+    private StoreService storeService;
 
     @FXML
     private Label crystiteLabel;
@@ -27,56 +24,63 @@ public class StorePresenter extends Presenter {
     @FXML
     private Label energyLabel;
 
+    @Inject
+    public StorePresenter(DefaultTurnService pTurnService, StoreService pStoreService) {
+        turnService = pTurnService;
+        storeService = pStoreService;
+    }
+
     @FXML
-    public void initialize() {
+    @Override
+    public final void initialize() {
         updateEnergyLabel();
         updateFoodLabel();
         updateCrysLabel();
         updateSmithoreLabel();
     }
 
-    public void handleSmithoreBuyClick(ActionEvent event) {
+    public final void handleSmithoreBuyClick(ActionEvent event) {
         storeService.sellSmithore(turnService.getCurrentPlayer());
         updateSmithoreLabel();
     }
 
-    public void handleSmithoreSellClick(ActionEvent event) {
-        storeService.buySmithore(turnService.getCurrentPlayer(), 10);      //temp price
+    public final void handleSmithoreSellClick(ActionEvent event) {
+        storeService.buySmithore(turnService.getCurrentPlayer());
         updateSmithoreLabel();
     }
 
-    public void handleCrystiteBuyClick(ActionEvent event) {
+    public final void handleCrystiteBuyClick(ActionEvent event) {
         storeService.sellCrystite(turnService.getCurrentPlayer());
         updateCrysLabel();
     }
 
-    public void handleCrystiteSellClick(ActionEvent event) {
-        storeService.buyCrystite(turnService.getCurrentPlayer(), 20);
+    public final void handleCrystiteSellClick(ActionEvent event) {
+        storeService.buyCrystite(turnService.getCurrentPlayer());
         updateCrysLabel();
     }
 
-    public void handleFoodBuyClick(ActionEvent event) {
+    public final void handleFoodBuyClick(ActionEvent event) {
         storeService.sellFood(turnService.getCurrentPlayer());
         updateFoodLabel();
     }
 
-    public void handleFoodSellClick(ActionEvent event) {
-        storeService.buyFood(turnService.getCurrentPlayer(), 5);
+    public final void handleFoodSellClick(ActionEvent event) {
+        storeService.buyFood(turnService.getCurrentPlayer());
         updateFoodLabel();
     }
 
-    public void handleEnergyBuyClick(ActionEvent event) {
+    public final void handleEnergyBuyClick(ActionEvent event) {
         storeService.sellEnergy(turnService.getCurrentPlayer());
         updateEnergyLabel();
     }
 
-    public void handleEnergySellClick(ActionEvent event) {
-        storeService.buyEnergy(turnService.getCurrentPlayer(), 10);
+    public final void handleEnergySellClick(ActionEvent event) {
+        storeService.buyEnergy(turnService.getCurrentPlayer());
         updateEnergyLabel();
     }
 
-    public void handleExitClick(ActionEvent event) {
-        context.showScreen("town.fxml");
+    public final void handleExitClick(ActionEvent event) {
+        getContext().showScreen("town.fxml");
     }
 
     private void updateCrysLabel() {
@@ -84,11 +88,12 @@ public class StorePresenter extends Presenter {
     }
 
     private void updateFoodLabel() {
+        int temp = storeService.getFood();
         foodLabel.setText("Food: " + storeService.getFood());
     }
 
     private void updateEnergyLabel() {
-        energyLabel.setText("Energy: " + storeService.getEnergy());
+        energyLabel.setText("ENERGY: " + storeService.getEnergy());
     }
 
     private void updateSmithoreLabel() {

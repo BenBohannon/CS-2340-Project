@@ -1,7 +1,7 @@
 package view;
 
 import com.google.inject.Inject;
-import data.Repository;
+import data.abstractsources.Repository;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,19 +12,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.entity.Player;
-import model.service.DefaultTurnService;
 import presenters.AuctionPresenter;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
- * Created by kylemurray on 10/7/15.
+ * View that manages the UI for the Auction screen, where players can buy and sell items
  */
 public class AuctionView extends View<AuctionPresenter> {
 
-    //TODO: fix holding down buttons, put in store, put in buy/sell option for players, make food/energy rounds, timer
+    //TODO: fix holding down buttons, put in store, put in buy/sell option for players, make FOOD/ENERGY rounds, timer
     @Inject
     private Repository<Player> playerRepository;
     @FXML
@@ -33,35 +30,40 @@ public class AuctionView extends View<AuctionPresenter> {
     private Group pane2 = new Group();
     private Timer timer;
     private Timer timer2;
+
+    // will be used in future versions //
     private Timer timer3;
     private Timer timer4;
     private Timer timer5;
     private Timer timer6;
+
     private ArrayList<ImageView> playerImageList;
     private ArrayList<Text> resourceLists = new ArrayList<Text>();
     private ArrayList<Text> names = new ArrayList<Text>();
     private boolean canMove;
     private double BOTTOMLIMIT = 390;
     private double TOPLIMIT = 150;
+    // keep this here with the rest of the constants //
     private long DURATION = 10000L;
 
     public void initialize() {
         pane.getChildren().add(pane2);
+        List<Player> playerList = new LinkedList<>(playerRepository.getAll());
         playerImageList = new ArrayList<>();
         for (int i = 0; i < playerRepository.size(); i++) {
-            ImageView playerImage = MapView.createImageView(playerRepository.get(i).getRace().getImagePath(), 50, 50);
+            ImageView playerImage = MapView.createImageView(playerList.get(i).getRace().getImagePath(), 50, 50);
             playerImageList.add(playerImage);
                 double deltaX = playerImage.getImage().getWidth()/2 - 16;
             playerImage.setTranslateX(150 + 150 * i - deltaX);
                 double deltaY = playerImage.getImage().getHeight()/2 - 16;
             playerImage.setTranslateY(390 - deltaY);
-            Text playerName = new Text("Player " + (i + 1) + "\n\"" + playerRepository.get(i).getName() + "\"");
+            Text playerName = new Text("Player " + (i + 1) + "\n\"" + playerList.get(i).getName() + "\"");
             names.add(playerName);
             playerName.setTranslateX(150 + 150 * i);
             playerName.setTranslateY(370);
-            Text resources = new Text(playerRepository.get(i).getCrystite() + " Crystite\n"
-                    + playerRepository.get(i).getEnergy() + " Energy\n"
-                    + playerRepository.get(i).getFood() + " Food");
+            Text resources = new Text(playerList.get(i).getCrystite() + " Crystite\n"
+                    + playerList.get(i).getEnergy() + " ENERGY\n"
+                    + playerList.get(i).getFood() + " Food");
             resourceLists.add(resources);
             resources.setTranslateX(150 + 150 * i);
             resources.setTranslateY(435);
@@ -141,7 +143,7 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     public void handleContinueButtonAction() {
-        presenter.switchPresenter("map_grid_tile_select.fxml");
+        getPresenter().switchPresenter("map_grid_tile_select.fxml");
     }
 
     public void startSmithoreBidding() {
@@ -152,8 +154,10 @@ public class AuctionView extends View<AuctionPresenter> {
                 Platform.runLater(() ->
                 {
                     pane2.getChildren().clear();
+                    List<Player> playerList = new LinkedList<Player>(playerRepository.getAll());
+
                     for (int i = 0; i < playerRepository.size(); i++) {
-                        Text smithore = new Text(playerRepository.get(i).getSmithore() + " Smithore");
+                        Text smithore = new Text(playerList.get(i).getSmithore() + " Smithore");
                         smithore.setTranslateX(150 + 150 * i);
                         smithore.setTranslateY(435);
                         Text auctionText = new Text(250, 120, "Smithore Auction");
@@ -208,7 +212,7 @@ public class AuctionView extends View<AuctionPresenter> {
 
     public void resetCharacters() {
         for (int i = 0; i < playerRepository.size(); i++) {
-//            double deltaY = (new Image(playerRepository.get(i).getRace().getImagePath())).getHeight()/2 - 16;
+//            double deltaY = (new Image(playerList.get(i).getRace().getImagePath())).getHeight()/2 - 16;
             playerImageList.get(i).setTranslateY(385);
         }
     }

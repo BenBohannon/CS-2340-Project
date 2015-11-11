@@ -18,11 +18,27 @@ import view.View;
  */
 public class Presenter<T extends View> {
     @Inject
-    public PresenterContext context;
+    private PresenterContext context;
 
-    public T view;
+    private T view;
 
     public void initialize() {
 
+    }
+
+    public final T getView() {
+        return view;
+    }
+
+    public final void setView(T pView) {
+        this.view = pView;
+    }
+
+    public final PresenterContext getContext() {
+        return context;
+    }
+
+    public final void setContext(PresenterContext pContext) {
+        this.context = pContext;
     }
 }

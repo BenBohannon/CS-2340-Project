@@ -11,8 +11,8 @@ public enum MuleType {
 
     private String imagePath;
 
-    MuleType(String imagePath) {
-        this.imagePath = imagePath;
+    MuleType(String pImagePath) {
+        imagePath = pImagePath;
     }
 
     public String getImagePath() {

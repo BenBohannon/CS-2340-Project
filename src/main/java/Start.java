@@ -2,22 +2,31 @@
  * Created by brian on 9/10/15.
  */
 
+import com.google.inject.Binder;
+import com.google.inject.Module;
+import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
+import com.google.inject.name.Named;
+import com.google.inject.name.Names;
 import data.*;
+import data.abstractsources.LocationDatasource;
+import data.abstractsources.Repository;
+import data.abstractsources.StoreDatasource;
+import data.abstractsources.TurnDatasource;
+import data.concretesources.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import model.entity.Mule;
 import model.entity.Player;
-import model.map.Locatable;
-import model.map.Map;
 import model.service.DefaultTurnService;
 import model.service.StoreService;
-import org.h2.jdbcx.JdbcConnectionPool;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import presenters.PresenterContext;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+import java.io.File;
 public class Start extends Application {
 
     public static void main(String[] args) {
@@ -27,127 +36,62 @@ public class Start extends Application {
     @Override
     public void start(Stage stage) {
 
-        //empty datasource for model.map//
-        LocationDatasource lds = new LocationDatasource() {
-            @Override
-            public Collection<Locatable> get(int row, int col) {
-                return new ArrayList<>();
-            }
+        // A SessionFactory is set up once for an application //
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure(new File(getClass().getResource("/sql/hibernate.cfg.xml").getFile())) // configures settings from hibernate.cfg.xml
+                .build();
 
-            @Override
-            public void save(int row, int col, Locatable locatable) {
-                throw new NotImplementedException();
-            }
+        SessionFactory sessionFactory = null;
+        try {
+            sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+        }
+        catch (Exception e) {
+            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
+            // so destroy it manually.
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+        final SessionFactory finalSessionFactory = sessionFactory;
+        Repository<Player> playerRepository = new SqlPlayerRepository(finalSessionFactory);
 
-            @Override
-            public void saveAll(int row, int col, Collection<Locatable> locatables) {
-                throw new NotImplementedException();
-            }
-        };
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
+                new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository)
+                , new GameInfoDatasource(), new SqlTurnDatasource(finalSessionFactory));
 
+        PresenterContext context = new PresenterContext(binder -> {
+            // class level bindings //
+            binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
+            binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
+            binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
+            binder.bind(new TypeLiteral<Repository<Player>>(){}).to(SqlPlayerRepository.class);
+            binder.bind(new TypeLiteral<Repository<Mule>>(){}).to(SqlMuleRepository.class);
 
-        final StoreDatasource sds = new StoreDatasource() {
-
-            private int energyAmount = energy;
-            private int foodAmount = food;
-            private int smithoreAmount = smithore;
-            private int crystiteAmount = crystite;
-
-            private int energyStorePrice = energyPrice;
-            private int foodStorePrice = foodPrice;
-            private int smithoreStorePrice= smithorePrice;
-            private int crystiteStorePrice = crystitePrice;
-            private int muleCount;
-
-            @Override
-            public void saveAmount(int energy, int food, int smithore, int crystite) {
-                energyAmount = energy;
-                foodAmount = food;
-                smithoreAmount = smithore;
-                crystiteAmount = crystite;
-                muleCount = 10;
-            }
-
-            @Override
-            public void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice) {
-                energyStorePrice = energyPrice;
-                foodStorePrice = foodPrice;
-                smithoreStorePrice = smithorePrice;
-                crystiteStorePrice = crystitePrice;
-            }
-
-            @Override
-            public int getEnergy() {
-                return energyAmount;
-            }
-
-            @Override
-            public int getFood() {
-                return foodAmount;
-            }
-
-            @Override
-            public int getSmithore() {
-                return smithoreAmount;
-            }
-
-            @Override
-            public int getCrystite() {
-                return crystiteAmount;
-            }
-
-            @Override
-            public int getEnergyPrice() {
-                return energyStorePrice;
-            }
-
-            @Override
-            public int getFoodPrice() {
-                return foodStorePrice;
-            }
-
-            @Override
-            public int getSmithorePrice() {
-                return smithoreStorePrice;
-            }
-
-            @Override
-            public int getCrystitePrice() {
-                return crystiteStorePrice;
-            }
-
-            @Override
-            public int getMuleCount() {
-                return muleCount;
-            }
-
-            @Override
-            public void setMuleCount(int muleCount) {
-                this.muleCount = muleCount;
-            }
-        };
-
-        final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
-
-        final Map map = new Map(lds);
-
-        final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
-
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
-
-        PresenterContext context = new PresenterContext((binder) -> {
-            binder.bind(LocationDatasource.class).toInstance(lds);
-            binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
-            binder.bind(StoreDatasource.class).toInstance(sds);
-            binder.bind(JdbcConnectionPool.class).toInstance(connectionPool);
-
-            //temp
-            binder.bind(Map.class).toInstance(map);
+            // instance level bindings //
+            binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
             binder.bind(DefaultTurnService.class).toInstance(turnService);
+
+            // constants / config //
+            binder.bindConstant()
+                    .annotatedWith(Names.named("InitialPlayerMoney"))
+                    .to(10000);
+            binder.bind(StoreRecord.class)
+                    .annotatedWith(Names.named("InitialStoreState"))
+                    .toInstance(getInitialStoreState());
         }, stage);
 
         context.showScreen("home_screen.fxml");
     }
 
+    private final StoreRecord getInitialStoreState() {
+        StoreRecord record = new StoreRecord();
+        record.setFood(16);
+        record.setEnergy(16);
+
+        record.setFoodPrice(3000);
+        record.setEnergyPrice(2500);
+        record.setSmithorePrice(5000);
+        record.setCrystitePrice(10000);
+
+        return record;
+    }
 
 }

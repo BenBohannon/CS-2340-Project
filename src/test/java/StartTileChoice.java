@@ -1,18 +1,27 @@
 import com.google.inject.TypeLiteral;
 import data.*;
+import data.abstractsources.LocationDatasource;
+import data.abstractsources.Repository;
+import data.abstractsources.StoreDatasource;
+import data.abstractsources.TurnDatasource;
+import data.concretesources.*;
 import javafx.application.Application;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import model.entity.Mule;
 import model.entity.Player;
 import model.entity.PlayerRace;
 import model.map.Locatable;
-import model.map.Map;
 import model.service.DefaultTurnService;
 import model.service.StoreService;
-import org.h2.jdbcx.JdbcConnectionPool;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import presenters.PresenterContext;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -45,89 +54,12 @@ public class StartTileChoice extends Application {
             public void saveAll(int row, int col, Collection<Locatable> locatables) {
                 throw new NotImplementedException();
             }
-        };
-
-        final StoreDatasource sds = new StoreDatasource() {
-
-            private int energyAmount = energy;
-            private int foodAmount = food;
-            private int smithoreAmount = smithore;
-            private int crystiteAmount = crystite;
-
-            private int energyStorePrice = energyPrice;
-            private int foodStorePrice = foodPrice;
-            private int smithoreStorePrice= smithorePrice;
-            private int crystiteStorePrice = crystitePrice;
-
-            private int muleCount = 10;
 
             @Override
-            public void saveAmount(int energy, int food, int smithore, int crystite) {
-                energyAmount = energy;
-                foodAmount = food;
-                smithoreAmount = smithore;
-                crystiteAmount = crystite;
-            }
+            public void remove(Locatable locatable) {
 
-            @Override
-            public void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice) {
-                energyStorePrice = energyPrice;
-                foodStorePrice = foodPrice;
-                smithoreStorePrice = smithorePrice;
-                crystiteStorePrice = crystitePrice;
-            }
-
-            @Override
-            public int getEnergy() {
-                return energyAmount;
-            }
-
-            @Override
-            public int getFood() {
-                return foodAmount;
-            }
-
-            @Override
-            public int getSmithore() {
-                return smithoreAmount;
-            }
-
-            @Override
-            public int getCrystite() {
-                return crystiteAmount;
-            }
-
-            @Override
-            public int getEnergyPrice() {
-                return energyStorePrice;
-            }
-
-            @Override
-            public int getFoodPrice() {
-                return foodStorePrice;
-            }
-
-            @Override
-            public int getSmithorePrice() {
-                return smithoreStorePrice;
-            }
-
-            @Override
-            public int getCrystitePrice() {
-                return crystiteStorePrice;
-            }
-
-            @Override
-            public int getMuleCount() {
-                return muleCount;
-            }
-
-            @Override
-            public void setMuleCount(int muleCount) {
-                this.muleCount = muleCount;
             }
         };
-
 
 
         final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
@@ -145,21 +77,33 @@ public class StartTileChoice extends Application {
         p2.setColor(Color.BLANCHEDALMOND);
         playerRepository.save(p2);
 
+        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure(new File(getClass().getResource("/sql/hibernate.cfg.xml").getFile())) // configures settings from hibernate.cfg.xml
+                .build();
+        SessionFactory sessionFactory = null;
+        try {
+            sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
+        }
+        catch (Exception e) {
+            // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
+            // so destroy it manually.
+            e.printStackTrace();
+            StandardServiceRegistryBuilder.destroy(registry);
+        }
+        final SessionFactory finalSessionFactory = sessionFactory;
 
-        final Map map = new Map(lds);
-
-        final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
-
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
+                new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository),
+                new GameInfoDatasource(), new SqlTurnDatasource(finalSessionFactory));
 
         PresenterContext context = new PresenterContext((binder) -> {
-            binder.bind(LocationDatasource.class).toInstance(lds);
-            binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
-            binder.bind(JdbcConnectionPool.class).toInstance(connectionPool);
+            binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
+            binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
+            binder.bind(new TypeLiteral<Repository<Mule>>(){}).to(SqlMuleRepository.class);
+            binder.bind(new TypeLiteral<Repository<Player>>(){}).to(SqlPlayerRepository.class);
+            binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
 
-            //temp
-            binder.bind(Map.class).toInstance(map);
-            binder.bind(StoreDatasource.class).toInstance(sds);
+            binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
             binder.bind(DefaultTurnService.class).toInstance(turnService);
         }, stage);
 

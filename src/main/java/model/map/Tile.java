@@ -1,66 +1,74 @@
 package model.map;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import model.entity.Player;
 
-import java.util.Random;
+import javax.persistence.*;
 
 /**
  * Created by Ben 9/14/15.
  * Holds the data of each Tile on the Map.
  */
-public class Tile implements Locatable {
+@Entity
+@PrimaryKeyJoinColumn(name="id")
+public class Tile extends PersistableLocatable {
 
-    TileType type;
-    Map.Location loc;
+    @Enumerated
+    private TileType type;
+    @Embedded
+    private Map.Location location;
 
+    @OneToOne(fetch = FetchType.EAGER)
     private Player owner;
 
-    public Tile(TileType type) {
-        this.type = type;
+    public Tile() {
+        // required default constructor //
+    }
+
+    public Tile(TileType pType) {
+        this.setType(pType);
     }
 
     /**
      * Sets the owner of the tile
-     * @param owner The new owner of the tile
+     * @param pOwner The new owner of the tile
      */
-    public void setOwner(Player owner) {
-        this.owner = owner;
+    public final void setOwner(Player pOwner) {
+        owner = pOwner;
     }
 
     /**
      * Returns the owner if the tile is owned, and null if it is not
      * @return The owner of the tile
      */
-    public Player ownedBy() {
+    public final Player ownedBy() {
         return owner;
     }
 
-    public TileType getTileType() {
-        return type;
+    public final TileType getTileType() {
+        return getType();
     }
 
     /**
      * @see Locatable
      */
-    public Map.Location getLocation() {
-        return loc;
+    public final Map.Location getLocation() {
+        return location;
     }
 
     /**
      * @see Locatable
      */
-    public void setLocation(Map.Location location) {
-        loc = location;
+    public final void setLocation(Map.Location pLocation) {
+        location = pLocation;
     }
 
     /**
      * Returns the natively sized image for this Tile's TileType.
      * @return Image of this tile.
      */
-    public Image getImage() {
-        return new Image(type.getImagePath());
+    public final Image getImage() {
+        return new Image(getType().getImagePath());
     }
 
     /**
@@ -69,7 +77,30 @@ public class Tile implements Locatable {
      * @param height height of the image in pixels
      * @return Image of this tile.
      */
-    public Image getImage(int width, int height) {
-        return new Image(type.getImagePath(), width, height, true, false);
+    public final Image getImage(int width, int height) {
+        return new Image(getType().getImagePath(), width, height, true, false);
+    }
+
+    @Override
+    /**
+     * We can keep the definition of hashcode() from super, as our
+     * implementation here would be equivalent
+     */
+    public final boolean equals(Object obj) {
+        if (!(obj instanceof Tile)) {
+            return false;
+        }
+
+        Tile other = (Tile) obj;
+
+        return other.getId() == getId();
+    }
+
+    public final TileType getType() {
+        return type;
+    }
+
+    public final void setType(TileType pType) {
+        this.type = pType;
     }
 }

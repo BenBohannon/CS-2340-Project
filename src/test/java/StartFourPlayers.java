@@ -2,6 +2,11 @@ import com.google.inject.TypeLiteral;
 
 import data.*;
 
+import data.abstractsources.LocationDatasource;
+import data.abstractsources.Repository;
+import data.abstractsources.StoreDatasource;
+import data.concretesources.MemoryPlayerRepository;
+import data.concretesources.SqlTurnDatasource;
 import model.entity.Player;
 import model.entity.PlayerRace;
 import model.map.Locatable;
@@ -48,21 +53,27 @@ public class StartFourPlayers extends Application {
             public void saveAll(int row, int col, Collection<Locatable> locatables) {
                 throw new NotImplementedException();
             }
+
+            @Override
+            public void remove(Locatable locatable) {
+
+            }
         };
 
         final StoreDatasource sds = new StoreDatasource() {
 
-            private int energyAmount = energy;
-            private int foodAmount = food;
-            private int smithoreAmount = smithore;
-            private int crystiteAmount = crystite;
+            private int foodAmount = 16;
+            private int energyAmount = 16;
+            private int smithoreAmount = 0;
+            private int crystiteAmount = 0;
 
-            private int energyStorePrice = energyPrice;
-            private int foodStorePrice = foodPrice;
-            private int smithoreStorePrice = smithorePrice;
-            private int crystiteStorePrice = crystitePrice;
+
+            private int foodStorePrice = -3000;
+            private int energyStorePrice = -2500;
+            private int smithoreStorePrice = -5000;
+            private int crystiteStorePrice = -10000;
+
             private int muleCount = 10;
-
             @Override
             public void saveAmount(int energy, int food, int smithore, int crystite) {
                 energyAmount = energy;
@@ -151,7 +162,8 @@ public class StartFourPlayers extends Application {
         final Map map = new Map(lds);
 
         final DefaultTurnService turnService =
-                new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
+                new DefaultTurnService(playerRepository, new StoreService(sds, playerRepository),
+                        new GameInfoDatasource(), new SqlTurnDatasource(null));
 
         final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
 

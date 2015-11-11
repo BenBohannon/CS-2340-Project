@@ -1,39 +1,60 @@
 package model.entity;
 
-import model.map.Locatable;
 import model.map.Map;
+import model.map.PersistableLocatable;
+
+import javax.persistence.*;
 
 /**
  * Created by brian on 9/17/15.
  */
-public class Mule implements Locatable {
-    private int id;
+
+@Entity
+@PrimaryKeyJoinColumn(name="id")
+public class Mule extends PersistableLocatable {
+    @Embedded
     private Map.Location location;
+    @Enumerated
     private MuleType type;
 
-    public Mule(MuleType type) {
-        this.type = type;
+    public Mule() {
+        //Required default constructor for hibernate//
     }
 
-    public MuleType getType() {
+    public Mule(MuleType pType) {
+        this.type = pType;
+    }
+
+    public final MuleType getType() {
         return type;
     }
 
+    public final void setType(MuleType pType) {
+        this.type = pType;
+    }
+
     @Override
-    public Map.Location getLocation() {
+    public final Map.Location getLocation() {
         return location;
     }
 
     @Override
-    public void setLocation(Map.Location location) {
-        this.location = location;
+    public final void setLocation(Map.Location pLocation) {
+        this.location = pLocation;
     }
 
-    public int getId() {
-        return id;
-    }
+    @Override
+    /**
+     * We can keep the definition of hashcode() from super, as our
+     * implementation here would be equivalent
+     */
+    public final boolean equals(Object obj) {
+        if ((obj == null) || !(obj instanceof Mule)) {
+            return false;
+        }
 
-    public void setId(int id) {
-        this.id = id;
+        Mule other = (Mule) obj;
+
+        return other.getId() == getId();
     }
 }
