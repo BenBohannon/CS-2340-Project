@@ -35,8 +35,12 @@ public class GameConfigView extends View<GameConfigPresenter> {
     @FXML
     ToggleGroup numPlayersToggleGroup;
 
+    /**
+     * Called when the finish button is clicked.
+     * @param event event of clicking the finish button.
+     */
     @FXML
-    protected void handleFinishButtonAction(ActionEvent event) {
+    protected void handleFinishButtonAction(final ActionEvent event) {
         if (validateForm()) {
             presenter.finishConfigure(((RadioButton)
                     difficultyToggleGroup.getSelectedToggle()).getText(),
@@ -46,7 +50,10 @@ public class GameConfigView extends View<GameConfigPresenter> {
         }
     }
 
-
+    /**
+     * Validates that the input data is acceptable.
+     * @return true, if the input is acceptable.
+     */
     private boolean validateForm() {
         boolean allValid = true;
 
