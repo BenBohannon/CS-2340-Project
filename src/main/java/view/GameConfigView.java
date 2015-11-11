@@ -7,7 +7,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 import presenters.GameConfigPresenter;
-import presenters.PlayerConfigPresenter;
 
 /**
  * Created by brian on 10/18/15.
@@ -39,9 +38,11 @@ public class GameConfigView extends View<GameConfigPresenter> {
     @FXML
     protected void handleFinishButtonAction(ActionEvent event) {
         if (validateForm()) {
-            presenter.finishConfigure(((RadioButton) difficultyToggleGroup.getSelectedToggle()).getText(),
+            presenter.finishConfigure(((RadioButton)
+                    difficultyToggleGroup.getSelectedToggle()).getText(),
                 ((RadioButton) mapToggleGroup.getSelectedToggle()).getText(),
-                Integer.parseInt(((RadioButton) numPlayersToggleGroup.getSelectedToggle()).getText()));
+                Integer.parseInt(((RadioButton)
+                        numPlayersToggleGroup.getSelectedToggle()).getText()));
         }
     }
 

@@ -9,7 +9,7 @@ public class AuctionPresenter extends Presenter<AuctionView> {
 
     /**
      * Loads the input .fxml file and gives up control to it.
-     * @param str
+     * @param str nessage
      */
     public void switchPresenter(String str) {
 //        if (isListening) {

@@ -150,7 +150,7 @@ public class StartTileChoice extends Application {
 
         final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
 
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDataSource());
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);

@@ -20,6 +20,10 @@ import java.util.Collection;
 
 public class Start extends Application {
 
+    /**
+     * main method to launch program.
+     * @param args passed in paramaters
+     */
     public static void main(String[] args) {
         launch(args);
     }
@@ -133,7 +137,7 @@ public class Start extends Application {
 
         final JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:~/.mule", "sa", "sa");
 
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDatasource());
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreService(sds), new GameInfoDataSource());
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(LocationDatasource.class).toInstance(lds);
