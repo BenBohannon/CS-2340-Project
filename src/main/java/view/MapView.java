@@ -3,10 +3,7 @@ package view;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
-import javafx.scene.effect.Blend;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.ColorInput;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -46,7 +43,6 @@ public class MapView extends View<MapPresenter> {
     private Timer timer;
     private double mouseX;
     private double mouseY;
-    private Rectangle timerWhite;
     private Rectangle timerRed;
 
     private LinkedList<ImageView> installedMuleImageViews;
@@ -98,7 +94,7 @@ public class MapView extends View<MapPresenter> {
             }
         }
 
-        timerWhite = new Rectangle(200, 20, Color.WHITE);
+        Rectangle timerWhite = new Rectangle(200, 20, Color.WHITE);
         timerRed = new Rectangle(200, 20, Color.RED);
         ColorAdjust monochrome = new ColorAdjust();
         monochrome.setSaturation(-1.0);

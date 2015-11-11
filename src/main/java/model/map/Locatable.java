@@ -13,7 +13,7 @@ public interface Locatable {
      * Should return the privately defined {@link model.map.Map.Location} instance.
      * Used internally by the {@link Map} class to retreive
      * info about the a client Object.
-     * @return
+     * @return the location
      */
     Map.Location getLocation();
 

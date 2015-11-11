@@ -7,7 +7,8 @@ import model.map.Locatable;
 import java.util.Collection;
 
 /**
- * Created by brian on 9/21/15.
+ * Temporary implementation of the LocationDatasource that we can use
+ * while testing the application. Not everything is implemented.
  */
 public class MemoryLocationDatasource implements LocationDatasource {
 

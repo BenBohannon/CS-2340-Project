@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 import view.View;
 
 import java.io.IOException;
+import java.lang.instrument.IllegalClassFormatException;
+import java.util.IllegalFormatException;
 
 /**
  * Created by brian on 9/16/15.
@@ -70,6 +72,7 @@ public class PresenterContext {
             e.printStackTrace();
         }
 
+        // if root is null, an exception already will have been thrown by the loader //
         stage.setScene(new Scene(root, 890, 490));
         stage.show();
 
@@ -80,6 +83,9 @@ public class PresenterContext {
         if (handler instanceof View) {
             //If fxml designated a view, give injected presenter a ref to the view//
             View view = (View) handler;
+            if (view.getPresenter() == null) {
+                throw new IllegalClassSetupException("View must use generic type of a valid presenter.");
+            }
             view.getPresenter().setView(view);
             return view.getPresenter();
         } else {

@@ -49,7 +49,7 @@ public class Player {
 
     public final void addMule(Mule mule) {
         if (mule == null) {
-            throw new NullPointerException("mule cannot be null");
+            throw new IllegalArgumentException("mule cannot be null");
         }
         getMules().add(mule);
     }
@@ -119,7 +119,6 @@ public class Player {
 
     public final void offsetFood(int amount) {
         food += amount;
-        System.out.println(food);
     }
 
     /**
@@ -148,7 +147,7 @@ public class Player {
      * Constructs player that owns the lands passed in
      * @param pOwnedProperties The properties the player owns
      */
-    public Player(ArrayList<Tile> pOwnedProperties) {
+    public Player(List<Tile> pOwnedProperties) {
         this.ownedProperties = pOwnedProperties;
     }
 
@@ -190,10 +189,10 @@ public class Player {
     public final void buyProperty(Tile property, int price) {
         if (money - price < 0) {
             //Label l = new Label("Cannot buy, insufficient funds");
-            throw new RuntimeException("Cannot buy, insufficient funds.");
+            throw new IllegalArgumentException("Cannot buy, insufficient funds.");
         }
         if (property.ownedBy() != null) {
-            throw new RuntimeException("Cannot buy, already owned");
+            throw new IllegalArgumentException("Cannot buy, already owned");
         }
         money = money - price;
         ownedProperties.add(property);

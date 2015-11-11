@@ -17,7 +17,7 @@ import presenters.AuctionPresenter;
 import java.util.*;
 
 /**
- * Created by kylemurray on 10/7/15.
+ * View that manages the UI for the Auction screen, where players can buy and sell items
  */
 public class AuctionView extends View<AuctionPresenter> {
 
@@ -43,6 +43,7 @@ public class AuctionView extends View<AuctionPresenter> {
     private boolean canMove;
     private double BOTTOMLIMIT = 390;
     private double TOPLIMIT = 150;
+    // keep this here with the rest of the constants //
     private long DURATION = 10000L;
 
     public void initialize() {

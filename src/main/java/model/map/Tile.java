@@ -87,7 +87,7 @@ public class Tile extends PersistableLocatable {
      * implementation here would be equivalent
      */
     public final boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof Tile)) {
+        if (!(obj instanceof Tile)) {
             return false;
         }
 
