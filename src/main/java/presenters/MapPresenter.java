@@ -63,7 +63,7 @@ public class MapPresenter extends Presenter<MapView>
                 Player eventPlayer = null;
                 List<Player> players = playerRepository.getAll();
                 for (Player p : players) {
-                    if (p.rank >= players.size() / 2) {
+                    if (p.getRank() >= players.size() / 2) {
                         if (eventPlayer == null) {
                             eventPlayer = p;
                         } else if (rand.nextBoolean()) {
@@ -138,7 +138,7 @@ public class MapPresenter extends Presenter<MapView>
 
             //Mule is lost if not placed//
             if (isPlacingMule) {
-                player.mules.remove(mulePlacing);
+                player.getMules().remove(mulePlacing);
                 view.stopDisplayingMule();
                 isPlacingMule = false;
             }
@@ -183,7 +183,7 @@ public class MapPresenter extends Presenter<MapView>
             view.placeMuleGraphic(tileCoord.y,
                     tileCoord.x, mulePlacing.getType());
         } else {
-            turnService.getCurrentPlayer().mules.remove(mulePlacing);
+            turnService.getCurrentPlayer().getMules().remove(mulePlacing);
             System.out.println("Mule Lost");
         }
 

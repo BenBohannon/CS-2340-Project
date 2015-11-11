@@ -146,7 +146,8 @@ public class DefaultTurnService {
                 {
                     stopwatch -= 11;
                     if (stopwatch <= 0) {
-                        stopwatch = turnDuration; timer2.cancel();
+                        stopwatch = turnDuration;
+                        timer2.cancel();
                     }
                 });
             }

@@ -10,7 +10,7 @@ import java.util.Collection;
  */
 public class MemoryLocationDatasource implements LocationDatasource {
 
-    public Collection<Locatable>[][] dataGrid;
+    private Collection<Locatable>[][] dataGrid;
 
     @Override
     public Collection<Locatable> get(int row, int col) {
@@ -19,11 +19,17 @@ public class MemoryLocationDatasource implements LocationDatasource {
 
     @Override
     public void save(int row, int col, Locatable locatable) {
-
     }
 
     @Override
     public void saveAll(int row, int col, Collection<Locatable> locatables) {
+    }
 
+    /**
+     * gets the data grid
+     * @return data grid
+     */
+    public Collection[][] getDataGrid() {
+        return dataGrid;
     }
 }

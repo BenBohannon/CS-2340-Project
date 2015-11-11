@@ -11,10 +11,18 @@ public class Mule implements Locatable {
     private Map.Location location;
     private MuleType type;
 
+    /**
+     * initialises a mule
+     * @param type type of mule
+     */
     public Mule(MuleType type) {
         this.type = type;
     }
 
+    /**
+     * gets type of mule
+     * @return type of mule
+     */
     public MuleType getType() {
         return type;
     }
@@ -29,10 +37,18 @@ public class Mule implements Locatable {
         this.location = location;
     }
 
+    /**
+     * gets id of mule
+     * @return id number
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * sets the id of a mule
+     * @param id id number
+     */
     public void setId(int id) {
         this.id = id;
     }

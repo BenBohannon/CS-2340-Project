@@ -23,14 +23,21 @@ public class Player {
     private String name;
     private Color color;
     private ArrayList<Tile> ownedProperties = new ArrayList<>();
-    public int rank;
+    private int rank;
 
-    public Collection<Mule> mules;
+    private Collection<Mule> mules;
 
+    /**
+     * initiales mules of players
+     */
     public Player() {
         mules = new LinkedList<>();
     }
 
+    /**
+     * adds a mule to a player
+     * @param mule mule to be added
+     */
     public void addMule(Mule mule) {
         if (mule == null) {
             throw new NullPointerException("mule cannot be null");
@@ -38,40 +45,90 @@ public class Player {
         mules.add(mule);
     }
 
+    /**
+     * gets mules of player
+     * @return mules
+     */
+    public Collection<Mule> getMules() {
+        return mules;
+    }
+
+    /**
+     * gets money of player
+     * @return money
+     */
     public int getMoney() {
         return money;
     }
 
+    /**
+     * offsets money by given amount.
+     * @param money amount to offset money by
+     */
     public void offsetMoney(int money) {
         this.money += money;
     }
 
+    /**
+     * gets color of player
+     * @return player color
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * sets color of player
+     * @param color player color
+     */
     public void setColor(Color color) {
         this.color = color;
     }
 
-    public PlayerRace getRace() { return race; }
+    /**
+     * gets race of player
+     * @return race of player
+     */
+    public PlayerRace getRace() {
+        return race;
+    }
 
+    /**
+     * sets race of player
+     * @param race race of player
+     */
     public void setRace(PlayerRace race) {
         this.race = race;
     }
 
+    /**
+     * sets id of player
+     * @param id player id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * offsets smithore by given amount.
+     * @param amount amount to offset smithore by
+     */
     public void offsetSmithore(int amount) {
         smithore += amount;
     }
 
+    /**
+     * gets rank of player
+     * @return rank of player
+     */
     public int getRank() {
         return rank;
     }
 
+    /**
+     * sets rank of player
+     * @param rank rank of player
+     */
     public void setRank(int rank) {
         this.rank = rank;
     }
@@ -85,6 +142,10 @@ public class Player {
         return smithore;
     }
 
+    /**
+     * offsets Crystite by given amount.
+     * @param amount amount to offset Crystite by
+     */
     public void offsetCrystite(int amount) {
         crystite += amount;
     }
@@ -97,6 +158,10 @@ public class Player {
         return crystite;
     }
 
+    /**
+     * offsets food by given amount.
+     * @param amount amount to offset food by
+     */
     public void offsetFood(int amount) {
         food += amount;
         System.out.println(food);
@@ -119,6 +184,10 @@ public class Player {
         return energy;
     }
 
+    /**
+     * offsets energy by given amount.
+     * @param amount amount to offset energy by
+     */
     public void offsetEnergy(int amount) {
         energy += amount;
     }
@@ -146,7 +215,8 @@ public class Player {
      */
     public void addProperty(Tile property) {
         if (property == null) {
-            throw new java.lang.IllegalArgumentException("Property cannot be null.");
+            throw new java.lang.IllegalArgumentException(
+                    "Property cannot be null.");
         }
         ownedProperties.add(property);
         property.setOwner(this);
@@ -216,23 +286,44 @@ public class Player {
         return id;
     }
 
+    /**
+     * gets id of player
+     * @return player id num
+     */
     public int getId() {
         return id;
     }
 
-    public int getPTU(int BTU) {
+    /**
+     *
+     * @param BTU
+     * @return
+     */
+    public int getBTU(int BTU) {
         //TODO different based on race
         return BTU;
     }
 
+    /**
+     * gets name of player.
+     * @return name of player
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * sets player name.
+     * @param name name of player
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * gets player score.
+     * @return score
+     */
     public int getScore() {
         return score;
     }

@@ -11,10 +11,18 @@ public enum MuleType {
 
     private String imagePath;
 
+    /**
+     * sets the mule image path
+     * @param imagePath path of image for mule
+     */
     MuleType(String imagePath) {
         this.imagePath = imagePath;
     }
 
+    /**
+     * gets location of mule image on file
+     * @return string of location
+     */
     public String getImagePath() {
         return imagePath;
     }

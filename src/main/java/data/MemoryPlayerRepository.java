@@ -15,6 +15,9 @@ public class MemoryPlayerRepository implements Repository<Player> {
 
     private ArrayList<Player> players;
 
+    /**
+     * initialises an ArrayList of players
+     */
     public MemoryPlayerRepository() {
         players = new ArrayList<>();
     }
@@ -41,9 +44,7 @@ public class MemoryPlayerRepository implements Repository<Player> {
         if (entity.getId() == -1) {
             entity.setId(nextPlayerId++);
         }
-        if (players.contains(entity)) {
-            //no action needed in memory//
-        } else {
+        if (!(players.contains(entity))) {
             players.add(entity);
         }
         return entity;
