@@ -88,10 +88,10 @@ public class Player {
 
     /**
      * offsets money by given amount.
-     * @param money amount to offset money by
+     * @param pMoney amount to offset money by
      */
-    public void offsetMoney(int money) {
-        this.money += money;
+    public void offsetMoney(int pMoney) {
+        this.money += pMoney;
     }
 
     /**
@@ -104,10 +104,10 @@ public class Player {
 
     /**
      * sets color of player
-     * @param color player color
+     * @param pColor player color
      */
-    public void setColor(Color color) {
-        this.color = color;
+    public void setColor(Color pColor) {
+        this.color = pColor;
     }
 
     /**
@@ -120,18 +120,18 @@ public class Player {
 
     /**
      * sets race of player
-     * @param race race of player
+     * @param pRace race of player
      */
-    public void setRace(PlayerRace race) {
-        this.race = race;
+    public void setRace(PlayerRace pRace) {
+        this.race = pRace;
     }
 
     /**
      * sets id of player
-     * @param id player id
+     * @param pId player id
      */
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int pId) {
+        this.id = pId;
     }
 
     /**
@@ -152,10 +152,10 @@ public class Player {
 
     /**
      * sets rank of player
-     * @param rank rank of player
+     * @param pRank rank of player
      */
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setRank(int pRank) {
+        this.rank = pRank;
     }
 
 
@@ -335,10 +335,10 @@ public class Player {
 
     /**
      * sets player name.
-     * @param name name of player
+     * @param pName name of player
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String pName) {
+        this.name = pName;
     }
 
     /**

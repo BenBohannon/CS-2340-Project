@@ -71,17 +71,22 @@ public class GameInfoDatasource {
      * sets current round
      * @param round round number
      */
-    public void setRound(int round) {
-        this.round = round;
+    public void setRound(int pRound) {
+        this.round = pRound;
     }
 
     /**
      * get food requirement
-     * @param round current round
+     * @param pRound current round
      * @return food requirement
      */
-    public int getFoodRequirement(int round) {
-        return (round / 4) + 3;
+    public int getFoodRequirement(int pRound) {
+        /*
+            these actually are magic numbers from what I can tell.
+            the food requirement is defined as the pRound divided
+            by four, plus three
+        */
+        return (pRound / 4) + 3;
     }
 
     public static int getBTU(int numBTU) {

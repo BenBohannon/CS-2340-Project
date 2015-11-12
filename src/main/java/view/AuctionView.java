@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * View that manages the UI for the Auction screen, where players can buy and sell items
  */
-public final class AuctionView extends View<AuctionPresenter> {
+public class AuctionView extends View<AuctionPresenter> {
 
     // put in buy/sell option for players, make food/energy rounds, timer
     @Inject

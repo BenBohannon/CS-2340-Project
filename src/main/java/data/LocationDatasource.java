@@ -14,7 +14,7 @@ public interface LocationDatasource {
      * @param col col of locatable
      * @return locatable
      */
-    public Collection<Locatable> get(int row, int col);
+    Collection<Locatable> get(int row, int col);
 
     /**
      * saves locatable
@@ -22,7 +22,7 @@ public interface LocationDatasource {
      * @param col col of object
      * @param locatable locatable object to be saved
      */
-    public void save(int row, int col, Locatable locatable);
+    void save(int row, int col, Locatable locatable);
 
     /**
      * saves all locatables
@@ -30,5 +30,5 @@ public interface LocationDatasource {
      * @param col col of locatables
      * @param locatables collection of locatables
      */
-    public void saveAll(int row, int col, Collection<Locatable> locatables);
+    void saveAll(int row, int col, Collection<Locatable> locatables);
 }
