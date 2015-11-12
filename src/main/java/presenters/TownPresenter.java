@@ -93,6 +93,11 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Override
     public void onTurnEnd(Player player) {
-        Platform.runLater(() -> getContext().showScreen("map_grid.fxml"));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                TownPresenter.this.getContext().showScreen("map_grid.fxml");
+            }
+        });
     }
 }

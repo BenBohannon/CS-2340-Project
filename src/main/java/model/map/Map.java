@@ -8,6 +8,8 @@ import javax.persistence.Transient;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
 
 /**
  * Created by brian on 9/12/15.
@@ -278,9 +280,19 @@ public class Map {
          */
         public <T extends Locatable> T[] getOccupants(Class<T> type) {
             return occupants.stream()
-                    .filter(type::isInstance)
+                    .filter(new Predicate<Locatable>() {
+                        @Override
+                        public boolean test(Locatable locatable) {
+                            return type.isInstance(locatable);
+                        }
+                    })
                     // this is always going to work //
-                    .toArray(size -> (T[]) Array.newInstance(type, size));
+                    .toArray(new IntFunction<T[]>() {
+                        @Override
+                        public T[] apply(int size) {
+                            return (T[]) Array.newInstance(type, size);
+                        }
+                    });
         }
 
         /**

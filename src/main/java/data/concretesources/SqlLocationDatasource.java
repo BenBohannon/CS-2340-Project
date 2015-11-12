@@ -9,6 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -61,7 +63,12 @@ public class SqlLocationDatasource implements LocationDatasource {
         populateRecords();
 
         return records.stream()
-                .filter(r -> r.getLocation().getCol() == col && r.getLocation().getRow() == row)
+                .filter(new Predicate<PersistableLocatable>() {
+                    @Override
+                    public boolean test(PersistableLocatable r) {
+                        return r.getLocation().getCol() == col && r.getLocation().getRow() == row;
+                    }
+                })
                 .collect(Collectors.toSet());
     }
 
@@ -86,7 +93,12 @@ public class SqlLocationDatasource implements LocationDatasource {
     @Override
     public void saveAll(int row, int col, Collection<Locatable> locatables) {
         Set<PersistableLocatable> additions = locatables.stream()
-                .map(l -> (PersistableLocatable) l)
+                .map(new Function<Locatable, PersistableLocatable>() {
+                    @Override
+                    public PersistableLocatable apply(Locatable l) {
+                        return (PersistableLocatable) l;
+                    }
+                })
                 .collect(Collectors.toSet());
 
         for (PersistableLocatable ele : additions) {

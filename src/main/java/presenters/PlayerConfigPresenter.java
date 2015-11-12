@@ -8,6 +8,8 @@ import model.entity.Player;
 import model.entity.PlayerRace;
 import view.PlayerConfigView;
 
+import java.util.function.Predicate;
+
 /**
  * Created by brian on 9/10/15.
  */
@@ -40,8 +42,12 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
         boolean allUnique = true;
 
         //check if color has already been used//
-        if (playerRepository.getAll().stream().anyMatch(player ->
-                player.getColor().equals(playerColor))) {
+        if (playerRepository.getAll().stream().anyMatch(new Predicate<Player>() {
+            @Override
+            public boolean test(Player player) {
+                return player.getColor().equals(playerColor);
+            }
+        })) {
             //show validation labels in view//
             allUnique = false;
             //NOTICE: view is already of correct type
@@ -49,16 +55,24 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
         }
 
         //check if name has already been used//
-        if (playerRepository.getAll().stream().anyMatch(player ->
-                player.getName().equals(playerName))) {
+        if (playerRepository.getAll().stream().anyMatch(new Predicate<Player>() {
+            @Override
+            public boolean test(Player player) {
+                return player.getName().equals(playerName);
+            }
+        })) {
             //show validation labels in view//
             allUnique = false;
             getView().showNameAlreadyChosen();
         }
 
         //check if race has already been used//
-        if (playerRepository.getAll().stream().anyMatch(player ->
-                player.getRace().equals(playerRace))) {
+        if (playerRepository.getAll().stream().anyMatch(new Predicate<Player>() {
+            @Override
+            public boolean test(Player player) {
+                return player.getRace().equals(playerRace);
+            }
+        })) {
             //show validation labels in view//
             allUnique = false;
             //NOTICE: view is already of correct type
@@ -72,7 +86,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
             p.setColor(playerColor);
             p.setName(playerName);
             for (PlayerRace race : PlayerRace.values()) {
-                if (race.toString().toLowerCase().equals(playerRaceStr.trim().toLowerCase())) {
+                if (race.toString().equalsIgnoreCase(playerRaceStr.trim().toLowerCase())) {
                     p.setRace(race);
                 }
             }

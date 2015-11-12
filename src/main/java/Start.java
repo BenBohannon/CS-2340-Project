@@ -2,6 +2,8 @@
  * Created by brian on 9/10/15.
  */
 
+import com.google.inject.Binder;
+import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import data.*;
@@ -57,25 +59,25 @@ public class Start extends Application {
                 new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository)
                 , new GameInfoDatasource(), new SqlTurnDatasource(finalSessionFactory));
 
-        PresenterContext context = new PresenterContext(binder -> {
-            // class level bindings //
-            binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
-            binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
-            binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
-            binder.bind(new TypeLiteral<Repository<Player>>(){}).to(SqlPlayerRepository.class);
-            binder.bind(new TypeLiteral<Repository<Mule>>(){}).to(SqlMuleRepository.class);
-
-            // instance level bindings //
-            binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
-            binder.bind(DefaultTurnService.class).toInstance(turnService);
-
-            // constants / config //
-            binder.bindConstant()
-                    .annotatedWith(Names.named("InitialPlayerMoney"))
-                    .to(10000);
-            binder.bind(StoreRecord.class)
-                    .annotatedWith(Names.named("InitialStoreState"))
-                    .toInstance(getInitialStoreState());
+        PresenterContext context = new PresenterContext(new Module() {
+            @Override
+            public void configure(Binder binder) {
+                binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
+                binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
+                binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
+                binder.bind(new TypeLiteral<Repository<Player>>() {
+                }).to(SqlPlayerRepository.class);
+                binder.bind(new TypeLiteral<Repository<Mule>>() {
+                }).to(SqlMuleRepository.class);
+                binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
+                binder.bind(DefaultTurnService.class).toInstance(turnService);
+                binder.bindConstant()
+                        .annotatedWith(Names.named("InitialPlayerMoney"))
+                        .to(10000);
+                binder.bind(StoreRecord.class)
+                        .annotatedWith(Names.named("InitialStoreState"))
+                        .toInstance(getInitialStoreState());
+            }
         }, stage);
 
         context.showScreen("home_screen.fxml");

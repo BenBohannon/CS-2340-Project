@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Temporary implementation of a Repository<Player> that we can use
@@ -43,7 +44,12 @@ public class MemoryPlayerRepository implements Repository<Player> {
         }
         int playerId = (int) id;
         return players.stream()
-                .filter(player -> player.getId() == playerId)
+                .filter(new Predicate<Player>() {
+                    @Override
+                    public boolean test(Player player) {
+                        return player.getId() == playerId;
+                    }
+                })
                 .findAny()
                 .get();
     }
@@ -66,7 +72,12 @@ public class MemoryPlayerRepository implements Repository<Player> {
         }
         int playerId = (int) id;
         Player p = players.stream()
-                .filter(player -> player.getId() == playerId)
+                .filter(new Predicate<Player>() {
+                    @Override
+                    public boolean test(Player player) {
+                        return player.getId() == playerId;
+                    }
+                })
                 .findAny()
                 .get();
         players.remove(p);
@@ -75,7 +86,6 @@ public class MemoryPlayerRepository implements Repository<Player> {
 
     @Override
     public int size() {
-        int size = players.size();
-        return size;
+        return players.size();
     }
 }

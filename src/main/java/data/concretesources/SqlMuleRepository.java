@@ -10,6 +10,7 @@ import org.hibernate.SessionFactory;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Created by brian on 10/26/15.
@@ -74,7 +75,12 @@ public class SqlMuleRepository implements Repository<Mule> {
         int targetId = (Integer) id;
 
         Optional<Mule> m = records.stream()
-                .filter(player -> player.getId() == targetId)
+                .filter(new Predicate<Mule>() {
+                    @Override
+                    public boolean test(Mule mule) {
+                        return mule.getId() == targetId;
+                    }
+                })
                 .findFirst();
         return m.isPresent() ? m.get() : null;
     }
@@ -83,7 +89,12 @@ public class SqlMuleRepository implements Repository<Mule> {
     public Mule save(Mule entity) {
         populateRecords();
         if (records.stream()
-                .anyMatch(player -> player.getId() == entity.getId())) {
+                .anyMatch(new Predicate<Mule>() {
+                    @Override
+                    public boolean test(Mule mule) {
+                        return mule.getId() == entity.getId();
+                    }
+                })) {
             records.remove(entity);
         }
 

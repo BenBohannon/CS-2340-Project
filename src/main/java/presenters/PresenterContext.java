@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import view.View;
 
 import java.io.IOException;
@@ -43,9 +44,13 @@ public class PresenterContext {
 
         //create an injector that inserts this injects
         // this instance of PresenterContext//
-        guiceInjector = Guice.createInjector((Binder binder) ->
+        guiceInjector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(Binder binder) {
                 binder.bind(PresenterContext.class).
-                        toInstance(PresenterContext.this));
+                        toInstance(PresenterContext.this);
+            }
+        });
 
         //make another injector that still injects
         // this PresenterContext, but also uses a
@@ -78,7 +83,12 @@ public class PresenterContext {
 
         //tell javafx to use our injector to generate controllers//
         //it will inject this PresenterContext and other dependencies//
-        loader.setControllerFactory(guiceInjector::getInstance);
+        loader.setControllerFactory(new Callback<Class<?>, Object>() {
+            @Override
+            public Object call(Class<?> type) {
+                return guiceInjector.getInstance(type);
+            }
+        });
 
         Parent root = null;
 
@@ -107,8 +117,7 @@ public class PresenterContext {
             return view.getPresenter();
         } else {
             //If fxml designated a Presenter, simply return it
-            Presenter p = (Presenter) handler;
-            return p;
+            return (Presenter) handler;
         }
     }
 

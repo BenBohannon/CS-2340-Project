@@ -8,6 +8,7 @@ import data.abstractsources.TurnDatasource;
 import model.entity.Player;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -116,17 +117,31 @@ public class DefaultTurnService {
         }
 
         Stream<Player> stream = playerRepository.getAll().stream()
-                .filter(player -> !(finishedPlayerIds.
-                        contains(player.getId())));
+                .filter(new Predicate<Player>() {
+                    @Override
+                    public boolean test(Player player) {
+                        return !(finishedPlayerIds.contains(player.getId()));
+                    }
+                });
         if (storeService.getMuleCount() > 7) {
             //next player is highest score if mules remaining > 7//
             currentPlayer = stream
-                    .max((p1, p2) -> p1.getScore() - p2.getScore())
+                    .max(new Comparator<Player>() {
+                        @Override
+                        public int compare(Player p1, Player p2) {
+                            return p1.getScore() - p2.getScore();
+                        }
+                    })
                     .get();
         } else {
             //next player is lowest score if mules remaining <= 7//
             currentPlayer = stream
-                    .min((p1, p2) -> p1.getScore() - p2.getScore())
+                    .min(new Comparator<Player>() {
+                        @Override
+                        public int compare(Player p1, Player p2) {
+                            return p1.getScore() - p2.getScore();
+                        }
+                    })
                     .get();
         }
 

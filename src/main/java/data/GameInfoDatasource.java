@@ -69,7 +69,7 @@ public class GameInfoDatasource {
 
     /**
      * sets current round
-     * @param round round number
+     * @param pRound round number
      */
     public void setRound(int pRound) {
         this.round = pRound;

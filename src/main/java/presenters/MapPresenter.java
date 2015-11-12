@@ -98,7 +98,12 @@ public class MapPresenter extends Presenter<MapView>
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Platform.runLater(MapPresenter.this::beginTurn);
+                        Platform.runLater(new TimerTask() {
+                            @Override
+                            public void run() {
+                                beginTurn();
+                            }
+                        });
                     }
                 }, 5010L);
 
@@ -136,21 +141,24 @@ public class MapPresenter extends Presenter<MapView>
     @Override
     public void onTurnEnd(Player player) {
         isListening = false;
-        Platform.runLater(() -> {
-            getView().stopMovement();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                MapPresenter.this.getView().stopMovement();
 
-            //Mule is lost if not placed//
-            if (isPlacingMule) {
-                player.getMules().remove(mulePlacing);
-                getView().stopDisplayingMule();
-                isPlacingMule = false;
-            }
+                //Mule is lost if not placed//
+                if (isPlacingMule) {
+                    player.getMules().remove(mulePlacing);
+                    MapPresenter.this.getView().stopDisplayingMule();
+                    isPlacingMule = false;
+                }
 
-            if (turnService.isAllTurnsOver()) {
-                calcProduction();
-                switchPresenter("auction.fxml");
-            } else {
-                beginTurn();
+                if (turnService.isAllTurnsOver()) {
+                    MapPresenter.this.calcProduction();
+                    MapPresenter.this.switchPresenter("auction.fxml");
+                } else {
+                    MapPresenter.this.beginTurn();
+                }
             }
         });
     }

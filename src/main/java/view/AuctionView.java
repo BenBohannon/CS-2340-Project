@@ -3,9 +3,11 @@ package view;
 import com.google.inject.Inject;
 import data.abstractsources.Repository;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -40,10 +42,10 @@ public class AuctionView extends View<AuctionPresenter> {
     private ArrayList<Text> names = new ArrayList<Text>();
     private boolean canMove;
 
-    private final double BOTTOM_LIMIT = 390;
-    private final double TOP_LIMIT = 150;
+    private static final double BOTTOM_LIMIT = 390;
+    private static final double TOP_LIMIT = 150;
     // keep this here with the rest of the constants //
-    private final long DURATION = 10000L;
+    private static final long DURATION = 10000L;
 
     /**
      * initialises window.
@@ -77,9 +79,42 @@ public class AuctionView extends View<AuctionPresenter> {
         pane2.getChildren().add(startBidding);
         startSmithoreBidding();
 
-        pane.setOnKeyPressed(event -> {
-            if (canMove) {
-                switch (event.getCode()) {
+        pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                handleKeyPressed(event);
+            }
+        });
+
+//        pane.getChildren().add(new Rectangle(100, 100));
+
+        // Stream or for loop players
+//        player1 = new ImageView(new Image(
+//                      "/races/Human.png", 25, 25, true, false));
+//        player1.setTranslateX(150);
+//        player1.setTranslateY(700);
+        // Key listener for
+
+
+//        timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                presenter.switchPresenter("map_grid_tile_select.fxml");
+//            }
+//        }, 4000L);
+    }
+
+    /**
+     * switches presenter to map.
+     */
+    public void handleContinueButtonAction() {
+        getPresenter().switchPresenter("map_grid_tile_select.fxml");
+    }
+
+    private void handleKeyPressed(KeyEvent event) {
+        if (canMove) {
+            switch (event.getCode()) {
                 case Q:
                     if (playerImageList.size() > 0 && playerImageList.
                             get(0).getTranslateY() > TOP_LIMIT) {
@@ -146,34 +181,8 @@ public class AuctionView extends View<AuctionPresenter> {
                     break;
                 default:
                     break;
-                }
             }
-        });
-
-//        pane.getChildren().add(new Rectangle(100, 100));
-
-        // Stream or for loop players
-//        player1 = new ImageView(new Image(
-//                      "/races/Human.png", 25, 25, true, false));
-//        player1.setTranslateX(150);
-//        player1.setTranslateY(700);
-        // Key listener for
-
-
-//        timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                presenter.switchPresenter("map_grid_tile_select.fxml");
-//            }
-//        }, 4000L);
-    }
-
-    /**
-     * switches presenter to map.
-     */
-    public void handleContinueButtonAction() {
-        getPresenter().switchPresenter("map_grid_tile_select.fxml");
+        }
     }
 
     /**
@@ -184,25 +193,9 @@ public class AuctionView extends View<AuctionPresenter> {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() ->
-                {
-                    pane2.getChildren().clear();
-                    List<Player> playerList = new LinkedList<Player>(playerRepository.getAll());
-
-                    for (int i = 0; i < playerRepository.size(); i++) {
-
-                        Text smithore = new Text(playerList.get(i)
-                                .getSmithore() + " Smithore");
-                        smithore.setTranslateX(150 + 150 * i);
-                        smithore.setTranslateY(435);
-                        Text auctionText = new Text(
-                                250, 120, "Smithore Auction");
-                        auctionText.setFont(new Font(40));
-                        pane2.getChildren().addAll(
-                                playerImageList.get(i), smithore, auctionText);
-                        resetCharacters();
-                        canMove = true;
-                    }
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() { setAuctionSmithore(); }
                 });
             }
         }, 4000L);
@@ -210,7 +203,12 @@ public class AuctionView extends View<AuctionPresenter> {
         timer2.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(AuctionView.this::startFoodBidding);
+                Platform.runLater(new TimerTask() {
+                    @Override
+                    public void run() {
+                        AuctionView.this.startFoodBidding();
+                    }
+                });
             }
         }, DURATION + 4000L);
 //        timer.schedule(new TimerTask() {
@@ -227,6 +225,26 @@ public class AuctionView extends View<AuctionPresenter> {
 //                300L, 10L);
     }
 
+    private void setAuctionSmithore() {
+        pane2.getChildren().clear();
+        List<Player> playerList = new LinkedList<Player>(playerRepository.getAll());
+
+        for (int i = 0; i < playerRepository.size(); i++) {
+
+            Text smithore = new Text(playerList.get(i)
+                    .getSmithore() + " Smithore");
+            smithore.setTranslateX(150 + 150 * i);
+            smithore.setTranslateY(435);
+            Text auctionText = new Text(
+                    250, 120, "Smithore Auction");
+            auctionText.setFont(new Font(40));
+            pane2.getChildren().addAll(
+                    playerImageList.get(i), smithore, auctionText);
+            resetCharacters();
+            canMove = true;
+        }
+    }
+
     /**
      * starts bidding of food.
      */
@@ -235,21 +253,19 @@ public class AuctionView extends View<AuctionPresenter> {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() ->
-                {
-                    pane2.getChildren().clear();
-                    for (int i = 0; i < playerRepository.size(); i++) {
-                        Text food = new Text(playerRepository.
-                                get(i).getFood() + " Food");
-                        food.setTranslateX(150 + 150 * i);
-                        food.setTranslateY(435);
-                        Text auctionText = new Text(
-                                250, 120, "Food Auction");
-                        auctionText.setFont(new Font(40));
-                        pane2.getChildren().addAll(
-                                playerImageList.get(i), food, auctionText);
-                        resetCharacters();
-                        canMove = true;
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        pane2.getChildren().clear();
+                        for (int i = 0; i < playerRepository.size(); i++) {
+                            Text food = new Text(playerRepository.get(i).getFood() + " Food");
+                            food.setTranslateX(150 + 150 * i);
+                            food.setTranslateY(435);
+                            Text auctionText = new Text(250, 120, "Food Auction");
+                            auctionText.setFont(new Font(40));
+                            pane2.getChildren().addAll(playerImageList.get(i), food, auctionText);
+                            resetCharacters();
+                            canMove = true;
+                        }
                     }
                 });
             }
@@ -258,7 +274,12 @@ public class AuctionView extends View<AuctionPresenter> {
         timer2.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(AuctionView.this::startEnergyBidding);
+                Platform.runLater(new TimerTask() {
+                    @Override
+                    public void run() {
+                        AuctionView.this.startEnergyBidding();
+                    }
+                });
             }
         }, DURATION + 4000L);
     }

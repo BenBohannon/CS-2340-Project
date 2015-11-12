@@ -1,15 +1,19 @@
 package view;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.entity.Mule;
@@ -23,6 +27,8 @@ import java.awt.Point;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 /**
@@ -62,13 +68,21 @@ public class MapView extends View<MapPresenter> {
             setCharacterImage(getPresenter().getCurrentPlayer().getRace().getImagePath());
         }
 
-        pane.setOnMouseMoved(event -> {
-            mouseX = event.getX();
-            mouseY = event.getY();
+        pane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                mouseX = event.getX();
+                mouseY = event.getY();
+            }
         });
 
-        pane.setOnMousePressed(event -> getPresenter()
-                .onClick(getImageCoordinates(character)));
+        pane.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                MapView.this.getPresenter()
+                        .onClick(getImageCoordinates(character));
+            }
+        });
 
         Map map = getPresenter().getMap();
         //Create a model.map.
@@ -142,7 +156,12 @@ public class MapView extends View<MapPresenter> {
         //If the player is on the town tile, enter the town.
         Point temp = getImageCoordinates(character);
         if (temp.getX() == 4 && temp.getY() == 2) { //&& !isLandSelectPhase) {
-            Platform.runLater(getPresenter()::enterCity);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    MapView.this.getPresenter().enterCity();
+                }
+            });
         }
     }
 
@@ -150,9 +169,12 @@ public class MapView extends View<MapPresenter> {
      * Updates the red timer on screen
      */
     private void updateTimer() {
-        Platform.runLater(() -> {
-            double timerPerc = getPresenter().getFractionRemaining();
-            timerRed.setWidth(timerPerc * 200);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                double timerPerc = MapView.this.getPresenter().getFractionRemaining();
+                timerRed.setWidth(timerPerc * 200);
+            }
         });
     }
 
@@ -181,16 +203,19 @@ public class MapView extends View<MapPresenter> {
 
             final double newPixelsPerSecond = pixelsPerSecond * 0.016;
 
-            Platform.runLater(() -> {
-                character.setX(character.getX()
-                        + newDeltaX * newPixelsPerSecond);
-                character.setY(character.getY()
-                        + newDeltaY * newPixelsPerSecond);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    character.setX(character.getX()
+                            + newDeltaX * newPixelsPerSecond);
+                    character.setY(character.getY()
+                            + newDeltaY * newPixelsPerSecond);
 
-                //Move mule with character sprite//
-                if (mule != null) {
-                    mule.setX(character.getX() + 30);
-                    mule.setY(character.getY() + 30);
+                    //Move mule with character sprite//
+                    if (mule != null) {
+                        mule.setX(character.getX() + 30);
+                        mule.setY(character.getY() + 30);
+                    }
                 }
             });
         }
@@ -240,10 +265,12 @@ public class MapView extends View<MapPresenter> {
         turnStartTextTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() ->
-                {
-                    pane.getChildren().remove(text);
-                    startMovement();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        pane.getChildren().remove(text);
+                        startMovement();
+                    }
                 });
             }
         }, 2000L);
@@ -265,10 +292,12 @@ public class MapView extends View<MapPresenter> {
         randomEventTextTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() ->
-                {
-                    pane.getChildren().remove(text);
-                    startMovement();
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        pane.getChildren().remove(text);
+                        startMovement();
+                    }
                 });
             }
         }, 5000L);
@@ -349,8 +378,18 @@ public class MapView extends View<MapPresenter> {
         right.setTranslateY(90);
         border.getChildren().addAll(top, bottom, right, left);
         border.getChildren().stream()
-                .map(node -> ((javafx.scene.shape.Shape) node))
-                .forEach(shape -> shape.setFill(color));
+                .map(new Function<Node, Shape>() {
+                    @Override
+                    public Shape apply(Node node) {
+                        return ((Shape) node);
+                    }
+                })
+                .forEach(new Consumer<Shape>() {
+                    @Override
+                    public void accept(Shape shape) {
+                        shape.setFill(color);
+                    }
+                });
         return border;
     }
 
