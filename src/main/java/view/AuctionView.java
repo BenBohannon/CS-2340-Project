@@ -17,9 +17,8 @@ import java.util.*;
 /**
  * View that manages the UI for the Auction screen, where players can buy and sell items
  */
-public class AuctionView extends View<AuctionPresenter> {
+public final class AuctionView extends View<AuctionPresenter> {
 
-    //TODO: fix holding down buttons, put in store,
     // put in buy/sell option for players, make food/energy rounds, timer
     @Inject
     private Repository<Player> playerRepository;
@@ -40,13 +39,14 @@ public class AuctionView extends View<AuctionPresenter> {
     private ArrayList<Text> resourceLists = new ArrayList<Text>();
     private ArrayList<Text> names = new ArrayList<Text>();
     private boolean canMove;
-    private double BOTTOMLIMIT = 390;
-    private double TOPLIMIT = 150;
+
+    private final double BOTTOM_LIMIT = 390;
+    private final double TOP_LIMIT = 150;
     // keep this here with the rest of the constants //
-    private long DURATION = 10000L;
+    private final long DURATION = 10000L;
 
     /**
-     * initialises window
+     * initialises window.
      */
     public void initialize() {
         pane.getChildren().add(pane2);
@@ -82,7 +82,7 @@ public class AuctionView extends View<AuctionPresenter> {
                 switch (event.getCode()) {
                 case Q:
                     if (playerImageList.size() > 0 && playerImageList.
-                            get(0).getTranslateY() > TOPLIMIT) {
+                            get(0).getTranslateY() > TOP_LIMIT) {
                         playerImageList.get(0).setTranslateY(
                                 playerImageList.get(0).getTranslateY()
                                         - 10);
@@ -90,7 +90,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     break;
                 case Z:
                     if (playerImageList.size() > 0 && playerImageList.
-                            get(0).getTranslateY() < BOTTOMLIMIT) {
+                            get(0).getTranslateY() < BOTTOM_LIMIT) {
                         playerImageList.get(0).setTranslateY(
                                 playerImageList.get(0).getTranslateY()
                                         + 10);
@@ -98,7 +98,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     break;
                 case W:
                     if (playerImageList.size() > 1 && playerImageList.
-                            get(1).getTranslateY() > TOPLIMIT) {
+                            get(1).getTranslateY() > TOP_LIMIT) {
                         playerImageList.get(1).setTranslateY(
                                 playerImageList.get(1).getTranslateY()
                                         - 10);
@@ -106,7 +106,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     break;
                 case X:
                     if (playerImageList.size() > 1 && playerImageList.
-                            get(1).getTranslateY() < BOTTOMLIMIT) {
+                            get(1).getTranslateY() < BOTTOM_LIMIT) {
                         playerImageList.get(1).setTranslateY(
                                 playerImageList.get(1).getTranslateY()
                                         + 10);
@@ -114,7 +114,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     break;
                 case E:
                     if (playerImageList.size() > 2 && playerImageList.
-                            get(2).getTranslateY() > TOPLIMIT) {
+                            get(2).getTranslateY() > TOP_LIMIT) {
                         playerImageList.get(2).setTranslateY(
                                 playerImageList.get(2).getTranslateY()
                                         - 10);
@@ -122,7 +122,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     break;
                 case C:
                     if (playerImageList.size() > 2 && playerImageList.
-                            get(2).getTranslateY() < BOTTOMLIMIT) {
+                            get(2).getTranslateY() < BOTTOM_LIMIT) {
                         playerImageList.get(2).setTranslateY(
                                 playerImageList.get(2).getTranslateY()
                                         + 10);
@@ -130,7 +130,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     break;
                 case R:
                     if (playerImageList.size() > 3 && playerImageList.
-                            get(3).getTranslateY() > TOPLIMIT) {
+                            get(3).getTranslateY() > TOP_LIMIT) {
                         playerImageList.get(3).setTranslateY(
                                 playerImageList.get(3).getTranslateY()
                                         - 10);
@@ -138,11 +138,13 @@ public class AuctionView extends View<AuctionPresenter> {
                     break;
                 case V:
                     if (playerImageList.size() > 3 && playerImageList.
-                            get(3).getTranslateY() < BOTTOMLIMIT) {
+                            get(3).getTranslateY() < BOTTOM_LIMIT) {
                         playerImageList.get(3).setTranslateY(
                                 playerImageList.get(3).getTranslateY()
                                         + 10);
                     }
+                    break;
+                default:
                     break;
                 }
             }
@@ -198,7 +200,7 @@ public class AuctionView extends View<AuctionPresenter> {
                         auctionText.setFont(new Font(40));
                         pane2.getChildren().addAll(
                                 playerImageList.get(i), smithore, auctionText);
-                        resetCharacters(); //TODO: add this method
+                        resetCharacters();
                         canMove = true;
                     }
                 });
@@ -246,7 +248,7 @@ public class AuctionView extends View<AuctionPresenter> {
                         auctionText.setFont(new Font(40));
                         pane2.getChildren().addAll(
                                 playerImageList.get(i), food, auctionText);
-                        resetCharacters(); //TODO: add this method
+                        resetCharacters();
                         canMove = true;
                     }
                 });
@@ -286,7 +288,7 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     /**
-     * reset characters to default
+     * reset characters to default.
      */
     public void resetCharacters() {
         for (int i = 0; i < playerRepository.size(); i++) {
@@ -298,3 +300,4 @@ public class AuctionView extends View<AuctionPresenter> {
         }
     }
 }
+

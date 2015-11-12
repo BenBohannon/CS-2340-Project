@@ -24,11 +24,14 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
 
 
     /**
-     * now we don't have to worry about the views. We can just have them pass us the events we care about.
-     * But notice, there are things going on in the domain that the View doesn't know about, so we'll have to
+     * now we don't have to worry about the views.
+     * We can just have them pass us the events we care about.
+     * But notice, there are things going on in the domain
+     * that the View doesn't know about, so we'll have to
      * inform it.
      * @param playerColor player's color
      * @param playerName player's name, totally valid thank to the View
+     * @param playerRaceStr player's race
      */
     public void finish(Color playerColor, String playerName, String playerRaceStr) {
 
@@ -37,7 +40,8 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
         boolean allUnique = true;
 
         //check if color has already been used//
-        if (playerRepository.getAll().stream().anyMatch(player -> player.getColor().equals(playerColor))) {
+        if (playerRepository.getAll().stream().anyMatch(player ->
+                player.getColor().equals(playerColor))) {
             //show validation labels in view//
             allUnique = false;
             //NOTICE: view is already of correct type
@@ -45,14 +49,16 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
         }
 
         //check if name has already been used//
-        if (playerRepository.getAll().stream().anyMatch(player -> player.getName().equals(playerName))) {
+        if (playerRepository.getAll().stream().anyMatch(player ->
+                player.getName().equals(playerName))) {
             //show validation labels in view//
             allUnique = false;
             getView().showNameAlreadyChosen();
         }
 
         //check if race has already been used//
-        if (playerRepository.getAll().stream().anyMatch(player -> player.getRace().equals(playerRace))) {
+        if (playerRepository.getAll().stream().anyMatch(player ->
+                player.getRace().equals(playerRace))) {
             //show validation labels in view//
             allUnique = false;
             //NOTICE: view is already of correct type
@@ -83,6 +89,10 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
         }
     }
 
+    /**
+     * sets number of players left
+     * @param numPlayersLeft num of players
+     */
     public void setNumPlayersLeft(int numPlayersLeft) {
         this.numPlayersLeft = numPlayersLeft;
     }
