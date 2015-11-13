@@ -12,8 +12,6 @@ import javafx.util.Callback;
 import view.View;
 
 import java.io.IOException;
-import java.lang.instrument.IllegalClassFormatException;
-import java.util.IllegalFormatException;
 
 /**
  * Created by brian on 9/16/15.
@@ -34,13 +32,19 @@ public class PresenterContext {
     private Injector guiceInjector;
     private Stage stage;
 
+    private int windowWidth;
+    private int windowHeight;
+
     /**
      * initialises presenter context
      * @param module module to initialise
-     * @param stage stage used
+     * @param pStage stage used
      */
-    public PresenterContext(Module module, Stage stage) {
-        this.stage = stage;
+    public PresenterContext(Module module, Stage pStage, int pWindowWidth, int pWindowHeight) {
+        this.stage = pStage;
+
+        windowHeight = pWindowHeight;
+        windowWidth = pWindowWidth;
 
         //create an injector that inserts this injects
         // this instance of PresenterContext//
@@ -99,7 +103,7 @@ public class PresenterContext {
         }
 
         // if root is null, an exception already will have been thrown by the loader //
-        stage.setScene(new Scene(root, 890, 490));
+        stage.setScene(new Scene(root, windowWidth, windowHeight));
         stage.show();
 
         //Can optionally use View and Presenter or just Presenter

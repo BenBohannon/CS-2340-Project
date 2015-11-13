@@ -88,7 +88,6 @@ public class StorePresenter extends Presenter {
     }
 
     private void updateFoodLabel() {
-        int temp = storeService.getFood();
         foodLabel.setText("Food: " + storeService.getFood());
     }
 

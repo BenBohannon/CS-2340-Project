@@ -22,8 +22,8 @@ public class SqlMuleRepository implements Repository<Mule> {
     private Set<Mule> records;
 
     @Inject
-    public SqlMuleRepository(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SqlMuleRepository(SessionFactory pSessionFactory) {
+        this.sessionFactory = pSessionFactory;
         populateRecords();
     }
 
@@ -68,7 +68,7 @@ public class SqlMuleRepository implements Repository<Mule> {
     public Mule get(Object id) {
         populateRecords();
 
-        if (id == null || !(id instanceof Integer)) {
+        if (!(id instanceof Integer)) {
             throw new IllegalArgumentException("id null or not int");
         }
 

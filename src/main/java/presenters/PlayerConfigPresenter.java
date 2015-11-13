@@ -16,11 +16,11 @@ import java.util.function.Predicate;
 public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
 
     @Inject
-    Repository<Player> playerRepository;
+    private Repository<Player> playerRepository;
 
     @Inject
     @Named("InitialPlayerMoney")
-    int initialPlayerMoney;
+    private int initialPlayerMoney;
 
     private int numPlayersLeft;
 
@@ -42,7 +42,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
         boolean allUnique = true;
 
         //check if color has already been used//
-        if (playerRepository.getAll().stream().anyMatch(new Predicate<Player>() {
+        if (getPlayerRepository().getAll().stream().anyMatch(new Predicate<Player>() {
             @Override
             public boolean test(Player player) {
                 return player.getColor().equals(playerColor);
@@ -55,7 +55,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
         }
 
         //check if name has already been used//
-        if (playerRepository.getAll().stream().anyMatch(new Predicate<Player>() {
+        if (getPlayerRepository().getAll().stream().anyMatch(new Predicate<Player>() {
             @Override
             public boolean test(Player player) {
                 return player.getName().equals(playerName);
@@ -67,7 +67,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
         }
 
         //check if race has already been used//
-        if (playerRepository.getAll().stream().anyMatch(new Predicate<Player>() {
+        if (getPlayerRepository().getAll().stream().anyMatch(new Predicate<Player>() {
             @Override
             public boolean test(Player player) {
                 return player.getRace().equals(playerRace);
@@ -90,9 +90,9 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
                     p.setRace(race);
                 }
             }
-            p.setMoney(initialPlayerMoney);
+            p.setMoney(getInitialPlayerMoney());
             p.setId(-1);
-            playerRepository.save(p);
+            getPlayerRepository().save(p);
 
             if (numPlayersLeft > 0) {
                 PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) getContext().showScreen("player_config.fxml");
@@ -105,9 +105,25 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
 
     /**
      * sets number of players left
-     * @param numPlayersLeft num of players
+     * @param pNumPlayersLeft num of players
      */
-    public void setNumPlayersLeft(int numPlayersLeft) {
-        this.numPlayersLeft = numPlayersLeft;
+    public void setNumPlayersLeft(int pNumPlayersLeft) {
+        this.numPlayersLeft = pNumPlayersLeft;
+    }
+
+    public Repository<Player> getPlayerRepository() {
+        return playerRepository;
+    }
+
+    public void setPlayerRepository(Repository<Player> pPlayerRepository) {
+        this.playerRepository = pPlayerRepository;
+    }
+
+    public int getInitialPlayerMoney() {
+        return initialPlayerMoney;
+    }
+
+    public void setInitialPlayerMoney(int pInitialPlayerMoney) {
+        this.initialPlayerMoney = pInitialPlayerMoney;
     }
 }

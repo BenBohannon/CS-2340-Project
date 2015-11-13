@@ -20,8 +20,8 @@ public class SqlPlayerRepository implements Repository<Player> {
     private Set<Player> records;
 
     @Inject
-    public SqlPlayerRepository(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SqlPlayerRepository(SessionFactory pSessionFactory) {
+        this.sessionFactory = pSessionFactory;
         populateRecords();
     }
 
@@ -65,7 +65,7 @@ public class SqlPlayerRepository implements Repository<Player> {
     public Player get(Object id) {
         populateRecords();
 
-        if (id == null || !(id instanceof Integer)) {
+        if (!(id instanceof Integer)) {
             throw new IllegalArgumentException("id null or not int");
         }
 

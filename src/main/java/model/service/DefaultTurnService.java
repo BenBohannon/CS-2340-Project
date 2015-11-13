@@ -1,7 +1,7 @@
 package model.service;
 
 import com.google.inject.Inject;
-import javafx.application.Platform;
+import com.google.inject.name.Named;
 import data.GameInfoDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.TurnDatasource;
@@ -79,28 +79,27 @@ public class DefaultTurnService {
     //players are added to this list after their turns are complete//
     private volatile List<Integer> finishedPlayerIds;
 
+    @Inject @Named("InvertTurnOrderThreshold")
+    private int invertTurnOrderThreshold;
+
     /**
      * initialises turn service
-     * @param playerRepository repository of players
-     * @param storeService store
-     * @param gameInfoDatasource save data
+     * @param pPlayerRepository repository of players
+     * @param pStoreService store
+     * @param pGameInfoDatasource save data
      */
     @Inject
-    public DefaultTurnService(Repository<Player> playerRepository,
-                              StoreService storeService,
-                              GameInfoDatasource gameInfoDatasource,
-                              TurnDatasource turnDatasource) {
+    public DefaultTurnService(Repository<Player> pPlayerRepository,
+                              StoreService pStoreService,
+                              GameInfoDatasource pGameInfoDatasource,
+                              TurnDatasource pTurnDatasource) {
 
-        this.playerRepository = playerRepository;
+        this.playerRepository = pPlayerRepository;
         turnEndListeners = new LinkedList<>();
         finishedPlayerIds = new LinkedList<>();
-        this.storeService = storeService;
-        this.gameInfoDatasource = gameInfoDatasource;
-        this.turnDatasource = turnDatasource;
-    }
-
-    public static int getFoodRequirement(int round) {
-        return (round / 4) + 3;
+        this.storeService = pStoreService;
+        this.gameInfoDatasource = pGameInfoDatasource;
+        this.turnDatasource = pTurnDatasource;
     }
 
     /**
@@ -109,10 +108,10 @@ public class DefaultTurnService {
      */
     public Player beginTurn() {
         if (turnInProgress) {
-            throw new RuntimeException(TURN_IN_PROGRESS);
+            throw new IllegalStateException(TURN_IN_PROGRESS);
         }
         if (roundNumber > gameInfoDatasource.getMaxRounds()) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     "Max rounds exceeded. Game should be over");
         }
 
@@ -123,7 +122,7 @@ public class DefaultTurnService {
                         return !(finishedPlayerIds.contains(player.getId()));
                     }
                 });
-        if (storeService.getMuleCount() > 7) {
+        if (storeService.getMuleCount() > invertTurnOrderThreshold) {
             //next player is highest score if mules remaining > 7//
             currentPlayer = stream
                     .max(new Comparator<Player>() {
@@ -145,8 +144,8 @@ public class DefaultTurnService {
                     .get();
         }
 
-        float foodRatio = (float) currentPlayer.getFood()
-                / gameInfoDatasource.getFoodRequirement(roundNumber);
+//        float foodRatio = (float) currentPlayer.getFood()
+//                / gameInfoDatasource.getFoodRequirement(roundNumber);
 
         //turnDuration = (int) (currentPlayer.getPTU(GameInfoDataSource.BTU(4))
         // + currentPlayer.getPTU(GameInfoDataSource.BTU(91)) * foodRatio);
@@ -352,7 +351,6 @@ public class DefaultTurnService {
         stopTimers();
         Player player = currentPlayer;
         calculateRank();
-        System.out.println(currentPlayer.getRank());
         //currentPlayer = null;
         turnInProgress = false;
         finishedPlayerIds.add(player.getId());
@@ -374,5 +372,9 @@ public class DefaultTurnService {
     public void initializeFromDatasource() {
         flushRound(turnDatasource.getRound());
         finishedPlayerIds = turnDatasource.getFinishedPlayerIds();
+    }
+
+    public void setInvertTurnOrderThreshold(int pInvertTurnOrderThreshold) {
+        this.invertTurnOrderThreshold = pInvertTurnOrderThreshold;
     }
 }

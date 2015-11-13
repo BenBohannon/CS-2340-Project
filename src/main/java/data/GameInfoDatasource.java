@@ -1,7 +1,5 @@
 package data;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
@@ -27,10 +25,9 @@ public class GameInfoDatasource {
     }
 
     /**
-     * saves game
-     * @throws Exception manual SessionFactory deletion
+     * saves game (this is not right)
      */
-    protected void setUp() throws Exception {
+    protected void setUp() {
         // A SessionFactory is set up once for an application!
         final StandardServiceRegistry registry =
                 new StandardServiceRegistryBuilder()
@@ -38,15 +35,15 @@ public class GameInfoDatasource {
                         "/sql/hibernate.cfg.xml").getFile()))
                         // configures settings from hibernate.cfg.xml
                 .build();
-        try {
-            SessionFactory sessionFactory = new MetadataSources(
-                    registry).buildMetadata().buildSessionFactory();
-        } catch (Exception e) {
+//        try {
+//            SessionFactory sessionFactory = new MetadataSources(
+//                    registry).buildMetadata().buildSessionFactory();
+//        } catch (Exception e) {
             // The registry would be destroyed by the
             // SessionFactory, but we had trouble building the SessionFactory
             // so destroy it manually.
             StandardServiceRegistryBuilder.destroy(registry);
-        }
+//        }
     }
 
     private int round;
@@ -82,8 +79,8 @@ public class GameInfoDatasource {
      */
     public int getFoodRequirement(int pRound) {
         /*
-            these actually are magic numbers from what I can tell.
-            the food requirement is defined as the pRound divided
+            these actually are "magic numbers" from what I can tell.
+            the food requirement is defined as the round divided
             by four, plus three
         */
         return (pRound / 4) + 3;

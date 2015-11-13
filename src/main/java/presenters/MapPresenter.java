@@ -1,6 +1,7 @@
 package presenters;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import data.MapInfoHolder;
 import data.abstractsources.Repository;
 import model.service.TurnEndListener;
@@ -10,7 +11,6 @@ import model.entity.MuleType;
 import model.entity.Player;
 import model.map.Map;
 import model.map.Tile;
-import model.map.TileType;
 import model.service.DefaultTurnService;
 import view.MapView;
 
@@ -38,6 +38,16 @@ public class MapPresenter extends Presenter<MapView>
     @Inject
     private DefaultTurnService turnService;
 
+    @Inject
+    @Named("MaxRandomEventMoney")
+    private int maxRandomEventMoney;
+    @Inject
+    @Named("MinRandomEventMoney")
+    private int minRandomEventMoney;
+    @Inject
+    @Named("TurnStartDelay")
+    private int turnStartDelay;
+
     private boolean isListening;
     private boolean isPlacingMule;
     private Mule mulePlacing;
@@ -60,20 +70,11 @@ public class MapPresenter extends Presenter<MapView>
 
                 //Get random money to add/subtract from a player.
                 Random rand = new Random();
-                int deltaMoney = rand.nextInt(400) - 200;
+                int deltaMoney = rand.nextInt(getMaxRandomEventMoney() - getMinRandomEventMoney())
+                        + getMinRandomEventMoney();
 
                 //Get a winning player.
-                Player eventPlayer = null;
-                Set<Player> players = playerRepository.getAll();
-                for (Player p : players) {
-                    if (p.getRank() >= players.size() / 2) {
-                        if (eventPlayer == null) {
-                            eventPlayer = p;
-                        } else if (rand.nextBoolean()) {
-                            eventPlayer = p;
-                        }
-                    }
-                }
+                Player eventPlayer = getWinningPlayer();
 
                 //If we failed to pick a player,
                 // just start the turn without random events.
@@ -105,7 +106,7 @@ public class MapPresenter extends Presenter<MapView>
                             }
                         });
                     }
-                }, 5010L);
+                }, getTurnStartDelay());
 
             } else {
                 beginTurn();
@@ -114,6 +115,22 @@ public class MapPresenter extends Presenter<MapView>
         if (isPlacingMule) {
             getView().displayMule();
         }
+    }
+
+    private Player getWinningPlayer() {
+        Random rand = new Random();
+        Player eventPlayer = null;
+        Set<Player> players = playerRepository.getAll();
+        for (Player p : players) {
+            if (p.getRank() >= players.size() / 2) {
+                if (eventPlayer == null) {
+                    eventPlayer = p;
+                } else if (rand.nextBoolean()) {
+                    eventPlayer = p;
+                }
+            }
+        }
+        return eventPlayer;
     }
 
     /**
@@ -187,15 +204,12 @@ public class MapPresenter extends Presenter<MapView>
         boolean occupied = map.getOccupants(tileCoord.x,
                 tileCoord.y, Mule.class).length > 0;
 
-        System.out.println(tileCoord.x + ", " + tileCoord.y);
-        System.out.println("owned: " + owned + " occupied: " + occupied);
         if (owned && !occupied) {
             map.add(mulePlacing, tileCoord.x, tileCoord.y);
             getView().placeMuleGraphic(tileCoord.y,
                     tileCoord.x, mulePlacing.getType());
         } else {
             turnService.getCurrentPlayer().getMules().remove(mulePlacing);
-            System.out.println("Mule Lost");
         }
 
         mulePlacing = null;
@@ -253,11 +267,11 @@ public class MapPresenter extends Presenter<MapView>
 
     /**
      * should be called by townPresenter
-     * @param isPlacingMule the boolean of whether this mule is being placed or not.
+     * @param pIsPlacingMule the boolean of whether this mule is being placed or not.
      */
-    public void setIsPlacingMule(boolean isPlacingMule, Mule mule) {
+    public void setIsPlacingMule(boolean pIsPlacingMule, Mule mule) {
         this.mulePlacing = mule;
-        this.isPlacingMule = isPlacingMule;
+        this.isPlacingMule = pIsPlacingMule;
     }
 
     /**
@@ -279,52 +293,55 @@ public class MapPresenter extends Presenter<MapView>
         for (int i = 0; i < map.getRows(); i++) {
             for (int j = 0; j < map.getCols(); j++) {
 
-                Mule[] mule = map.getOccupants(i, j, Mule.class);
-                if (mule.length < 1) {
+                Mule[] mules = map.getOccupants(i, j, Mule.class);
+                if (mules.length < 1) {
                     continue;
                 }
+                Mule mule = mules[0];
 
-                Tile[] tile = map.getOccupants(i, j, Tile.class);
+                Tile[] tiles = map.getOccupants(i, j, Tile.class);
+                Tile tile = tiles[0];
 
-                int amount = 1;
 
-                if (mule[0].getType() == MuleType.Crysite) {
-                    tile[0].ownedBy().offsetCrystite(amount);
+                if (mule.getType() == MuleType.Crysite) {
+                    // crystite production always 1 //
+                    tile.ownedBy().offsetCrystite(1);
 
-                } else if (mule[0].getType() == MuleType.Energy) {
+                } else if (mule.getType() == MuleType.Energy) {
+                    tile.ownedBy().offsetEnergy(tile.getTileType().getEnergyPC());
 
-                    if (tile[0].getTileType() == TileType.PLAIN) {
-                        amount = 3;
-                    } else if (tile[0].getTileType() == TileType.RIVER) {
-                        amount = 2;
-                    }
+                } else if (mule.getType() == MuleType.Food) {
+                    tile.ownedBy().offsetFood(tile.getTileType().getFoodPC());
 
-                    tile[0].ownedBy().offsetEnergy(amount);
-
-                } else if (mule[0].getType() == MuleType.Food) {
-                    if (tile[0].getTileType() == TileType.RIVER) {
-                        amount = 4;
-                    } else if (tile[0].getTileType() == TileType.PLAIN) {
-                        amount = 2;
-                    }
-
-                    tile[0].ownedBy().offsetFood(amount);
-
-                } else if (mule[0].getType() == MuleType.Smithore) {
-                    if (tile[0].getTileType() == TileType.MOUNTAIN_3) {
-                        amount = 4;
-                    } else if (tile[0].getTileType() == TileType.MOUNTAIN_2) {
-                        amount = 3;
-                    } else if (tile[0].getTileType() == TileType.MOUNTAIN_1) {
-                        amount = 2;
-                    } else if (tile[0].getTileType() == TileType.RIVER) {
-                        amount = 0;
-                    }
-
-                    tile[0].ownedBy().offsetSmithore(amount);
+                } else if (mule.getType() == MuleType.Smithore) {
+                    tile.ownedBy().offsetSmithore(tile.getTileType().getSmithorePC());
                 }
 
             }
         }
+    }
+
+    public int getMaxRandomEventMoney() {
+        return maxRandomEventMoney;
+    }
+
+    public void setMaxRandomEventMoney(int pMaxRandomEventMoney) {
+        this.maxRandomEventMoney = pMaxRandomEventMoney;
+    }
+
+    public int getMinRandomEventMoney() {
+        return minRandomEventMoney;
+    }
+
+    public void setMinRandomEventMoney(int pMinRandomEventMoney) {
+        this.minRandomEventMoney = pMinRandomEventMoney;
+    }
+
+    public int getTurnStartDelay() {
+        return turnStartDelay;
+    }
+
+    public void setTurnStartDelay(int pTurnStartDelay) {
+        this.turnStartDelay = pTurnStartDelay;
     }
 }

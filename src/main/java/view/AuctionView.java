@@ -1,6 +1,7 @@
 package view;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import data.abstractsources.Repository;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -37,15 +38,29 @@ public class AuctionView extends View<AuctionPresenter> {
     private Timer timer5;
     private Timer timer6;
 
-    private ArrayList<ImageView> playerImageList;
-    private ArrayList<Text> resourceLists = new ArrayList<Text>();
-    private ArrayList<Text> names = new ArrayList<Text>();
+    private List<ImageView> playerImageList;
+    private List<Text> resourceLists = new ArrayList<Text>();
+    private List<Text> names = new ArrayList<Text>();
     private boolean canMove;
+
+    @Inject @Named("TextInitialX")
+    private int textInitialX;
+    @Inject @Named("TextInitialY")
+    private int textInitialY;
+    @Inject @Named("MainFontSize")
+    private int fontSize;
+    @Inject @Named("StartBiddingDelay")
+    private int startBiddingDelay;
 
     private static final double BOTTOM_LIMIT = 390;
     private static final double TOP_LIMIT = 150;
     // keep this here with the rest of the constants //
     private static final long DURATION = 10000L;
+    private static final int PLAYER_IMAGE_SIZE = 50;
+
+    private static final int MARGIN = 16;
+
+
 
     /**
      * initialises window.
@@ -55,11 +70,12 @@ public class AuctionView extends View<AuctionPresenter> {
         List<Player> playerList = new LinkedList<>(playerRepository.getAll());
         playerImageList = new ArrayList<>();
         for (int i = 0; i < playerRepository.size(); i++) {
-            ImageView playerImage = MapView.createImageView(playerList.get(i).getRace().getImagePath(), 50, 50);
+            ImageView playerImage = MapView.createImageView(playerList.get(i).getRace().getImagePath(),
+                    PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
             playerImageList.add(playerImage);
-            double deltaX = playerImage.getImage().getWidth() / 2 - 16;
+            double deltaX = playerImage.getImage().getWidth() / 2 - MARGIN;
             playerImage.setTranslateX(150 + 150 * i - deltaX);
-            double deltaY = playerImage.getImage().getHeight() / 2 - 16;
+            double deltaY = playerImage.getImage().getHeight() / 2 - MARGIN;
             playerImage.setTranslateY(390 - deltaY);
             Text playerName = new Text("Player " + (i + 1) + "\n\""
                     + playerList.get(i).getName() + "\"");
@@ -74,7 +90,7 @@ public class AuctionView extends View<AuctionPresenter> {
             resources.setTranslateY(435);
             pane2.getChildren().addAll(playerImage, playerName, resources);
         }
-        Text startBidding = new Text(250, 120, "Get Ready to Bid!");
+        Text startBidding = new Text(textInitialX, textInitialY, "Get Ready to Bid!");
         startBidding.setFont(new Font(40));
         pane2.getChildren().add(startBidding);
         startSmithoreBidding();
@@ -112,72 +128,50 @@ public class AuctionView extends View<AuctionPresenter> {
         getPresenter().switchPresenter("map_grid_tile_select.fxml");
     }
 
+    private void translateUp(int playerImageIndex) {
+        if (playerImageList.size() > playerImageIndex
+                && playerImageList.get(playerImageIndex).getTranslateY() > TOP_LIMIT) {
+
+            playerImageList.get(playerImageIndex).setTranslateY(
+                    playerImageList.get(playerImageIndex).getTranslateY() - 10);
+        }
+    }
+
+    private void translateDown(int playerImageIndex) {
+        if (playerImageList.size() > playerImageIndex
+                && playerImageList.get(playerImageIndex).getTranslateY() < BOTTOM_LIMIT) {
+
+                playerImageList.get(playerImageIndex).setTranslateY(
+                        playerImageList.get(playerImageIndex).getTranslateY() + 10);
+        }
+    }
+
     private void handleKeyPressed(KeyEvent event) {
         if (canMove) {
             switch (event.getCode()) {
                 case Q:
-                    if (playerImageList.size() > 0 && playerImageList.
-                            get(0).getTranslateY() > TOP_LIMIT) {
-                        playerImageList.get(0).setTranslateY(
-                                playerImageList.get(0).getTranslateY()
-                                        - 10);
-                    }
+                    translateUp(0);
                     break;
                 case Z:
-                    if (playerImageList.size() > 0 && playerImageList.
-                            get(0).getTranslateY() < BOTTOM_LIMIT) {
-                        playerImageList.get(0).setTranslateY(
-                                playerImageList.get(0).getTranslateY()
-                                        + 10);
-                    }
+                    translateDown(0);
                     break;
                 case W:
-                    if (playerImageList.size() > 1 && playerImageList.
-                            get(1).getTranslateY() > TOP_LIMIT) {
-                        playerImageList.get(1).setTranslateY(
-                                playerImageList.get(1).getTranslateY()
-                                        - 10);
-                    }
+                    translateUp(1);
                     break;
                 case X:
-                    if (playerImageList.size() > 1 && playerImageList.
-                            get(1).getTranslateY() < BOTTOM_LIMIT) {
-                        playerImageList.get(1).setTranslateY(
-                                playerImageList.get(1).getTranslateY()
-                                        + 10);
-                    }
+                    translateDown(1);
                     break;
                 case E:
-                    if (playerImageList.size() > 2 && playerImageList.
-                            get(2).getTranslateY() > TOP_LIMIT) {
-                        playerImageList.get(2).setTranslateY(
-                                playerImageList.get(2).getTranslateY()
-                                        - 10);
-                    }
+                    translateUp(2);
                     break;
                 case C:
-                    if (playerImageList.size() > 2 && playerImageList.
-                            get(2).getTranslateY() < BOTTOM_LIMIT) {
-                        playerImageList.get(2).setTranslateY(
-                                playerImageList.get(2).getTranslateY()
-                                        + 10);
-                    }
+                    translateDown(2);
                     break;
                 case R:
-                    if (playerImageList.size() > 3 && playerImageList.
-                            get(3).getTranslateY() > TOP_LIMIT) {
-                        playerImageList.get(3).setTranslateY(
-                                playerImageList.get(3).getTranslateY()
-                                        - 10);
-                    }
+                    translateUp(3);
                     break;
                 case V:
-                    if (playerImageList.size() > 3 && playerImageList.
-                            get(3).getTranslateY() < BOTTOM_LIMIT) {
-                        playerImageList.get(3).setTranslateY(
-                                playerImageList.get(3).getTranslateY()
-                                        + 10);
-                    }
+                    translateDown(3);
                     break;
                 default:
                     break;
@@ -198,7 +192,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     public void run() { setAuctionSmithore(); }
                 });
             }
-        }, 4000L);
+        }, startBiddingDelay);
         timer2 = new Timer();
         timer2.schedule(new TimerTask() {
             @Override
@@ -210,7 +204,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     }
                 });
             }
-        }, DURATION + 4000L);
+        }, DURATION + startBiddingDelay);
 //        timer.schedule(new TimerTask() {
 //                           @Override
 //                           public void run() {
@@ -235,9 +229,8 @@ public class AuctionView extends View<AuctionPresenter> {
                     .getSmithore() + " Smithore");
             smithore.setTranslateX(150 + 150 * i);
             smithore.setTranslateY(435);
-            Text auctionText = new Text(
-                    250, 120, "Smithore Auction");
-            auctionText.setFont(new Font(40));
+            Text auctionText = new Text(textInitialX, textInitialY, "Smithore Auction");
+            auctionText.setFont(new Font(fontSize));
             pane2.getChildren().addAll(
                     playerImageList.get(i), smithore, auctionText);
             resetCharacters();
@@ -260,8 +253,8 @@ public class AuctionView extends View<AuctionPresenter> {
                             Text food = new Text(playerRepository.get(i).getFood() + " Food");
                             food.setTranslateX(150 + 150 * i);
                             food.setTranslateY(435);
-                            Text auctionText = new Text(250, 120, "Food Auction");
-                            auctionText.setFont(new Font(40));
+                            Text auctionText = new Text(textInitialX, textInitialY, "Food Auction");
+                            auctionText.setFont(new Font(fontSize));
                             pane2.getChildren().addAll(playerImageList.get(i), food, auctionText);
                             resetCharacters();
                             canMove = true;
@@ -269,7 +262,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     }
                 });
             }
-        }, 4000L);
+        }, startBiddingDelay);
         timer2 = new Timer();
         timer2.schedule(new TimerTask() {
             @Override
@@ -281,7 +274,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     }
                 });
             }
-        }, DURATION + 4000L);
+        }, DURATION + startBiddingDelay);
     }
 
     /**
@@ -319,6 +312,22 @@ public class AuctionView extends View<AuctionPresenter> {
 //            double deltaY = (new Image(playerList.get(i).getRace().getImagePath())).getHeight()/2 - 16;
             playerImageList.get(i).setTranslateY(385);
         }
+    }
+
+    public void setTextInitialX(int pTextInitialX) {
+        this.textInitialX = pTextInitialX;
+    }
+
+    public void setTextInitialY(int pTextInitialY) {
+        this.textInitialY = pTextInitialY;
+    }
+
+    public void setFontSize(int pFontSize) {
+        this.fontSize = pFontSize;
+    }
+
+    public void setStartBiddingDelay(int pStartBiddingDelay) {
+        this.startBiddingDelay = pStartBiddingDelay;
     }
 }
 

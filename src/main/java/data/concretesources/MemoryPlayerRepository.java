@@ -6,6 +6,7 @@ import model.entity.Player;
 import java.util.ArrayList;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -21,7 +22,7 @@ public class MemoryPlayerRepository implements Repository<Player> {
         return nextPlayerId++;
     }
 
-    private ArrayList<Player> players;
+    private List<Player> players;
 
     /**
      * initialises an ArrayList of players

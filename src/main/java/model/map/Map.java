@@ -1,6 +1,7 @@
 package model.map;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import data.abstractsources.LocationDatasource;
 
 import javax.persistence.Embeddable;
@@ -26,11 +27,8 @@ public class Map {
 
     private LocationDatasource datasource;
 
-    private int rows = 5;
-    private int cols = 9;
-
     @Inject
-    public Map(LocationDatasource lds) {
+    public Map(LocationDatasource lds, @Named("MapRows") int rows, @Named("MapCols") int cols) {
         datasource = lds;
 
         if (rows < 1 || cols < 1) {
@@ -107,7 +105,7 @@ public class Map {
 
         datasource.save(row, col, locatable);
         if (!newLocation.addOccupant(locatable)) {
-            throw new RuntimeException("internal issue");
+            throw new IllegalStateException("internal issue");
         }
     }
 
@@ -118,7 +116,7 @@ public class Map {
     public void remove(Locatable locatable) {
         datasource.remove(locatable);
         if (!locatable.getLocation().removeOccupant(locatable)) {
-            throw new RuntimeException("internal issue");
+            throw new IllegalStateException("internal issue");
         }
 
         locatable.setLocation(null);
@@ -173,8 +171,8 @@ public class Map {
     }
 
     public void refreshFromDatasource() {
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++) {
+        for (int i = 0; i < getCols(); i++) {
+            for (int j = 0; j < getRows(); j++) {
 
                 for (Locatable pastEle : locationGrid[i][j].getOccupants()) {
                     locationGrid[i][j].removeOccupant(pastEle);
@@ -229,14 +227,14 @@ public class Map {
 
         /**
          * instantiates a location class object
-         * @param row row of object
-         * @param col col of object
-         * @param map map on which object is present
+         * @param pRow row of object
+         * @param pCol col of object
+         * @param pMap map on which object is present
          */
-        public Location(int row, int col, Map map) {
-            this.row = row;
-            this.col = col;
-            this.map = map;
+        public Location(int pRow, int pCol, Map pMap) {
+            this.row = pRow;
+            this.col = pCol;
+            this.map = pMap;
             occupants = new LinkedList<>();
         }
 
@@ -341,7 +339,7 @@ public class Map {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof Location)) {
+            if (!(obj instanceof Location)) {
                 return false;
             }
 

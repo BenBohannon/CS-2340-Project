@@ -29,60 +29,41 @@ public class StartPresenter extends Presenter {
      *
      * NOTE: Cyclomatic complexity is high, but the code is easy to follow.
      *  This will be replaced by loading a single GameState object when
-     *  multiple saves are implemented
+     *  multiple saves are implemented.
      */
     protected final void handleStartEvent(ActionEvent event) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        Query playerQuery = session.createQuery("FROM Player");
-        if (playerQuery.list() != null) {
-            for (Object p : playerQuery.list()) {
-                session.delete(p);
-            }
-        }
+        clearTable("Player", session);
 
-        Query muleQuery = session.createQuery("FROM Mule");
-        if (muleQuery.list() != null) {
-            for (Object m : muleQuery.list()) {
-                session.delete(m);
-            }
-        }
+        clearTable("Mule", session);
 
-        Query tileQuery = session.createQuery("FROM Tile");
-        if (tileQuery.list() != null) {
-            for (Object t : tileQuery.list()) {
-                session.delete(t);
-            }
-        }
+        clearTable("Tile", session);
 
-        Query storeQuery = session.createQuery("FROM StoreRecord");
-        if (storeQuery.list() != null) {
-            for (Object storeRecord : storeQuery.list()) {
-                session.delete(storeRecord);
-            }
-        }
+        clearTable("StoreRecord", session);
 
-        Query turnQuery = session.createQuery("FROM TurnRecord");
-        if (turnQuery.list() != null) {
-            for (Object turnRecord : turnQuery.list()) {
-                session.delete(turnRecord);
-            }
-        }
+        clearTable("TurnRecord", session);
 
-        // For good measure //
-        Query locatableQuery = session.createQuery("FROM PersistableLocatable");
-        if (locatableQuery.list() != null) {
-            for (Object locatableRecord : locatableQuery.list()) {
-                session.delete(locatableRecord);
-            }
-        }
+        clearTable("PersistableLocatable", session);
 
         session.getTransaction().commit();
         session.flush();
         session.close();
 
         getContext().showScreen("config_screen.fxml");
+    }
+
+    private void clearTable(String tableName, Session session) {
+        String queryString = new StringBuilder("FROM ")
+                .append(tableName)
+                .toString();
+        Query query = session.createQuery(queryString);
+        if (query.list() != null) {
+            for (Object locatableRecord : query.list()) {
+                session.delete(locatableRecord);
+            }
+        }
     }
 
     @FXML
