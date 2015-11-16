@@ -169,9 +169,6 @@ public class AuctionView extends View<AuctionPresenter> {
 //        pane.getChildren().add(new Rectangle(100, 100));
 
         // Stream or for loop players
-//        player1 = new ImageView(new Image("/races/Human.png", 25, 25, true, false));
-//        player1.setTranslateX(150);
-//        player1.setTranslateY(700);
         // Key listener for
 
 
@@ -299,15 +296,12 @@ public class AuctionView extends View<AuctionPresenter> {
         }, TOTALDELAY * i + BIDDURATION + BUYORSELLDURATION + SHOWRESOURCEDURATION + 2000L);
     }
 
-    public void startFoodBidding() {
-
-    }
-
     public void startEnergyBidding() {
 
     }
 
     public void quantifyResources() {
+//        Text player1quant = new Text(playerRepository.get(0).getFood());
         // show how much resource each player has
     }
 
