@@ -1,20 +1,11 @@
 package presenters;
 
-import com.google.inject.Inject;
-import com.google.inject.TypeLiteral;
 import data.MemoryPlayerRepository;
-import data.Repository;
 import data.StoreInfoHolder;
-import javafx.application.Application;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import model.entity.Player;
-import model.entity.PlayerRace;
 import model.entity.StoreDatasource;
 import model.map.Locatable;
 import model.map.LocationDatasource;
 import model.map.Map;
-import model.map.Tile;
 import model.service.DefaultTurnService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,15 +15,16 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
+
 
 /**
  * Created by kylemurray on 11/4/15.
  */
-public class NoTilesSelectedTest extends Application {
+public class AddPlayerTest {
 
 
-    private Player p1;
-    private Player p2;
+
 //    private MemoryPlayerRepository playerRepository;
 
     /*
@@ -80,29 +72,22 @@ public class NoTilesSelectedTest extends Application {
 
         see the bottom of the start method.
      */
-    @Inject
-    public Map map;
-    @Inject
-    private TileSelectionPresenter presenter = new TileSelectionPresenter();
-    @Inject
-    private Repository<Player> playerRepository = new MemoryPlayerRepository();
+
+//    @Inject
+//    public Map map;
+//    @Inject
+//    private TileSelectionPresenter presenter = new TileSelectionPresenter();
+//    @Inject
+//    private Repository<Player> playerRepository = new MemoryPlayerRepository();
+
+//    DefaultTurnService turnService;
 
     @Rule
     public Timeout timeout = new Timeout(200);
 
-//    @Before
-//    public void setUp() {
-//        presenter = new TileSelectionPresenter();
-//    }
+    @Test
+    public void checkAddPlayer() {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    @Before
-    public void start(Stage stage) {
-
-        //empty datasource for model.map//
         LocationDatasource lds = new LocationDatasource() {
             @Override
             public Collection<Locatable> get(int row, int col) {
@@ -189,57 +174,58 @@ public class NoTilesSelectedTest extends Application {
             }
         };
 
-//        playerRepository = new MemoryPlayerRepository();
-        p1 = new Player();
-        p1.setName("P1");
-        p1.setId(0);
-        p1.setColor(Color.ALICEBLUE);
-        p1.setRace(PlayerRace.Bonzoid);
-        playerRepository.save(p1);
 
-        p2 = new Player();
-        p2.setName("P2");
-        p2.setId(1);
-        p2.setRace(PlayerRace.Buzzite);
-        p2.setColor(Color.BLANCHEDALMOND);
-        playerRepository.save(p2);
+
+        final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
+//        Player p1 = new Player();
+//        p1.setName("P1");
+//        p1.setId(0);
+//        p1.setColor(Color.ALICEBLUE);
+//        p1.setRace(PlayerRace.Bonzoid);
+//        playerRepository.save(p1);
+//
+//        Player p2 = new Player();
+//        p2.setName("P2");
+//        p2.setId(1);
+//        p2.setRace(PlayerRace.Buzzite);
+//        p2.setColor(Color.BLANCHEDALMOND);
+//        playerRepository.save(p2);
+
+//        Player p3 = new Player();
+//        p3.setName("P3");
+//        p3.setId(2);
+//        p3.setColor(Color.AQUAMARINE);
+//        p3.setRace(PlayerRace.Ugaite);
+//        playerRepository.save(p3);
+//
+//        Player p4 = new Player();
+//        p4.setName("P4");
+//        p4.setId(3);
+//        p4.setRace(PlayerRace.Human);
+//        p4.setColor(Color.BLACK);
+//        playerRepository.save(p4);
 
 
         final Map map = new Map(lds);
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository, new StoreInfoHolder());
 
-        PresenterContext context = new PresenterContext((binder) -> {
-            binder.bind(LocationDatasource.class).toInstance(lds);
-            binder.bind(new TypeLiteral<Repository<Player>>(){}).toInstance(playerRepository);
+        assertEquals(turnService.getAllPlayers().size(), 0);
 
-            //temp
-            binder.bind(Map.class).toInstance(map);
-            binder.bind(StoreDatasource.class).toInstance(sds);
-            binder.bind(DefaultTurnService.class).toInstance(turnService);
-        }, stage);
+        turnService.addPlayer();
+        assertEquals(turnService.getAllPlayers().size(), 1);
 
-        context.showScreen("/presenters/map_grid_tile_select.fxml");
+        turnService.addPlayer();
+        assertEquals(turnService.getAllPlayers().size(), 2);
 
-        /*
-            instead of creating a presenterContext here, just create the
-            Presenter using new. I added the @Before annotation to the beginning of this method, so
-            this will be called before each @Test method is run. It looks like this method
-            already creates all the dependencies that the Tile Presenter needs, so you can
-            just assign them manually
-         */
-    }
+        turnService.addPlayer();
+        assertEquals(turnService.getAllPlayers().size(), 3);
 
-    @Test
-    public void checkNoneSelected() {
+        turnService.addPlayer();
+        assertEquals(turnService.getAllPlayers().size(), 4);
 
-        assert(presenter.noneSelected());
+        turnService.addPlayer();
+        assertEquals(turnService.getAllPlayers().size(), 4);
 
-        Tile tile = (Tile) map.getOccupants(1, 1)[0];
-        int selectionRound = 0;
-
-        p1.buyProperty(tile, selectionRound > 1 ? -300 : 0);
-
-        assert(!presenter.noneSelected());
     }
 }

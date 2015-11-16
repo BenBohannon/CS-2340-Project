@@ -55,6 +55,7 @@ public class AuctionView extends View<AuctionPresenter> {
     private volatile double clockTime;
     private Line topBidLine = new Line(100, 0, RIGHTLIMIT, 0);
     private Line bottomBidLine = new Line(100, 0, RIGHTLIMIT, 0);
+    private Rectangle greenLine = new Rectangle(650, 5, Color.GREEN);
 
     public void initialize() {
         pane.getChildren().add(pane2);
@@ -82,7 +83,8 @@ public class AuctionView extends View<AuctionPresenter> {
         screenText.setText("Get Ready to Bid!");
         screenText.setFont(new Font(40));
         topBidLine.setTranslateY(TOPLIMIT + 50);
-        bottomBidLine.setTranslateY(BOTTOMLIMIT - 10);
+        bottomBidLine.setTranslateY(BOTTOMLIMIT);
+        greenLine.setTranslateX(100);
         pane2.getChildren().add(screenText);
         for (long i = 0; i < 3; i++) {
             startResourceBidding(i);
@@ -92,58 +94,30 @@ public class AuctionView extends View<AuctionPresenter> {
             @Override
             public void handle(KeyEvent event) {
                 if (canMove) {
-                    double topLine = topBidLine.getTranslateY();
-                    double bottomLine = bottomBidLine.getTranslateY();
-                    double asdf = bottomBidLine.getStartY();
-                    double playerY = playerImageList.get(0).getTranslateY();
                     switch (event.getCode()) {
                         case Q:
-                            if (playerImageList.size() > 0 && playerImageList.get(0).getTranslateY() > TOPLIMIT) {
-                                playerImageList.get(0).setTranslateY(playerImageList.get(0).getTranslateY() - 10);
-                            }
-                            setLines();
+                            moveBidderUp(0);
                             break;
                         case Z:
-                            if (playerImageList.size() > 0 && playerImageList.get(0).getTranslateY() < BOTTOMLIMIT) {
-                                playerImageList.get(0).setTranslateY(playerImageList.get(0).getTranslateY() + 10);
-                            }
-                            setLines();
+                            moveBidderDown(0);
                             break;
                         case W:
-                            if (playerImageList.size() > 1 && playerImageList.get(1).getTranslateY() > TOPLIMIT) {
-                                playerImageList.get(1).setTranslateY(playerImageList.get(1).getTranslateY() - 10);
-                            }
-                            setLines();
+                            moveBidderUp(1);
                             break;
                         case X:
-                            if (playerImageList.size() > 1 && playerImageList.get(1).getTranslateY() < BOTTOMLIMIT) {
-                                playerImageList.get(1).setTranslateY(playerImageList.get(1).getTranslateY() + 10);
-                            }
-                            setLines();
+                            moveBidderDown(1);
                             break;
                         case E:
-                            if (playerImageList.size() > 2 && playerImageList.get(2).getTranslateY() > TOPLIMIT) {
-                                playerImageList.get(2).setTranslateY(playerImageList.get(2).getTranslateY() - 10);
-                            }
-                            setLines();
+                            moveBidderUp(2);
                             break;
                         case C:
-                            if (playerImageList.size() > 2 && playerImageList.get(2).getTranslateY() < BOTTOMLIMIT) {
-                                playerImageList.get(2).setTranslateY(playerImageList.get(2).getTranslateY() + 10);
-                            }
-                            setLines();
+                            moveBidderDown(2);
                             break;
                         case R:
-                            if (playerImageList.size() > 3 && playerImageList.get(3).getTranslateY() > TOPLIMIT) {
-                                playerImageList.get(3).setTranslateY(playerImageList.get(3).getTranslateY() - 10);
-                            }
-                            setLines();
+                            moveBidderUp(3);
                             break;
                         case V:
-                            if (playerImageList.size() > 3 && playerImageList.get(3).getTranslateY() < BOTTOMLIMIT) {
-                                playerImageList.get(3).setTranslateY(playerImageList.get(3).getTranslateY() + 10);
-                            }
-                            setLines();
+                            moveBidderDown(3);
                             break;
                     }
                 } else if (canFlip) {
@@ -156,7 +130,7 @@ public class AuctionView extends View<AuctionPresenter> {
                         case Z:
                             playerImageList.get(0).setTranslateY(BOTTOMLIMIT);
                             buySell.get(0).setText("BUYING");
-                            buySell.get(0).setTranslateY(BOTTOMLIMIT + 20);
+                            buySell.get(0).setTranslateY(BOTTOMLIMIT + 65);
                             break;
                         case W:
                             playerImageList.get(1).setTranslateY(TOPLIMIT);
@@ -166,7 +140,7 @@ public class AuctionView extends View<AuctionPresenter> {
                         case X:
                             playerImageList.get(1).setTranslateY(BOTTOMLIMIT);
                             buySell.get(1).setText("BUYING");
-                            buySell.get(1).setTranslateY(BOTTOMLIMIT + 20);
+                            buySell.get(1).setTranslateY(BOTTOMLIMIT + 65);
                             break;
                         case E:
                             playerImageList.get(2).setTranslateY(TOPLIMIT);
@@ -176,7 +150,7 @@ public class AuctionView extends View<AuctionPresenter> {
                         case C:
                             playerImageList.get(2).setTranslateY(BOTTOMLIMIT);
                             buySell.get(2).setText("BUYING");
-                            buySell.get(2).setTranslateY(BOTTOMLIMIT + 20);
+                            buySell.get(2).setTranslateY(BOTTOMLIMIT + 65);
                             break;
                         case R:
                             playerImageList.get(3).setTranslateY(TOPLIMIT);
@@ -186,7 +160,7 @@ public class AuctionView extends View<AuctionPresenter> {
                         case V:
                             playerImageList.get(3).setTranslateY(BOTTOMLIMIT);
                             buySell.get(3).setText("BUYING");
-                            buySell.get(3).setTranslateY(BOTTOMLIMIT + 20);
+                            buySell.get(3).setTranslateY(BOTTOMLIMIT + 65);
                             break;
                     }
                 }
@@ -209,6 +183,7 @@ public class AuctionView extends View<AuctionPresenter> {
 //                presenter.switchPresenter("map_grid_tile_select.fxml");
 //            }
 //        }, 4000L);
+//        topBidLine.setTranslateY(200);
     }
 
     public void handleContinueButtonAction() {
@@ -312,6 +287,11 @@ public class AuctionView extends View<AuctionPresenter> {
 //                    timer3.cancel();
                     timer32.cancel();
                     canMove = false;
+                    topBidLine.setTranslateY(TOPLIMIT + 50);
+                    bottomBidLine.setTranslateY(BOTTOMLIMIT);
+                    if (pane2.getChildren().contains(greenLine)) {
+                        pane2.getChildren().removeAll(greenLine);
+                    }
                     System.out.println(5 + i * 5 + "\n");
                     // Reset everything and cancel timer3
 //                    timer4.cancel();
@@ -383,19 +363,32 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     public void setLines() {
+        System.out.println("setLines is running");
         double high = highestBuyer();
+//        System.out.println(high);
         double low = lowestSeller();
+//        System.out.println(low);
         double line = bottomBidLine.getTranslateY();
         bottomBidLine.setTranslateY(highestBuyer());
         topBidLine.setTranslateY(lowestSeller());
-
+        if(bottomBidLine.getTranslateY() - topBidLine.getTranslateY() < 10
+                && !pane2.getChildren().contains(greenLine)) {
+            greenLine.setTranslateY(topBidLine.getTranslateY());
+            pane2.getChildren().addAll(greenLine);
+        } else if (bottomBidLine.getTranslateY() - topBidLine.getTranslateY() >= 10
+                && pane2.getChildren().contains(greenLine)) {
+            pane2.getChildren().removeAll(greenLine);
+        }
     }
 
     private double highestBuyer() {
         double topPos = BOTTOMLIMIT;
         for (int j = 0; j < playerRepository.size(); j++) {
             double playerPos = playerImageList.get(j).getTranslateY();
-            if (buySell.get(j).equals("BUYING") && playerPos < topPos) {
+//            System.out.println("playerPos: " + playerPos);
+//            System.out.println("topPos: " + topPos);
+//            System.out.println(buySell.get(j));
+            if (buySell.get(j).getText().equals("BUYING") && playerPos < topPos) {
                 topPos = playerPos;
             }
         }
@@ -403,14 +396,32 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     private double lowestSeller() {
-        double bottomPos = TOPLIMIT;
+        double bottomPos = TOPLIMIT + 50;
         for (int j = 0; j < playerRepository.size(); j++) {
-            double playerPos = playerImageList.get(j).getTranslateY();
-            if (buySell.get(j).equals("SELLING") && playerPos > bottomPos) {
+            double playerPos = playerImageList.get(j).getTranslateY() + 50;
+            if (buySell.get(j).getText().equals("SELLING") && playerPos > bottomPos) {
                 bottomPos = playerPos;
             }
         }
         return bottomPos;
+    }
+
+    private void moveBidderUp(int j) {
+        double moveTo = playerImageList.get(j).getTranslateY() - 10;
+        if (playerImageList.size() > j && (moveTo > topBidLine.getTranslateY()
+                || buySell.get(j).getText().equals("SELLING"))) {
+            playerImageList.get(j).setTranslateY(moveTo);
+        }
+        setLines();
+    }
+
+    private void moveBidderDown(int j) {
+        double moveTo = playerImageList.get(j).getTranslateY() + 10;
+        if (playerImageList.size() > j && (moveTo < bottomBidLine.getTranslateY() - 50
+                || buySell.get(j).getText().equals("BUYING"))) {
+            playerImageList.get(j).setTranslateY(moveTo);
+        }
+        setLines();
     }
 
 

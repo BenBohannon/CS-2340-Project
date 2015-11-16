@@ -6,7 +6,9 @@ import data.Repository;
 import data.StoreInfoHolder;
 import data.TurnEndListener;
 import javafx.application.Platform;
+import javafx.scene.paint.Color;
 import model.entity.Player;
+import model.entity.PlayerRace;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -149,6 +151,42 @@ public class DefaultTurnService {
             timer2.cancel();
             timer2 = null;
         }
+    }
+
+    public Player removePlayer(int playerNumber) {
+        if (playerNumber > playerRepository.getAll().size() - 1) {
+            return null;
+        }
+        Player removedPlayer = playerRepository.getAll().get(playerNumber);
+        playerRepository.getAll().remove(playerNumber);
+        return removedPlayer;
+    }
+
+    public void addPlayer() {
+        Player p = new Player();
+        p.setRace(PlayerRace.Bonzoid);
+
+        int siz = playerRepository.size();
+        if (siz == 0) {
+            p.setName("New Player1");
+            p.setId(0);
+            p.setColor(Color.SALMON);
+        } else if(siz == 1) {
+            p.setName("New Player2");
+            p.setId(1);
+            p.setColor(Color.FORESTGREEN);
+        } else if(siz == 2) {
+            p.setName("New Player3");
+            p.setId(2);
+            p.setColor(Color.LIMEGREEN);
+        } else if(siz == 3) {
+            p.setName("New Player4");
+            p.setId(3);
+            p.setColor(Color.CRIMSON);
+        } else if (siz > 3 ) {
+            return;
+        }
+        playerRepository.save(p);
     }
 
     /**
