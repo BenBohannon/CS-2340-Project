@@ -27,7 +27,8 @@ import java.util.TimerTask;
  */
 public class AuctionView extends View<AuctionPresenter> {
 
-    //TODO: fix holding down buttons, put in store, put in buy/sell option for players, make food/energy rounds, timer
+    //TODO: Make resources and money update immediately, don't allow money or resources to drop below 0
+    //TODO: When resources or money is too low, player is pushed back, introduce a store
 
     @Inject
     private DefaultTurnService turnService;
@@ -47,14 +48,19 @@ public class AuctionView extends View<AuctionPresenter> {
     private double RIGHTLIMIT = 750;
     private long SHOWRESOURCEDURATION = 2000L;
     private long BUYORSELLDURATION = 4000L;
-    private long BIDDURATION = 6000L;
+    private long BIDDURATION = 15000L;
     private String resource;
     Text screenText = new Text(250, 120, "");
+    private ArrayList<Boolean> isBuying = new ArrayList<Boolean>();
     private ArrayList<Text> buySell = new ArrayList<Text>();
+    private ArrayList<Boolean> buyersInTrans = new ArrayList<Boolean>();
+    private ArrayList<Boolean> sellersInTrans = new ArrayList<Boolean>();
     private volatile double clockTime;
+    private volatile double greenLineTimer;
     private Line topBidLine = new Line(100, 0, RIGHTLIMIT, 0);
     private Line bottomBidLine = new Line(100, 0, RIGHTLIMIT, 0);
     private Rectangle greenLine = new Rectangle(650, 5, Color.GREEN);
+    private double transVal = 0;
 
     public void initialize() {
         pane.getChildren().add(pane2);
@@ -71,7 +77,7 @@ public class AuctionView extends View<AuctionPresenter> {
             names.add(playerName);
             playerName.setTranslateX(150 + 150 * i);
             playerName.setTranslateY(370);
-            Text resources = new Text(playerRepository.get(i).getCrystite() + " Crystite\n"
+            Text resources = new Text(playerRepository.get(i).getSmithore() + " Smithore\n"
                     + playerRepository.get(i).getEnergy() + " Energy\n"
                     + playerRepository.get(i).getFood() + " Food");
             resourceLists.add(resources);
@@ -124,41 +130,49 @@ public class AuctionView extends View<AuctionPresenter> {
                         case Q:
                             playerImageList.get(0).setTranslateY(TOPLIMIT);
                             buySell.get(0).setText("SELLING");
+                            isBuying.set(0, false);
                             buySell.get(0).setTranslateY(TOPLIMIT);
                             break;
                         case Z:
                             playerImageList.get(0).setTranslateY(BOTTOMLIMIT);
                             buySell.get(0).setText("BUYING");
+                            isBuying.set(0, true);
                             buySell.get(0).setTranslateY(BOTTOMLIMIT + 65);
                             break;
                         case W:
                             playerImageList.get(1).setTranslateY(TOPLIMIT);
                             buySell.get(1).setText("SELLING");
+                            isBuying.set(1, false);
                             buySell.get(1).setTranslateY(TOPLIMIT);
                             break;
                         case X:
                             playerImageList.get(1).setTranslateY(BOTTOMLIMIT);
                             buySell.get(1).setText("BUYING");
+                            isBuying.set(1, true);
                             buySell.get(1).setTranslateY(BOTTOMLIMIT + 65);
                             break;
                         case E:
                             playerImageList.get(2).setTranslateY(TOPLIMIT);
                             buySell.get(2).setText("SELLING");
+                            isBuying.set(2, false);
                             buySell.get(2).setTranslateY(TOPLIMIT);
                             break;
                         case C:
                             playerImageList.get(2).setTranslateY(BOTTOMLIMIT);
                             buySell.get(2).setText("BUYING");
+                            isBuying.set(2, true);
                             buySell.get(2).setTranslateY(BOTTOMLIMIT + 65);
                             break;
                         case R:
                             playerImageList.get(3).setTranslateY(TOPLIMIT);
                             buySell.get(3).setText("SELLING");
+                            isBuying.set(3, false);
                             buySell.get(3).setTranslateY(TOPLIMIT);
                             break;
                         case V:
                             playerImageList.get(3).setTranslateY(BOTTOMLIMIT);
                             buySell.get(3).setText("BUYING");
+                            isBuying.set(3, true);
                             buySell.get(3).setTranslateY(BOTTOMLIMIT + 65);
                             break;
                     }
@@ -248,6 +262,7 @@ public class AuctionView extends View<AuctionPresenter> {
                 Platform.runLater(() ->
                 {
 //                    timer2.cancel();
+                    greenLineTimer = 0;
                     canFlip = false;
                     canMove = true;
                     screenText.setText("Start bidding");
@@ -264,12 +279,22 @@ public class AuctionView extends View<AuctionPresenter> {
             public void run() {
                 Platform.runLater(() ->
                 {
-//                    if (i == 0) {
-                        clockTime = clockTime - 100L;
-                        double clockHeight = whiteClock.getHeight();
-                        redClock.setHeight(clockHeight * clockTime / BIDDURATION);
-//                    }
-//                    System.out.println(4 + i * 5 + "\n");
+                    clockTime = clockTime - 100L;
+                    double clockHeight = whiteClock.getHeight();
+                    redClock.setHeight(clockHeight * clockTime / BIDDURATION);
+                    greenLineTimer ++;
+//                    System.out.println(greenLineTimer);
+                    if (transactionOccurring()) {
+//                        System.out.println("transaction should occur");
+                        if (greenLineTimer % 20 == 0) {
+                            greenLine.setFill(Color.RED);
+                            System.out.println("transaction occurred at t = " + greenLineTimer);
+                            makeTransaction();
+                        }
+                    }
+                    if ((greenLineTimer - 2) % 20 == 0) {
+                        greenLine.setFill(Color.GREEN);
+                    }
                 });
             }
         }, TOTALDELAY * i + BUYORSELLDURATION + SHOWRESOURCEDURATION + 2005L, 100L);
@@ -282,6 +307,7 @@ public class AuctionView extends View<AuctionPresenter> {
                 {
 //                    timer3.cancel();
                     timer32.cancel();
+                    greenLineTimer = 0;
                     canMove = false;
                     topBidLine.setTranslateY(TOPLIMIT + 50);
                     bottomBidLine.setTranslateY(BOTTOMLIMIT);
@@ -291,6 +317,9 @@ public class AuctionView extends View<AuctionPresenter> {
                     System.out.println(5 + i * 5 + "\n");
                     // Reset everything and cancel timer3
 //                    timer4.cancel();
+                    if (i >= 2) {
+                        presenter.switchPresenter("map_grid_tile_select.fxml");
+                    }
                 });
             }
         }, TOTALDELAY * i + BIDDURATION + BUYORSELLDURATION + SHOWRESOURCEDURATION + 2000L);
@@ -331,6 +360,9 @@ public class AuctionView extends View<AuctionPresenter> {
             Text buyText = new Text("BUYING");
             buyText.setFill(Color.GREEN);
             buySell.add(buyText);
+            isBuying.add(new Boolean(true));
+            buyersInTrans.add(new Boolean(false));
+            sellersInTrans.add(new Boolean(false));
             buyText.setTranslateX(150 + 150 * j);
             buyText.setTranslateY(450);
             Text moneyText = new Text("$" + playerRepository.get(j).getMoney());
@@ -356,21 +388,44 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     public void setLines() {
-        System.out.println("setLines is running");
-        double high = highestBuyer();
-//        System.out.println(high);
-        double low = lowestSeller();
-//        System.out.println(low);
-        double line = bottomBidLine.getTranslateY();
+        // Occurs every timer a player is moved during the bidding round
         bottomBidLine.setTranslateY(highestBuyer());
         topBidLine.setTranslateY(lowestSeller());
-        if(bottomBidLine.getTranslateY() - topBidLine.getTranslateY() < 10
-                && !pane2.getChildren().contains(greenLine)) {
+        if(bottomBidLine.getTranslateY() - topBidLine.getTranslateY() < 10) {
             greenLine.setTranslateY(topBidLine.getTranslateY());
-            pane2.getChildren().addAll(greenLine);
+            transVal = 400 - greenLine.getTranslateY(); // Make sure the 400 - # matches up with the player bid values
+            System.out.println(transVal);
+            determineBuyersAndSellers();
+            if (!pane2.getChildren().contains(greenLine)) {
+                pane2.getChildren().addAll(greenLine);
+            }
         } else if (bottomBidLine.getTranslateY() - topBidLine.getTranslateY() >= 10
                 && pane2.getChildren().contains(greenLine)) {
             pane2.getChildren().removeAll(greenLine);
+        }
+    }
+
+    private void determineBuyersAndSellers() {
+        // If green line is present, compares players' bid value to transVal ("transaction value") that was determined
+        // when the green line appeared, or when two players first met up to bid
+        if (pane2.getChildren().contains(greenLine)) {
+            for (int j = 0; j < playerRepository.size(); j++) {
+                if (buySell.get(j).getText().equals("$" + transVal) && isBuying.get(j)) {
+//                    System.out.println("Determined player " + (j + 1) + " is a buyer");
+                    buyersInTrans.set(j, new Boolean(true));
+                } else {
+                    buyersInTrans.set(j, new Boolean(false));
+                }
+                System.out.println("Gets to determining sellers");
+                System.out.println("text is right val: " + buySell.get(j).getText().equals("$" + transVal));
+                System.out.println("isBuying: " + !isBuying.get(j));
+                if (buySell.get(j).getText().equals("$" + transVal) && !isBuying.get(j)) {
+//                    System.out.println("Determined player " + (j + 1) + " is a seller");
+                    sellersInTrans.set(j, new Boolean(true));
+                } else {
+                    sellersInTrans.set(j, new Boolean(false));
+                }
+            }
         }
     }
 
@@ -378,10 +433,7 @@ public class AuctionView extends View<AuctionPresenter> {
         double topPos = BOTTOMLIMIT;
         for (int j = 0; j < playerRepository.size(); j++) {
             double playerPos = playerImageList.get(j).getTranslateY();
-//            System.out.println("playerPos: " + playerPos);
-//            System.out.println("topPos: " + topPos);
-//            System.out.println(buySell.get(j));
-            if (buySell.get(j).getText().equals("BUYING") && playerPos < topPos) {
+            if (isBuying.get(j) && playerPos < topPos) {
                 topPos = playerPos;
             }
         }
@@ -392,7 +444,7 @@ public class AuctionView extends View<AuctionPresenter> {
         double bottomPos = TOPLIMIT + 50;
         for (int j = 0; j < playerRepository.size(); j++) {
             double playerPos = playerImageList.get(j).getTranslateY() + 50;
-            if (buySell.get(j).getText().equals("SELLING") && playerPos > bottomPos) {
+            if (!isBuying.get(j) && playerPos > bottomPos) {
                 bottomPos = playerPos;
             }
         }
@@ -401,48 +453,67 @@ public class AuctionView extends View<AuctionPresenter> {
 
     private void moveBidderUp(int j) {
         double moveTo = playerImageList.get(j).getTranslateY() - 10;
-        if (playerImageList.size() > j && (moveTo > topBidLine.getTranslateY()
-                || buySell.get(j).getText().equals("SELLING"))) {
+        if (playerImageList.size() > j
+                && moveTo > TOPLIMIT - 15
+                && (moveTo > topBidLine.getTranslateY()
+                || !isBuying.get(j))) {
             playerImageList.get(j).setTranslateY(moveTo);
         }
+        double val = playerImageList.get(j).getTranslateY();
+        val = isBuying.get(j)? val - 5 : val + 50;
+        val = 400 - val; // Make sure the 400 - # matches up with transVal and moveBidderDown
+        buySell.get(j).setText("$" + val);
         setLines();
     }
 
     private void moveBidderDown(int j) {
         double moveTo = playerImageList.get(j).getTranslateY() + 10;
-        if (playerImageList.size() > j && (moveTo < bottomBidLine.getTranslateY() - 50
-                || buySell.get(j).getText().equals("BUYING"))) {
+        if (playerImageList.size() > j
+                && moveTo < BOTTOMLIMIT + 15
+                && (moveTo < bottomBidLine.getTranslateY() - 50
+                || isBuying.get(j))) {
             playerImageList.get(j).setTranslateY(moveTo);
         }
+        double val = playerImageList.get(j).getTranslateY();
+        val = isBuying.get(j)? val - 5 : val + 50;
+        val = 400 - val; // Make sure the 400 - # matches up with transVal and moveBidderUp
+        buySell.get(j).setText("$" + val);
         setLines();
     }
 
+    private boolean transactionOccurring() {
+//        System.out.println(buyersInTrans + "\n");
+//        System.out.println(sellersInTrans + "\n");
+        return pane2.getChildren().contains(greenLine)
+                && buyersInTrans.contains(true)
+                && sellersInTrans.contains(true);
+    }
 
-//    public void resetPane() {
-//        pane2.getChildren().clear();
-//        Text auctionText = new Text(250, 80, resource + " Auction");
-//        auctionText.setFont(new Font(40));
-//        Text money = new Text(80, 450, "MONEY:");
-//        for (int j = 0; j < playerRepository.size(); j++) {
-//            // True means player is buying
-//            Text buyText = new Text();
-//            if(buyOrSell) {
-//                buyText.setText("BUY");
-//                buyText.setTranslateX(150 + 150 * j);
-//                buyText.setTranslateY(450);
-//            } else {
-//                buyText.setText("SELL");
-//                buyText.setTranslateY(TOPLIMIT - 15);
-//            }
-//            Text moneyText = new Text("$" + playerRepository.get(j).getMoney());
-//            moneyText.setTranslateX(150 + 150 * j);
-//            moneyText.setTranslateY(470);
-//            Text quantText = new Text(playerRepository.get(j).getSmithore() + " " + resource);
-//            quantText.setTranslateX(150 + 150 * j);
-//            quantText.setTranslateY(490);
-//            pane2.getChildren().addAll(playerImageList.get(j), quantText, buyText, moneyText);
-//            resetCharacters();
-//        }
-//        pane2.getChildren().addAll(money, auctionText);
-//    }
+    private void makeTransaction() {
+        ArrayList<Integer> buyerInds = new ArrayList<Integer>();
+        ArrayList<Integer> sellerInds = new ArrayList<Integer>();
+        for (int j = 0; j < playerRepository.size(); j++) {
+            if(isBuying.get(j)) {
+                buyerInds.add(j);
+            }
+            if(!isBuying.get(j)) {
+                sellerInds.add(j);
+            }
+        }
+        //select random array val
+        int buyer = buyerInds.get((int) Math.floor(Math.random() * buyerInds.size())); // returns random buyer
+        int seller = sellerInds.get((int) Math.floor(Math.random() * sellerInds.size())); // returns random seller
+        playerRepository.get(seller).offsetMoney((int) transVal);
+        playerRepository.get(buyer).offsetMoney(- (int) transVal);
+        if(resource.equals("Smithore")) {
+            playerRepository.get(buyer).offsetSmithore(1);
+            playerRepository.get(seller).offsetSmithore(-1);
+        } else if(resource.equals("Food")) {
+            playerRepository.get(buyer).offsetFood(1);
+            playerRepository.get(seller).offsetFood(-1);
+        } else if(resource.equals("Energy")) {
+            playerRepository.get(buyer).offsetEnergy(1);
+            playerRepository.get(seller).offsetEnergy(-1);
+        }
+    }
 }

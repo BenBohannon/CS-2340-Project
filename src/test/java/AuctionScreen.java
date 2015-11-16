@@ -125,6 +125,9 @@ public class AuctionScreen extends Application {
         p1.setId(0);
         p1.setColor(Color.ALICEBLUE);
         p1.setRace(PlayerRace.Bonzoid);
+        p1.offsetSmithore(3);
+        p1.offsetFood(2);
+        p1.offsetEnergy(1);
         playerRepository.save(p1);
 
         Player p2 = new Player();
