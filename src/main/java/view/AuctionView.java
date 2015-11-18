@@ -53,6 +53,8 @@ public class AuctionView extends View<AuctionPresenter> {
     Text screenText = new Text(250, 120, "");
     private ArrayList<Boolean> isBuying = new ArrayList<Boolean>();
     private ArrayList<Text> buySell = new ArrayList<Text>();
+    private ArrayList<Text> resourceTexts = new ArrayList<Text>();
+    private ArrayList<Text> moneyTexts = new ArrayList<Text>();
     private ArrayList<Boolean> buyersInTrans = new ArrayList<Boolean>();
     private ArrayList<Boolean> sellersInTrans = new ArrayList<Boolean>();
     private volatile double clockTime;
@@ -179,21 +181,6 @@ public class AuctionView extends View<AuctionPresenter> {
                 }
             }
         });
-
-//        pane.getChildren().add(new Rectangle(100, 100));
-
-        // Stream or for loop players
-        // Key listener for
-
-
-//        timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                presenter.switchPresenter("map_grid_tile_select.fxml");
-//            }
-//        }, 4000L);
-//        topBidLine.setTranslateY(200);
     }
 
     public void handleContinueButtonAction() {
@@ -233,7 +220,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     resetPane();
                     pane2.getChildren().add(screenText);
                     screenText.setText("Get ready...");
-                    System.out.println(1 + i * 5 + "\n");
+//                    System.out.println(1 + i * 5 + "\n");
                 });
             }
         }, TOTALDELAY * i + 2005L);
@@ -248,7 +235,7 @@ public class AuctionView extends View<AuctionPresenter> {
 //                    resetPane();
                     canFlip = true;
                     screenText.setText("Buying or selling?");
-                    System.out.println(2 + i * 5 + "\n");
+//                    System.out.println(2 + i * 5 + "\n");
 //                    pane2.getChildren().add(new Text("Buying or selling?"));
                     // Handle all movement events and visual timer
                 });
@@ -268,7 +255,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     screenText.setText("Start bidding");
                     clockTime = BIDDURATION;
                     pane2.getChildren().addAll(topBidLine, bottomBidLine, clock);
-                    System.out.println(3 + i * 5 + "\n");
+//                    System.out.println(3 + i * 5 + "\n");
                 });
             }
         }, TOTALDELAY * i + BUYORSELLDURATION + SHOWRESOURCEDURATION + 2000L);
@@ -288,7 +275,7 @@ public class AuctionView extends View<AuctionPresenter> {
 //                        System.out.println("transaction should occur");
                         if (greenLineTimer % 20 == 0) {
                             greenLine.setFill(Color.RED);
-                            System.out.println("transaction occurred at t = " + greenLineTimer);
+//                            System.out.println("transaction occurred at t = " + greenLineTimer);
                             makeTransaction();
                         }
                     }
@@ -314,7 +301,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     if (pane2.getChildren().contains(greenLine)) {
                         pane2.getChildren().removeAll(greenLine);
                     }
-                    System.out.println(5 + i * 5 + "\n");
+//                    System.out.println(5 + i * 5 + "\n");
                     // Reset everything and cancel timer3
 //                    timer4.cancel();
                     if (i >= 2) {
@@ -356,6 +343,7 @@ public class AuctionView extends View<AuctionPresenter> {
         auctionText.setFill(Color.BLUE);
         Text money = new Text(80, 450, "MONEY:");
         buySell.clear();
+        updateResourcesAndMoney();
         for (int j = 0; j < playerRepository.size(); j++) {
             Text buyText = new Text("BUYING");
             buyText.setFill(Color.GREEN);
@@ -365,23 +353,8 @@ public class AuctionView extends View<AuctionPresenter> {
             sellersInTrans.add(new Boolean(false));
             buyText.setTranslateX(150 + 150 * j);
             buyText.setTranslateY(450);
-            Text moneyText = new Text("$" + playerRepository.get(j).getMoney());
-            moneyText.setTranslateX(150 + 150 * j);
-            moneyText.setTranslateY(470);
-            Text quantText;
-            if (resource.equals("Smithore")) {
-                quantText = new Text(playerRepository.get(j).getSmithore() + " " + resource);
-            } else if(resource.equals("Food")) {
-                quantText = new Text(playerRepository.get(j).getFood() + " " + resource);
-            } else if(resource.equals("Energy")){
-                quantText = new Text(playerRepository.get(j).getEnergy() + " " + resource);
-            } else {
-                quantText = new Text("dawg wtf check line 355 of AuctionView");
-            }
-            quantText.setTranslateX(150 + 150 * j);
-            quantText.setTranslateY(490);
-            pane2.getChildren().addAll(playerImageList.get(j), quantText, buyText, moneyText);
             resetCharacters();
+            pane2.getChildren().addAll(playerImageList.get(j), buyText);
             // Reset position of bidLines
         }
         pane2.getChildren().addAll(money, auctionText);
@@ -389,12 +362,16 @@ public class AuctionView extends View<AuctionPresenter> {
 
     public void setLines() {
         // Occurs every timer a player is moved during the bidding round
-        bottomBidLine.setTranslateY(highestBuyer());
-        topBidLine.setTranslateY(lowestSeller());
+        if (highestBuyer() > topBidLine.getTranslateY() && highestBuyer() > TOPLIMIT) {
+            bottomBidLine.setTranslateY(highestBuyer());
+        }
+        if (lowestSeller() < bottomBidLine.getTranslateY() && lowestSeller() < BOTTOMLIMIT) {
+            topBidLine.setTranslateY(lowestSeller());
+        }
         if(bottomBidLine.getTranslateY() - topBidLine.getTranslateY() < 10) {
             greenLine.setTranslateY(topBidLine.getTranslateY());
             transVal = 400 - greenLine.getTranslateY(); // Make sure the 400 - # matches up with the player bid values
-            System.out.println(transVal);
+//            System.out.println(transVal);
             determineBuyersAndSellers();
             if (!pane2.getChildren().contains(greenLine)) {
                 pane2.getChildren().addAll(greenLine);
@@ -416,9 +393,6 @@ public class AuctionView extends View<AuctionPresenter> {
                 } else {
                     buyersInTrans.set(j, new Boolean(false));
                 }
-                System.out.println("Gets to determining sellers");
-                System.out.println("text is right val: " + buySell.get(j).getText().equals("$" + transVal));
-                System.out.println("isBuying: " + !isBuying.get(j));
                 if (buySell.get(j).getText().equals("$" + transVal) && !isBuying.get(j)) {
 //                    System.out.println("Determined player " + (j + 1) + " is a seller");
                     sellersInTrans.set(j, new Boolean(true));
@@ -493,10 +467,13 @@ public class AuctionView extends View<AuctionPresenter> {
         ArrayList<Integer> buyerInds = new ArrayList<Integer>();
         ArrayList<Integer> sellerInds = new ArrayList<Integer>();
         for (int j = 0; j < playerRepository.size(); j++) {
-            if(isBuying.get(j)) {
+//            System.out.println("Gets to determining sellers");
+            System.out.println("Player " + j + " has the right bid: " + buySell.get(j).getText().equals("$" + transVal));
+            System.out.println("Player " + j + " isBuying: " + isBuying.get(j));
+            if(isBuying.get(j) && buySell.get(j).getText().equals("$" + transVal)) {
                 buyerInds.add(j);
             }
-            if(!isBuying.get(j)) {
+            if(!isBuying.get(j) && buySell.get(j).getText().equals("$" + transVal)) {
                 sellerInds.add(j);
             }
         }
@@ -514,6 +491,44 @@ public class AuctionView extends View<AuctionPresenter> {
         } else if(resource.equals("Energy")) {
             playerRepository.get(buyer).offsetEnergy(1);
             playerRepository.get(seller).offsetEnergy(-1);
+        }
+//        System.out.println("Transaction Occured!!!");
+        updateResourcesAndMoney();
+    }
+
+    public void updateResourcesAndMoney() {
+        // First remove the money and resource Texts from the pane before you clear them from their arrayLists
+        if (!pane2.getChildren().isEmpty()) {
+            for (int j = 0; j < playerRepository.size(); j++) {
+                if (pane2.getChildren().contains(moneyTexts.get(j))) {
+                    pane2.getChildren().remove(moneyTexts.get(j));
+                }
+                if (pane2.getChildren().contains(resourceTexts.get(j))) {
+                    pane2.getChildren().remove(resourceTexts.get(j));
+                }
+            }
+        }
+        resourceTexts.clear();
+        moneyTexts.clear();
+        for (int j = 0; j < playerRepository.size(); j++) {
+            Text moneyText = new Text("$" + playerRepository.get(j).getMoney());
+            moneyText.setTranslateX(150 + 150 * j);
+            moneyText.setTranslateY(470);
+            Text quantText;
+            if (resource.equals("Smithore")) {
+                quantText = new Text(playerRepository.get(j).getSmithore() + " " + resource);
+            } else if(resource.equals("Food")) {
+                quantText = new Text(playerRepository.get(j).getFood() + " " + resource);
+            } else if(resource.equals("Energy")){
+                quantText = new Text(playerRepository.get(j).getEnergy() + " " + resource);
+            } else {
+                quantText = new Text("dawg wtf check line 355 of AuctionView");
+            }
+            quantText.setTranslateX(150 + 150 * j);
+            quantText.setTranslateY(490);
+            resourceTexts.add(quantText);
+            moneyTexts.add(moneyText);
+            pane2.getChildren().addAll(moneyText, quantText);
         }
     }
 }
