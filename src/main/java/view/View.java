@@ -36,11 +36,20 @@ public abstract class View<T extends Presenter> {
         presenter = pPresenter;
     }
 
+    /**
+     * prints text to screen as an overlay
+     * @param string what you want to print
+     * @param xloc x coordinate
+     * @param yloc y coordinate
+     * @param color color of text, null for default
+     * @param startTime in ms
+     * @param endTime in ms
+     * @param pane pane it is using
+     */
     public void printTextToScreen(String string, double xloc, double yloc, Color color, long startTime, long endTime, Pane pane) {
         //startTime tells the timer when to start after being called. Measured in milliseconds
         Text text = new Text(string);
-        Font font = new Font(12);
-        text.setFont(font);
+        text.setFont(Font.getDefault());
         if (color != null) { // pass in null to Paint parameter for text to be window default
             text.setFill(color);
         }
