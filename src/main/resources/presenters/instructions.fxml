@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.Pane?>
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="490" minWidth="890" prefHeight="490.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.InstructionsView">
 
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="490" minWidth="890" prefHeight="490.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.InstructionsView">
+   <children>
+      <Button fx:id="start" defaultButton="true" layoutX="467.0" layoutY="393.0" mnemonicParsing="false" text="Continue to Game" />
+      <TextArea layoutX="293.0" layoutY="110.0" prefHeight="200.0" prefWidth="303.0" text="Controls:&#10;&#10;Player 1 - A to select land&#10;                 Q/Z to control auction&#10;Player 2 - S to select land&#10;                 W/X to control auction&#10;Player 1 - D to select land&#10;                 E/C to control auction&#10;Player 1 - F to select land&#10;                 R/V to control auction&#10;&#10;" />
+      <Button fx:id="cancel" cancelButton="true" layoutX="293.0" layoutY="393.0" mnemonicParsing="false" text="Back to Start" />
+   </children>
 </Pane>

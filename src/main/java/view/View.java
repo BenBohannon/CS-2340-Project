@@ -6,10 +6,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import presenters.Presenter;
 
-import java.awt.Color;
 import javafx.scene.text.Font;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -41,6 +41,9 @@ public abstract class View<T extends Presenter> {
         Text text = new Text(string);
         Font font = new Font(12);
         text.setFont(font);
+        if (color != null) { // pass in null to Paint parameter for text to be window default
+            text.setFill(color);
+        }
         text.setTranslateX(xloc);
         text.setTranslateY(yloc);
         Timer timer1 = new Timer();
@@ -64,7 +67,6 @@ public abstract class View<T extends Presenter> {
                                     if(!pane.getChildren().isEmpty() && pane.getChildren().contains(text)) {
                                         pane.getChildren().remove(text);
                                     }
-                                    //OR replace pane with pane2
                                 });
                             }
                         },
