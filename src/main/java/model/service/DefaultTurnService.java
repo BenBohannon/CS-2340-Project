@@ -187,7 +187,7 @@ public class DefaultTurnService {
             double elapsed = now - turnStartTime;
             return (turnDuration - elapsed) / turnDuration;
         } else {
-            throw new IllegalStateException("No turn in progress.");
+            return 0.0;
         }
     }
 

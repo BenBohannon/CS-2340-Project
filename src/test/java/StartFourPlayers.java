@@ -159,7 +159,7 @@ public class StartFourPlayers extends Application {
         p2.setColor(Color.BLANCHEDALMOND);
         playerRepository.save(p2);
 
-        final Map map = new Map(lds);
+        final Map map = new Map(lds, 5, 9);
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
                 new StoreService(sds, playerRepository), new GameInfoDatasource(),
@@ -176,7 +176,7 @@ public class StartFourPlayers extends Application {
                 binder.bind(Map.class).toInstance(map);
                 binder.bind(StoreDatasource.class).toInstance(sds);
                 binder.bind(DefaultTurnService.class).toInstance(turnService);
-        }, stage);
+        }, stage, 890, 490);
 
         context.showScreen("/presenters/map_grid_tile_select.fxml");
     }

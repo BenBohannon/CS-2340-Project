@@ -59,7 +59,7 @@ public class TileSelectionPresenter extends Presenter {
     private int selectionRound = 0;
 
 
-    @Inject @Named("MaxPlayer")
+    @Inject @Named("MaxPlayers")
     private int maxPlayersAllowed;
     @Inject @Named("MapRows")
     private int rows;

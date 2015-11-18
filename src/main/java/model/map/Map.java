@@ -171,8 +171,8 @@ public class Map {
     }
 
     public void refreshFromDatasource() {
-        for (int i = 0; i < getCols(); i++) {
-            for (int j = 0; j < getRows(); j++) {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
 
                 for (Locatable pastEle : locationGrid[i][j].getOccupants()) {
                     locationGrid[i][j].removeOccupant(pastEle);

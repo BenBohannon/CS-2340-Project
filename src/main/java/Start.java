@@ -129,7 +129,7 @@ public class Start extends Application {
                 .to(-200);
         binder.bindConstant()
                 .annotatedWith(Names.named("TurnStartDelay"))
-                .to(5010L);
+                .to(5010);
         binder.bindConstant()
                 .annotatedWith(Names.named("PlayerImageDimensions"))
                 .to(25);
