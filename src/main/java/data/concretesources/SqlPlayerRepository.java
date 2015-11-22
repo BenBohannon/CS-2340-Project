@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Created by brian on 10/26/15.
@@ -19,8 +20,8 @@ public class SqlPlayerRepository implements Repository<Player> {
     private Set<Player> records;
 
     @Inject
-    public SqlPlayerRepository(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SqlPlayerRepository(SessionFactory pSessionFactory) {
+        this.sessionFactory = pSessionFactory;
         populateRecords();
     }
 
@@ -64,14 +65,19 @@ public class SqlPlayerRepository implements Repository<Player> {
     public Player get(Object id) {
         populateRecords();
 
-        if (id == null || !(id instanceof Integer)) {
+        if (!(id instanceof Integer)) {
             throw new IllegalArgumentException("id null or not int");
         }
 
         int targetId = (Integer) id;
 
         Optional<Player> p = records.stream()
-                .filter(player -> player.getId() == targetId)
+                .filter(new Predicate<Player>() {
+                    @Override
+                    public boolean test(Player player) {
+                        return player.getId() == targetId;
+                    }
+                })
                 .findFirst();
         return p.isPresent() ? p.get() : null;
     }
@@ -80,7 +86,12 @@ public class SqlPlayerRepository implements Repository<Player> {
     public Player save(Player entity) {
         populateRecords();
         if (records.stream()
-                .anyMatch(player -> player.getId() == entity.getId())) {
+                .anyMatch(new Predicate<Player>() {
+                    @Override
+                    public boolean test(Player player) {
+                        return player.getId() == entity.getId();
+                    }
+                })) {
             records.remove(entity);
         }
 

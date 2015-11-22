@@ -25,7 +25,11 @@ public class Mule extends PersistableLocatable {
         this.type = pType;
     }
 
-    public final MuleType getType() {
+    /**
+     * gets type of mule
+     * @return type of mule
+     */
+    public MuleType getType() {
         return type;
     }
 

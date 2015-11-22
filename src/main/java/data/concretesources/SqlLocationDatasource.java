@@ -9,6 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -16,37 +18,37 @@ import java.util.stream.Collectors;
  */
 public class SqlLocationDatasource implements LocationDatasource {
 
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-    Set<PersistableLocatable> records;
+    private Set<PersistableLocatable> records;
 
     @Inject
-    public SqlLocationDatasource(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SqlLocationDatasource(SessionFactory pSessionFactory) {
+        this.setSessionFactory(pSessionFactory);
         populateRecords();
     }
 
     private void populateRecords() {
-        if (records == null) {
-            records = new HashSet<>();
+        if (getRecords() == null) {
+            setRecords(new HashSet<>());
         }
 
-        Session session = sessionFactory.openSession();
+        Session session = getSessionFactory().openSession();
         Query query = session.createQuery("FROM PersistableLocatable");
 
-        records.clear();
+        getRecords().clear();
         if (query.list() != null) {
-            records.addAll(query.list());
+            getRecords().addAll(query.list());
         }
         session.close();
     }
 
     private void persist() {
-        Session session = sessionFactory.openSession();
+        Session session = getSessionFactory().openSession();
         session.beginTransaction();
 
-        if (records != null) {
-            for (PersistableLocatable entity : records) {
+        if (getRecords() != null) {
+            for (PersistableLocatable entity : getRecords()) {
                 session.merge(entity);
             }
         }
@@ -60,25 +62,30 @@ public class SqlLocationDatasource implements LocationDatasource {
     public Collection<Locatable> get(int row, int col) {
         populateRecords();
 
-        return records.stream()
-                .filter(r -> r.getLocation().getCol() == col && r.getLocation().getRow() == row)
+        return getRecords().stream()
+                .filter(new Predicate<PersistableLocatable>() {
+                    @Override
+                    public boolean test(PersistableLocatable r) {
+                        return r.getLocation().getCol() == col && r.getLocation().getRow() == row;
+                    }
+                })
                 .collect(Collectors.toSet());
     }
 
     @Override
     public void save(int row, int col, Locatable locatable) {
         PersistableLocatable persistableLocatable = null;
-        if (locatable != null && locatable instanceof PersistableLocatable) {
+        if (locatable instanceof PersistableLocatable) {
             persistableLocatable = (PersistableLocatable) locatable;
         } else {
             throw new IllegalArgumentException("locatable is null or is not of type PersistableLocatable");
         }
 
-        if (records.contains(persistableLocatable)) {
-            records.remove(persistableLocatable);
+        if (getRecords().contains(persistableLocatable)) {
+            getRecords().remove(persistableLocatable);
         }
 
-        records.add(persistableLocatable);
+        getRecords().add(persistableLocatable);
 
         persist();
     }
@@ -86,15 +93,20 @@ public class SqlLocationDatasource implements LocationDatasource {
     @Override
     public void saveAll(int row, int col, Collection<Locatable> locatables) {
         Set<PersistableLocatable> additions = locatables.stream()
-                .map(l -> (PersistableLocatable) l)
+                .map(new Function<Locatable, PersistableLocatable>() {
+                    @Override
+                    public PersistableLocatable apply(Locatable l) {
+                        return (PersistableLocatable) l;
+                    }
+                })
                 .collect(Collectors.toSet());
 
         for (PersistableLocatable ele : additions) {
-            if (records.contains(ele)) {
-                records.remove(ele);
+            if (getRecords().contains(ele)) {
+                getRecords().remove(ele);
             }
 
-            records.add(ele);
+            getRecords().add(ele);
         }
 
         persist();
@@ -102,14 +114,14 @@ public class SqlLocationDatasource implements LocationDatasource {
 
     @Override
     public void remove(Locatable locatable) {
-        if (locatable == null || !(locatable instanceof PersistableLocatable)) {
+        if (!(locatable instanceof PersistableLocatable)) {
             throw new IllegalArgumentException("argument must be non-null instance of PersistableLocatable");
         }
 
         populateRecords();
 
-        if (records.contains(locatable)) {
-            Session session = sessionFactory.openSession();
+        if (getRecords().contains(locatable)) {
+            Session session = getSessionFactory().openSession();
             session.beginTransaction();
 
             session.delete(locatable);
@@ -118,5 +130,21 @@ public class SqlLocationDatasource implements LocationDatasource {
             session.flush();
             session.close();
         }
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public void setSessionFactory(SessionFactory pSessionFactory) {
+        this.sessionFactory = pSessionFactory;
+    }
+
+    public final Set<PersistableLocatable> getRecords() {
+        return records;
+    }
+
+    public void setRecords(Set<PersistableLocatable> pRecords) {
+        this.records = pRecords;
     }
 }

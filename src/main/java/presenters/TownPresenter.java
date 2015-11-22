@@ -1,6 +1,7 @@
 package presenters;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import model.service.StoreService;
 import model.service.TurnEndListener;
 import javafx.application.Platform;
@@ -17,10 +18,22 @@ import model.entity.MuleType;
 public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Inject
-    DefaultTurnService turnService;
+    private DefaultTurnService turnService;
 
     @Inject
-    StoreService storeService;
+    private StoreService storeService;
+
+    @Inject @Named("FirstPubRoundThreshold")
+    private int firstPubRoundThreshold;
+    @Inject @Named("SecondPubRoundThreshold")
+    private int secondPubRoundThreshold;
+    @Inject @Named("FirstPubWinningLimit")
+    private int firstPubWinningLimit;
+    @Inject @Named("SecondPubWinningLimit")
+    private int secondPubWinningLimit;
+    @Inject @Named("ThirdPubWinningLimit")
+    private int thirdPubWinningLimit;
+
 
     @Override
     public void initialize() {
@@ -39,8 +52,8 @@ public class TownPresenter extends Presenter implements TurnEndListener {
         } else {
             mule = new Mule(MuleType.Crysite);
         }
-        storeService.decrementMuleCount();
-        turnService.getCurrentPlayer().addMule(mule);
+        getStoreService().decrementMuleCount();
+        getTurnService().getCurrentPlayer().addMule(mule);
         MapPresenter presenter = returnToMapUninitialized();
         presenter.setIsPlacingMule(true, mule);
         presenter.initialize();
@@ -59,20 +72,20 @@ public class TownPresenter extends Presenter implements TurnEndListener {
      * UPDATE: now returns to model.map
      */
     private MapPresenter returnToMapUninitialized() {
-        if (turnService.isTurnInProgress()) {
-            turnService.removeTurnEndListener(this);
+        if (getTurnService().isTurnInProgress()) {
+            getTurnService().removeTurnEndListener(this);
         }
         return (MapPresenter) getContext().showScreenUninitialized("map_grid.fxml");
     }
 
     public void handlePubClick(ActionEvent event) {
         int amountToAdd;
-        if (turnService.getRoundNumber() < 3) {
-            amountToAdd = 50;
-        } else if (turnService.getRoundNumber() > 6) {
-            amountToAdd = 100;
+        if (getTurnService().getRoundNumber() < firstPubRoundThreshold) {
+            amountToAdd = firstPubWinningLimit;
+        } else if (getTurnService().getRoundNumber() > secondPubRoundThreshold) {
+            amountToAdd = secondPubWinningLimit;
         } else {
-            amountToAdd = 150;
+            amountToAdd = thirdPubWinningLimit;
         }
 
         if (turnService.isTurnInProgress()) {
@@ -85,7 +98,6 @@ public class TownPresenter extends Presenter implements TurnEndListener {
         }
 
         if (turnService.isAllTurnsOver()) {
-            System.out.println("show auction screen");
             getContext().showScreen("auction.fxml");
         } else {
             getContext().showScreen("map_grid.fxml");
@@ -96,6 +108,35 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Override
     public void onTurnEnd(Player player) {
-        Platform.runLater(() -> getContext().showScreen("map_grid.fxml"));
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                TownPresenter.this.getContext().showScreen("map_grid.fxml");
+            }
+        });
+    }
+
+    public DefaultTurnService getTurnService() {
+        return turnService;
+    }
+
+    public void setTurnService(DefaultTurnService pTurnService) {
+        this.turnService = pTurnService;
+    }
+
+    public StoreService getStoreService() {
+        return storeService;
+    }
+
+    public void setStoreService(StoreService pStoreService) {
+        this.storeService = pStoreService;
+    }
+
+    public void setSecondPubRoundThreshold(int pSecondPubRoundThreshold) {
+        this.secondPubRoundThreshold = pSecondPubRoundThreshold;
+    }
+
+    public void setFirstPubRoundThreshold(int pFirstPubRoundThreshold) {
+        this.firstPubRoundThreshold = pFirstPubRoundThreshold;
     }
 }

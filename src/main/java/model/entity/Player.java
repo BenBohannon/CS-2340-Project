@@ -42,57 +42,119 @@ public class Player {
     @Cascade(CascadeType.ALL)
     private Collection<Mule> mules;
 
+    /**
+     * initiales mules of players
+     */
     public Player() {
         setMules(new LinkedList<>());
         ownedProperties = new ArrayList<>();
     }
 
-    public final void addMule(Mule mule) {
+    /**
+     * adds a mule to a player
+     * @param mule mule to be added
+     */
+    public void addMule(Mule mule) {
         if (mule == null) {
             throw new IllegalArgumentException("mule cannot be null");
         }
         getMules().add(mule);
     }
 
-    public final void setMoney(int pMoney) {
-        money = pMoney;
+    /**
+     * gets mules of player
+     * @return mules
+     */
+    public Collection<Mule> getMules() {
+        return mules;
     }
 
-    public final int getMoney() {
+    /**
+     * gets money of player
+     * @return money
+     */
+    public int getMoney() {
         return money;
     }
 
-    public final void offsetMoney(int pMoney) {
+    /**
+     * Sets the player's money. This is necessary in addition to
+     * the convenience method Player#offsetMoney() because it
+     * @param pMoney
+     */
+    public void setMoney(int pMoney) {
+        money = pMoney;
+    }
+
+    /**
+     * offsets money by given amount.
+     * @param pMoney amount to offset money by
+     */
+    public void offsetMoney(int pMoney) {
         this.money += pMoney;
     }
 
-    public final Color getColor() {
+    /**
+     * gets color of player
+     * @return player color
+     */
+    public Color getColor() {
         return color;
     }
 
-    public final void setColor(Color pColor) {
+    /**
+     * sets color of player
+     * @param pColor player color
+     */
+    public void setColor(Color pColor) {
         this.color = pColor;
     }
 
-    public final PlayerRace getRace() { return race; }
+    /**
+     * gets race of player
+     * @return race of player
+     */
+    public PlayerRace getRace() {
+        return race;
+    }
 
-    public final void setRace(PlayerRace pRace) {
+    /**
+     * sets race of player
+     * @param pRace race of player
+     */
+    public void setRace(PlayerRace pRace) {
         this.race = pRace;
     }
 
-    public final void setId(int pId) {
+    /**
+     * sets id of player
+     * @param pId player id
+     */
+    public void setId(int pId) {
         this.id = pId;
     }
 
-    public final void offsetSmithore(int amount) {
+    /**
+     * offsets smithore by given amount.
+     * @param amount amount to offset smithore by
+     */
+    public void offsetSmithore(int amount) {
         smithore += amount;
     }
 
-    public final int getRank() {
+    /**
+     * gets rank of player
+     * @return rank of player
+     */
+    public int getRank() {
         return rank;
     }
 
-    public final void setRank(int pRank) {
+    /**
+     * sets rank of player
+     * @param pRank rank of player
+     */
+    public void setRank(int pRank) {
         this.rank = pRank;
     }
 
@@ -105,7 +167,11 @@ public class Player {
         return smithore;
     }
 
-    public final void offsetCrystite(int amount) {
+    /**
+     * offsets Crystite by given amount.
+     * @param amount amount to offset Crystite by
+     */
+    public void offsetCrystite(int amount) {
         crystite += amount;
     }
 
@@ -117,7 +183,11 @@ public class Player {
         return crystite;
     }
 
-    public final void offsetFood(int amount) {
+    /**
+     * offsets food by given amount.
+     * @param amount amount to offset food by
+     */
+    public void offsetFood(int amount) {
         food += amount;
     }
 
@@ -138,7 +208,11 @@ public class Player {
         return energy;
     }
 
-    public final void offsetEnergy(int amount) {
+    /**
+     * offsets energy by given amount.
+     * @param amount amount to offset energy by
+     */
+    public void offsetEnergy(int amount) {
         energy += amount;
     }
 
@@ -165,7 +239,8 @@ public class Player {
      */
     public final void addProperty(Tile property) {
         if (property == null) {
-            throw new java.lang.IllegalArgumentException("Property cannot be null.");
+            throw new java.lang.IllegalArgumentException(
+                    "Property cannot be null.");
         }
         ownedProperties.add(property);
         property.setOwner(this);
@@ -232,29 +307,46 @@ public class Player {
         return id;
     }
 
-    public final int getId() {
+    /**
+     * gets id of player
+     * @return player id num
+     */
+    public int getId() {
         return id;
     }
 
-    public final int getPTU(int pBTU) {
+    /**
+     *
+     * @param pBTU
+     * @return
+     */
+    public int getBTU(int pBTU) {
         //TODO different based on race
         return pBTU;
     }
 
-    public final String getName() {
+    /**
+     * gets name of player.
+     * @return name of player
+     */
+    public String getName() {
         return name;
     }
 
-    public final void setName(String pName) {
+    /**
+     * sets player name.
+     * @param pName name of player
+     */
+    public void setName(String pName) {
         this.name = pName;
     }
 
-    public final int getScore() {
+    /**
+     * gets player score.
+     * @return score
+     */
+    public int getScore() {
         return score;
-    }
-
-    public final Collection<Mule> getMules() {
-        return mules;
     }
 
     public final void setMules(Collection<Mule> pMules) {

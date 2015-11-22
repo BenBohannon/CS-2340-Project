@@ -1,6 +1,7 @@
 package model.map;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import data.abstractsources.LocationDatasource;
 
 import javax.persistence.Embeddable;
@@ -8,12 +9,16 @@ import javax.persistence.Transient;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
 
 /**
  * Created by brian on 9/12/15.
  * Manages the Location grid.
- * All changes of location for any object on the main model.map are managed and tracked by the Map
- * class. It uses a grid of {@link Map.Location} to store and present this information.
+ * All changes of location for any object on the
+ * main model.map are managed and tracked by the Map
+ * class. It uses a grid of {@link Map.Location} to
+ * store and present this information.
  * See {@link Map.Location} for more info.
  */
 public class Map {
@@ -22,15 +27,13 @@ public class Map {
 
     private LocationDatasource datasource;
 
-    private int rows = 5;
-    private int cols = 9;
-
     @Inject
-    public Map(LocationDatasource lds) {
+    public Map(LocationDatasource lds, @Named("MapRows") int rows, @Named("MapCols") int cols) {
         datasource = lds;
 
         if (rows < 1 || cols < 1) {
-            throw new IllegalArgumentException("model.map must have positive integer rows and columns");
+            throw new IllegalArgumentException(
+                    "model.map must have positive integer rows and columns");
         }
 
         locationGrid = new Location[cols][rows];
@@ -50,22 +53,25 @@ public class Map {
     }
 
     /**
-     * Retrieves all {@link Locatable}s in the location specified, of the type specified
+     * Retrieves all {@link Locatable}s in the
+     * location specified, of the type specified.
      * @param row row of location in question
      * @param col column of location in question
      * @param type filter results to only this type
      * @param <T> type used to filter must extend {@link Locatable}
      * @return an array with the type of the Objects requested
      */
-    public <T extends Locatable> T[] getOccupants(int row, int col, Class<T> type) {
+    public <T extends Locatable> T[] getOccupants(int row,
+                                                  int col, Class<T> type) {
         return locationGrid[row][col].getOccupants(type);
     }
 
     /**
-     * Returns all {@link Locatable}s in the {@link Location} specified
+     * Returns all {@link Locatable}s in the {@link Location} specified.
      * @param row row of location in question
      * @param col column of location in question
-     * @return an array of type {@link Locatable} containing all Objects stored at the specified location
+     * @return an array of type {@link Locatable}
+     *          containing all Objects stored at the specified location
      */
     public Locatable[] getOccupants(int row, int col) {
         return getOccupants(row, col, Locatable.class);
@@ -73,7 +79,8 @@ public class Map {
 
     /**
      * Adds a previously unplaced {@link Locatable} to the model.map.
-     * If the Object already has a {@link Location}, it should use the {@link Map#move(Locatable, int, int)}
+     * If the Object already has a {@link Location},
+     * it should use the {@link Map#move(Locatable, int, int)}
      * or {@link Location#moveHere(Locatable)} methods.
      * @param locatable Locatable to be added
      * @param row row to which it should be added
@@ -81,11 +88,15 @@ public class Map {
      */
     public void add(Locatable locatable, int row, int col) {
         if (locatable.getLocation() != null) {
-            throw new IllegalArgumentException("This Object already has a location assigned to it. In this case, the move() method should be used.");
+            throw new IllegalArgumentException(
+                    "This Object already has a location assigned to it."
+                            + "In this case, the move()"
+                            + "method should be used.");
         }
 
         if (!isInBounds(row, col)) {
-            throw new IllegalArgumentException("row or col value is out of bounds.");
+            throw new IllegalArgumentException(
+                    "row or col value is out of bounds.");
         }
 
 
@@ -94,7 +105,7 @@ public class Map {
 
         datasource.save(row, col, locatable);
         if (!newLocation.addOccupant(locatable)) {
-            throw new RuntimeException("internal issue");
+            throw new IllegalStateException("internal issue");
         }
     }
 
@@ -105,7 +116,7 @@ public class Map {
     public void remove(Locatable locatable) {
         datasource.remove(locatable);
         if (!locatable.getLocation().removeOccupant(locatable)) {
-            throw new RuntimeException("internal issue");
+            throw new IllegalStateException("internal issue");
         }
 
         locatable.setLocation(null);
@@ -114,7 +125,8 @@ public class Map {
     /**
      * Moves a {@link Locatable} from its location to a new one.
      * Convenience method for
-     * {@link Map#remove(Locatable)} and then {@link Map#add(Locatable, int, int)},
+     * {@link Map#remove(Locatable)} and
+     * then {@link Map#add(Locatable, int, int)},
      * plus some checking to make sure this operation is logical.
      * @param locatable locatable to be moved.
      * @param row row to which the object should be moved.
@@ -122,7 +134,8 @@ public class Map {
      */
     public void move(Locatable locatable, int row, int col) {
         if (locatable.getLocation() == null) {
-            throw new IllegalArgumentException("Locatable was not on the model.map; cannot move.");
+            throw new IllegalArgumentException(
+                    "Locatable was not on the model.map; cannot move.");
         }
 
         remove(locatable);
@@ -130,22 +143,36 @@ public class Map {
         add(locatable, row, col);
     }
 
+    /**
+     * get num of rows
+     * @return num of rows
+     */
     public int getRows() {
         return locationGrid.length;
     }
 
+    /**
+     * get num of columns
+     * @return num of columns
+     */
     public int getCols() {
         return locationGrid[0].length;
     }
 
+    /**
+     * check if given row and col is in bounds
+     * @param row specified row
+     * @param col specified column
+     * @return if in bounds
+     */
     private boolean isInBounds(int row, int col) {
         return row >= 0  && row < getRows()
                 && col >= 0 && col < getCols();
     }
 
     public void refreshFromDatasource() {
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++) {
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
 
                 for (Locatable pastEle : locationGrid[i][j].getOccupants()) {
                     locationGrid[i][j].removeOccupant(pastEle);
@@ -161,45 +188,60 @@ public class Map {
         }
     }
 
-//=================================================================================
+//=====================================================================
     /**
-     * The Location class encapsulates location information for a {@link Locatable}
-     * on the model.map, and is used by the {@link Map} as an api for accessing this info.
-     * Each {@link Locatable} stores a reference to it's Location when it is being
-     * presented to the user on the game model.map. The Location Object offers this
-     * {@link Locatable} the answer to the question "Where am I?".
-     * However, because each {@link Locatable} can only manage its position through
-     * the {@link Map} grid, client code can also easily answer the question "What is here?"
-     * In order to prevent the Location class from being used without
-     * the {@link Map}'s knowledge, only the {@link Map} has the ability to instantiate
-     * and manage Locations. However, because all of these management endpoints are available
-     * from a Location instance, the {@link Locatable} essentially retains the ability to
+     * The Location class encapsulates location information for a
+     * {@link Locatable} on the model.map, and is used by the
+     * {@link Map} as an api for accessing this info. Each
+     * {@link Locatable} stores a reference to it's Location when
+     * it is being presented to the user on the game model.map.
+     * The Location Object offers this {@link Locatable} the
+     * answer to the question "Where am I?". However, because
+     * each {@link Locatable} can only manage its position through
+     * the {@link Map} grid, client code can also easily answer
+     * the question "What is here?". In order to prevent the Location
+     * class from being used without the {@link Map}'s knowledge,
+     * only the {@link Map} has the ability to instantiate
+     * and manage Locations. However, because all of these
+     * management endpoints are available from a Location instance,
+     * the {@link Locatable} essentially retains the ability to
      * manage its own location.
      */
     @Embeddable
     public static class Location {
 
-        private int row, col;
+
+        private int row;
+        private int col;
         @Transient
         private Map map;
 
         @Transient
         private Collection<Locatable> occupants;
 
+        /**
+         * required default constructor for hibernate
+         */
         public Location() {
-            // required default constructor for hibernate //
         }
 
-        public Location(int row, int col, Map map) {
-            this.row = row;
-            this.col = col;
-            this.map = map;
+        /**
+         * instantiates a location class object
+         * @param pRow row of object
+         * @param pCol col of object
+         * @param pMap map on which object is present
+         */
+        public Location(int pRow, int pCol, Map pMap) {
+            this.row = pRow;
+            this.col = pCol;
+            this.map = pMap;
             occupants = new LinkedList<>();
         }
 
         /**
          * Adds a previously unplaced {@link Locatable} to this location.
-         * If the Object already has a {@link Location}, it should use the {@link Map#move(Locatable, int, int)}
+         * If the Object already has a {@link Location},
+         * it should use the {@link Map#move(Locatable, int, int)}
          * or {@link Location#moveHere(Locatable)} methods.
          * @param locatable Locatable to be added
          */
@@ -218,7 +260,8 @@ public class Map {
         /**
          * Moves a {@link Locatable} from its location to a this one.
          * Convenience method for
-         * {@link Location#remove(Locatable)} and then {@link Location#add(Locatable)},
+         * {@link Location#remove(Locatable)}
+         * and then {@link Location#add(Locatable)},
          * plus some checking to make sure this operation is logical.
          * @param locatable locatable to be moved.
          */
@@ -227,45 +270,76 @@ public class Map {
         }
 
         /**
-         * Retrieves all {@link Locatable}s in the location specified, of the type specified
+         * Retrieves all {@link Locatable}s in the
+         * location specified, of the type specified
          * @param type filter results to only this type
          * @param <T> type used to filter must extend {@link Locatable}
          * @return an array with the type of the Objects requested
          */
         public <T extends Locatable> T[] getOccupants(Class<T> type) {
             return occupants.stream()
-                    .filter(type::isInstance)
+                    .filter(new Predicate<Locatable>() {
+                        @Override
+                        public boolean test(Locatable locatable) {
+                            return type.isInstance(locatable);
+                        }
+                    })
                     // this is always going to work //
-                    .toArray(size -> (T[]) Array.newInstance(type, size));
+                    .toArray(new IntFunction<T[]>() {
+                        @Override
+                        public T[] apply(int size) {
+                            return (T[]) Array.newInstance(type, size);
+                        }
+                    });
         }
 
         /**
-         * Returns all {@link Locatable}s in the {@link Location} specified
-         * @return an array of type {@link Locatable} containing all Objects stored at the specified location
+         * Returns all {@link Locatable}s
+         * in the {@link Location} specified
+         * @return an array of type {@link Locatable} containing
+         *          all Objects stored at the specified location
          */
         public Locatable[] getOccupants() {
             return getOccupants(Locatable.class);
         }
 
+        /**
+         * get num of row
+         * @return row number
+         */
         public int getRow() {
             return row;
         }
 
+        /**
+         * get num of col
+         * @return column number
+         */
         public int getCol() {
             return col;
         }
 
+        /**
+         * remove what is a location
+         * @param occupant locatable value
+         * @return if removed
+         */
         private boolean removeOccupant(Locatable occupant) {
             return occupants.remove(occupant);
         }
 
+        /**
+         * add something at a location
+         * @param occupant locatable value
+         * @return if added
+         */
         private boolean addOccupant(Locatable occupant) {
             return occupants.add(occupant);
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof Location)) {
+            if (!(obj instanceof Location)) {
                 return false;
             }
 

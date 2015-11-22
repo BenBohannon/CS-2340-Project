@@ -37,16 +37,25 @@ public class GameConfigView extends View<GameConfigPresenter> {
     @FXML
     private ToggleGroup numPlayersToggleGroup;
 
+    /**
+     * Called when the finish button is clicked.
+     * @param event event of clicking the finish button.
+     */
     @FXML
-    public final void handleFinishButtonAction(ActionEvent event) {
+    protected void handleFinishButtonAction(final ActionEvent event) {
         if (validateForm()) {
-            getPresenter().finishConfigure(((RadioButton) difficultyToggleGroup.getSelectedToggle()).getText(),
+            getPresenter().finishConfigure(((RadioButton) difficultyToggleGroup
+                            .getSelectedToggle()).getText(),
                     ((RadioButton) mapToggleGroup.getSelectedToggle()).getText(),
-                    Integer.parseInt(((RadioButton) numPlayersToggleGroup.getSelectedToggle()).getText()));
+                    Integer.parseInt(((RadioButton) numPlayersToggleGroup
+                            .getSelectedToggle()).getText()));
         }
     }
 
-
+    /**
+     * Validates that the input data is acceptable.
+     * @return true, if the input is acceptable.
+     */
     private boolean validateForm() {
         boolean allValid = true;
 

@@ -105,7 +105,7 @@ public class StartTileChoice extends Application {
 
             binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
             binder.bind(DefaultTurnService.class).toInstance(turnService);
-        }, stage);
+        }, stage, 890, 490);
 
         context.showScreen("/presenters/map_grid_tile_select.fxml");
     }
