@@ -206,7 +206,6 @@ public class TileSelectionPresenter extends Presenter {
     private void update() {
         // jump to the next grid tile
         Platform.runLater(() -> {
-            System.out.println(String.format("col:%d row:%d id:%d", cols, rows, tileID));
             tileID++;
             if (tileID != 1 && tileID % cols == 0) {
                 border.setTranslateX(border.getTranslateX() - (cols * tileDimensions));

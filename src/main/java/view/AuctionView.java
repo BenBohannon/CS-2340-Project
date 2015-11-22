@@ -33,10 +33,12 @@ public class AuctionView extends View<AuctionPresenter> {
     private Timer timer2;
 
     // will be used in future versions //
+    /*
     private Timer timer3;
     private Timer timer4;
     private Timer timer5;
     private Timer timer6;
+    */
 
     private List<ImageView> playerImageList;
     private List<Text> resourceLists = new ArrayList<Text>();
@@ -60,6 +62,7 @@ public class AuctionView extends View<AuctionPresenter> {
 
     private static final int MARGIN = 16;
 
+    private static final int X_OFFSET = 150;
 
 
     /**
@@ -69,27 +72,36 @@ public class AuctionView extends View<AuctionPresenter> {
         pane.getChildren().add(pane2);
         List<Player> playerList = new LinkedList<>(playerRepository.getAll());
         playerImageList = new ArrayList<>();
+
         for (int i = 0; i < playerRepository.size(); i++) {
+
             ImageView playerImage = MapView.createImageView(playerList.get(i).getRace().getImagePath(),
                     PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
             playerImageList.add(playerImage);
+
             double deltaX = playerImage.getImage().getWidth() / 2 - MARGIN;
-            playerImage.setTranslateX(150 + 150 * i - deltaX);
+            playerImage.setTranslateX(X_OFFSET + X_OFFSET * i - deltaX);
             double deltaY = playerImage.getImage().getHeight() / 2 - MARGIN;
             playerImage.setTranslateY(390 - deltaY);
+
             Text playerName = new Text("Player " + (i + 1) + "\n\""
                     + playerList.get(i).getName() + "\"");
             names.add(playerName);
-            playerName.setTranslateX(150 + 150 * i);
+
+            playerName.setTranslateX(X_OFFSET + X_OFFSET * i);
             playerName.setTranslateY(370);
+
             Text resources = new Text(playerList.get(i).getCrystite() + " Crystite\n"
                     + playerList.get(i).getEnergy() + " ENERGY\n"
                     + playerList.get(i).getFood() + " Food");
+
             resourceLists.add(resources);
-            resources.setTranslateX(150 + 150 * i);
+            resources.setTranslateX(X_OFFSET + X_OFFSET * i);
             resources.setTranslateY(435);
+
             pane2.getChildren().addAll(playerImage, playerName, resources);
         }
+
         Text startBidding = new Text(textInitialX, textInitialY, "Get Ready to Bid!");
         startBidding.setFont(new Font(40));
         pane2.getChildren().add(startBidding);
@@ -227,7 +239,7 @@ public class AuctionView extends View<AuctionPresenter> {
 
             Text smithore = new Text(playerList.get(i)
                     .getSmithore() + " Smithore");
-            smithore.setTranslateX(150 + 150 * i);
+            smithore.setTranslateX(X_OFFSET + X_OFFSET * i);
             smithore.setTranslateY(435);
             Text auctionText = new Text(textInitialX, textInitialY, "Smithore Auction");
             auctionText.setFont(new Font(fontSize));
@@ -250,7 +262,7 @@ public class AuctionView extends View<AuctionPresenter> {
                     pane2.getChildren().clear();
                     for (int i = 0; i < playerRepository.size(); i++) {
                         Text food = new Text(playerRepository.get(i).getFood() + " Food");
-                        food.setTranslateX(150 + 150 * i);
+                        food.setTranslateX(X_OFFSET + X_OFFSET * i);
                         food.setTranslateY(435);
                         Text auctionText = new Text(textInitialX, textInitialY, "Food Auction");
                         auctionText.setFont(new Font(fontSize));
