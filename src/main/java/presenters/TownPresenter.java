@@ -77,6 +77,10 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
         if (turnService.isTurnInProgress()) {
             turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+
+            // must remove so we have the chance to open auction screen //
+            turnService.removeTurnEndListener(this);
+
             turnService.endTurn();
         }
 
