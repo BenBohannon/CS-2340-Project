@@ -43,12 +43,14 @@ public class TileSelectionPresenter extends Presenter {
 
     final private Group border = createBorder(0, 0, Color.WHITE);
     private Timer timer;
-    // private double mouseX;
-    // private double mouseY;
+    private volatile boolean hasSwappedScreens;
+
     private volatile int tileID;
     private boolean[] playerHasChosen = new boolean[4];
 
     private int selectionRound = 0;
+
+
 
 
     /**
@@ -204,17 +206,23 @@ public class TileSelectionPresenter extends Presenter {
             //If we've iterated through the whole map, quit.
             if (tileID % 45 == 0) {
                 border.setTranslateY(border.getTranslateY() - 500);
-                stopMovement();
-                getContext().showScreen("map_grid.fxml");
+                swapScreensSync("map_grid.fxml");
             }
             border.setTranslateX(border.getTranslateX() + 100);
 
             //If everyone has already selected, quit.
             if (doneSelecting()) {
-                stopMovement();
-                getContext().showScreen("map_grid.fxml");
+                swapScreensSync("map_grid.fxml");
             }
         });
+    }
+
+    private void swapScreensSync(String fxmlPath) {
+        if (!hasSwappedScreens) {
+            stopMovement();
+            getContext().showScreen("map_grid.fxml");
+            hasSwappedScreens = true;
+        }
     }
 
     /**

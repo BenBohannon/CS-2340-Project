@@ -24,8 +24,7 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Override
     public void initialize() {
-//        turnService.addTurnEndListener(this);
-        // We had 3 turn end listeners lol. Make sure we don't do this
+        turnService.addTurnEndListener(this);
     }
 
     public void handleMuleClick(ActionEvent event) {
@@ -78,9 +77,13 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
         if (turnService.isTurnInProgress()) {
             turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+
+            // must remove so we have the chance to open auction screen //
+            turnService.removeTurnEndListener(this);
+
             turnService.endTurn();
         }
-//        turnService.removeTurnEndListener(this);
+
         if (turnService.isAllTurnsOver()) {
             System.out.println("show auction screen");
             getContext().showScreen("auction.fxml");
