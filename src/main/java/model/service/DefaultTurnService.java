@@ -116,31 +116,16 @@ public class DefaultTurnService {
         }
 
         Stream<Player> stream = playerRepository.getAll().stream()
-                .filter(new Predicate<Player>() {
-                    @Override
-                    public boolean test(Player player) {
-                        return !(finishedPlayerIds.contains(player.getId()));
-                    }
-                });
+                .filter(player -> !(finishedPlayerIds.contains(player.getId())));
         if (storeService.getMuleCount() > invertTurnOrderThreshold) {
             //next player is highest score if mules remaining > 7//
             currentPlayer = stream
-                    .max(new Comparator<Player>() {
-                        @Override
-                        public int compare(Player p1, Player p2) {
-                            return p1.getScore() - p2.getScore();
-                        }
-                    })
+                    .max((p1, p2) -> p1.getScore() - p2.getScore())
                     .get();
         } else {
             //next player is lowest score if mules remaining <= 7//
             currentPlayer = stream
-                    .min(new Comparator<Player>() {
-                        @Override
-                        public int compare(Player p1, Player p2) {
-                            return p1.getScore() - p2.getScore();
-                        }
-                    })
+                    .min((p1, p2) -> p1.getScore() - p2.getScore())
                     .get();
         }
 
@@ -225,7 +210,6 @@ public class DefaultTurnService {
      *          false otherwise
      */
     public boolean isAllTurnsOver() {
-        //TODO something null here
         return finishedPlayerIds.size() == playerRepository.getAll().size();
     }
 

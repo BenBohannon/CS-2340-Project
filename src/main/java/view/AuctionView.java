@@ -246,19 +246,17 @@ public class AuctionView extends View<AuctionPresenter> {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(new Runnable() {
-                    public void run() {
-                        pane2.getChildren().clear();
-                        for (int i = 0; i < playerRepository.size(); i++) {
-                            Text food = new Text(playerRepository.get(i).getFood() + " Food");
-                            food.setTranslateX(150 + 150 * i);
-                            food.setTranslateY(435);
-                            Text auctionText = new Text(textInitialX, textInitialY, "Food Auction");
-                            auctionText.setFont(new Font(fontSize));
-                            pane2.getChildren().addAll(playerImageList.get(i), food, auctionText);
-                            resetCharacters();
-                            canMove = true;
-                        }
+                Platform.runLater(() -> {
+                    pane2.getChildren().clear();
+                    for (int i = 0; i < playerRepository.size(); i++) {
+                        Text food = new Text(playerRepository.get(i).getFood() + " Food");
+                        food.setTranslateX(150 + 150 * i);
+                        food.setTranslateY(435);
+                        Text auctionText = new Text(textInitialX, textInitialY, "Food Auction");
+                        auctionText.setFont(new Font(fontSize));
+                        pane2.getChildren().addAll(playerImageList.get(i), food, auctionText);
+                        resetCharacters();
+                        canMove = true;
                     }
                 });
             }

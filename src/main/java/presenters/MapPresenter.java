@@ -60,7 +60,8 @@ public class MapPresenter extends Presenter<MapView>
                 turnService.addTurnEndListener(this); // Make sure this only happens ONCE
             }
         } else {
-            if (turnService.isAllTurnsOver()) {
+            boolean temp = turnService.isAllTurnsOver();
+            if (temp) {
                 turnService.beginRound();
 
                 //RANDOM EVENT CODE
@@ -78,6 +79,7 @@ public class MapPresenter extends Presenter<MapView>
                 if (eventPlayer == null) {
                     beginTurn();
 
+                } else {
                     //Print the random event to the screen.
 
                     if (deltaMoney < 0) {
@@ -101,10 +103,9 @@ public class MapPresenter extends Presenter<MapView>
                             });
                         }
                     }, getTurnStartDelay());
-
-                } else {
-                    beginTurn();
                 }
+            } else {
+                beginTurn();
             }
             if (isPlacingMule) {
                 getView().displayMule();

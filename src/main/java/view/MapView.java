@@ -117,21 +117,13 @@ public class MapView extends View<MapPresenter> {
             setCharacterImage(getPresenter().getCurrentPlayer().getRace().getImagePath());
         }
 
-        pane.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                mouseX = event.getX();
-                mouseY = event.getY();
-            }
+        pane.setOnMouseMoved(event -> {
+            mouseX = event.getX();
+            mouseY = event.getY();
         });
 
-        pane.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                MapView.this.getPresenter()
-                        .onClick(getImageCoordinates(character));
-            }
-        });
+        pane.setOnMousePressed(event -> MapView.this.getPresenter()
+                .onClick(getImageCoordinates(character)));
 
         Map map = getPresenter().getMap();
         //Create a model.map.
@@ -205,12 +197,7 @@ public class MapView extends View<MapPresenter> {
         //If the player is on the town tile, enter the town.
         Point temp = getImageCoordinates(character);
         if (temp.getX() == (getCols() / 2) && temp.getY() == (getRows() / 2)) { //&& !isLandSelectPhase) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    MapView.this.getPresenter().enterCity();
-                }
-            });
+            Platform.runLater(() -> MapView.this.getPresenter().enterCity());
         }
     }
 
@@ -314,12 +301,9 @@ public class MapView extends View<MapPresenter> {
         turnStartTextTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        pane.getChildren().remove(text);
-                        startMovement();
-                    }
+                Platform.runLater(() -> {
+                    pane.getChildren().remove(text);
+                    startMovement();
                 });
             }
         }, movementStartDelay);
