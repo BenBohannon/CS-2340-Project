@@ -51,8 +51,8 @@ public class TileSelectionPresenter extends Presenter {
 
     private final Group border = createBorder(0, 0, Color.WHITE);
     private Timer timer;
-    // private double mouseX;
-    // private double mouseY;
+    private volatile boolean hasSwappedScreens;
+
     private volatile int tileID;
     private boolean[] playerHasChosen;
 
@@ -75,9 +75,6 @@ public class TileSelectionPresenter extends Presenter {
     private int tileIterationStartDelay;
     @Inject @Named("MulePrice")
     private int mulePrice;
-
-
-
 
 
     /**
@@ -222,26 +219,29 @@ public class TileSelectionPresenter extends Presenter {
 
     private void update() {
         // jump to the next grid tile
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                tileID++;
-                if (tileID != 1 && tileID % cols == 0) {
-                    border.setTranslateX(border.getTranslateX() - (cols * tileDimensions));
-                    border.setTranslateY(border.getTranslateY() + tileDimensions);
-                }
-                if (tileID % (rows * cols) == 0) {
-                    border.setTranslateY(border.getTranslateY() - (rows * tileDimensions));
-                    TileSelectionPresenter.this.stopMovement();
-                    TileSelectionPresenter.this.getContext().showScreen("map_grid.fxml");
-                }
-                border.setTranslateX(border.getTranslateX() + tileDimensions);
-                if (TileSelectionPresenter.this.doneSelecting()) {
-                    TileSelectionPresenter.this.stopMovement();
-                    TileSelectionPresenter.this.getContext().showScreen("map_grid.fxml");
-                }
+        Platform.runLater(() -> {
+            tileID++;
+            if (tileID != 1 && tileID % cols == 0) {
+                border.setTranslateX(border.getTranslateX() - (cols * tileDimensions));
+                border.setTranslateY(border.getTranslateY() + tileDimensions);
+            }
+            if (tileID % (rows * cols) == 0) {
+                border.setTranslateY(border.getTranslateY() - (rows * tileDimensions));
+                swapScreensSync("map_grid.fxml");
+            }
+            border.setTranslateX(border.getTranslateX() + tileDimensions);
+            if (TileSelectionPresenter.this.doneSelecting()) {
+                swapScreensSync("map_grid.fxml");
             }
         });
+    }
+
+    private void swapScreensSync(String fxmlPath) {
+        if (!hasSwappedScreens) {
+            stopMovement();
+            getContext().showScreen("map_grid.fxml");
+            hasSwappedScreens = true;
+        }
     }
 
     /**

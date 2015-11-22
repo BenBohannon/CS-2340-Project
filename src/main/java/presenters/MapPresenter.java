@@ -56,11 +56,8 @@ public class MapPresenter extends Presenter<MapView>
     @Override
     public void initialize() {
         if (turnService.isTurnInProgress()) {
-
-            if (!isListening) {
-                // Make sure this only happens ONCE
-                turnService.addTurnEndListener(this);
-                isListening = true;
+            if (!turnService.isListening(this)) {
+                turnService.addTurnEndListener(this); // Make sure this only happens ONCE
             }
         } else {
             if (turnService.isAllTurnsOver()) {
@@ -80,40 +77,38 @@ public class MapPresenter extends Presenter<MapView>
                 // just start the turn without random events.
                 if (eventPlayer == null) {
                     beginTurn();
-                    return;
-                }
 
-                //Print the random event to the screen.
+                    //Print the random event to the screen.
 
-                if (deltaMoney < 0)
-                {
-                    getView().showRandomEventText("Random event! "
-                            + eventPlayer.getName() + " loses " + deltaMoney + " money!");
-                } else {
-                    getView().showRandomEventText("Random event! "
-                            + eventPlayer.getName() + " gains " + deltaMoney + " money!");
-                }
-
-                //Start the turn after the text has disappeared.
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        Platform.runLater(new TimerTask() {
-                            @Override
-                            public void run() {
-                                beginTurn();
-                            }
-                        });
+                    if (deltaMoney < 0) {
+                        getView().showRandomEventText("Random event! "
+                                + eventPlayer.getName() + " loses " + deltaMoney + " money!");
+                    } else {
+                        getView().showRandomEventText("Random event! "
+                                + eventPlayer.getName() + " gains " + deltaMoney + " money!");
                     }
-                }, getTurnStartDelay());
 
-            } else {
-                beginTurn();
+                    //Start the turn after the text has disappeared.
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Platform.runLater(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    beginTurn();
+                                }
+                            });
+                        }
+                    }, getTurnStartDelay());
+
+                } else {
+                    beginTurn();
+                }
             }
-        }
-        if (isPlacingMule) {
-            getView().displayMule();
+            if (isPlacingMule) {
+                getView().displayMule();
+            }
         }
     }
 
@@ -138,9 +133,8 @@ public class MapPresenter extends Presenter<MapView>
      * @param str the path of the fxml file relative to the presenters directory
      */
     private void switchPresenter(String str) {
-        if (isListening) {
+        if (turnService.isTurnInProgress() && turnService.isListening(this)) {
             turnService.removeTurnEndListener(this);
-            isListening = false;
         }
 //        turnService.stopTimers();
         getContext().showScreen(str);
@@ -157,25 +151,22 @@ public class MapPresenter extends Presenter<MapView>
 
     @Override
     public void onTurnEnd(Player player) {
-        isListening = false;
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                MapPresenter.this.getView().stopMovement();
 
-                //Mule is lost if not placed//
-                if (isPlacingMule) {
-                    player.getMules().remove(mulePlacing);
-                    MapPresenter.this.getView().stopDisplayingMule();
-                    isPlacingMule = false;
-                }
+        Platform.runLater(() -> {
+            getView().stopMovement();
 
-                if (turnService.isAllTurnsOver()) {
-                    MapPresenter.this.calcProduction();
-                    MapPresenter.this.switchPresenter("auction.fxml");
-                } else {
-                    MapPresenter.this.beginTurn();
-                }
+            //Mule is lost if not placed//
+            if (isPlacingMule) {
+                player.getMules().remove(mulePlacing);
+                getView().stopDisplayingMule();
+                isPlacingMule = false;
+            }
+
+            if (turnService.isAllTurnsOver()) {
+                MapPresenter.this.calcProduction();
+                MapPresenter.this.switchPresenter("auction.fxml");
+            } else {
+                MapPresenter.this.beginTurn();
             }
         });
     }
@@ -280,9 +271,8 @@ public class MapPresenter extends Presenter<MapView>
     private void beginTurn() {
         turnService.beginTurn();
         turnService.addTurnEndListener(this);
-        isListening = true;
-        getView().setCharacterImage(turnService.getCurrentPlayer()
-                .getRace().getImagePath());
+
+        getView().setCharacterImage(turnService.getCurrentPlayer().getRace().getImagePath());
         getView().showTurnStartText();
     }
 

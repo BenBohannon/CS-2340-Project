@@ -45,7 +45,8 @@ public class Start extends Application {
 
         // A SessionFactory is set up once for an application //
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure(new File(getClass().getResource("/sql/hibernate.cfg.xml").getFile())) // configures settings from hibernate.cfg.xml
+                .configure(new File(getClass().getResource(
+                        checkForDB() ? "/sql/hibernate.cfg.xml" : "/sql/createhibernate.cfg.xml").getFile()))
                 .build();
 
         SessionFactory sessionFactory = null;
@@ -55,6 +56,7 @@ public class Start extends Application {
         catch (Exception e) {
             // The registry would be destroyed by the SessionFactory, but we had trouble building the SessionFactory
             // so destroy it manually.
+            e.printStackTrace();
             StandardServiceRegistryBuilder.destroy(registry);
         }
         final SessionFactory finalSessionFactory = sessionFactory;
@@ -216,6 +218,10 @@ public class Start extends Application {
                 .to(7);
 
         binder.requestStaticInjection(MapView.class);
+    }
+
+    private boolean checkForDB() {
+        return new File(System.getProperty("user.home") + "/.mule.h2.db").exists();
     }
 
 }

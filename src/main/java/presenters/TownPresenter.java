@@ -37,8 +37,7 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Override
     public void initialize() {
-//        pTurnService.addTurnEndListener(this);
-        // We had 3 turn end listeners lol. Make sure we don't do this
+        turnService.addTurnEndListener(this);
     }
 
     public void handleMuleClick(ActionEvent event) {
@@ -89,12 +88,16 @@ public class TownPresenter extends Presenter implements TurnEndListener {
             amountToAdd = thirdPubWinningLimit;
         }
 
-        if (getTurnService().isTurnInProgress()) {
-            getTurnService().getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * getTurnService().getTimeLeftInTurn()));
-            getTurnService().endTurn();
+        if (turnService.isTurnInProgress()) {
+            turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+
+            // must remove so we have the chance to open auction screen //
+            turnService.removeTurnEndListener(this);
+
+            turnService.endTurn();
         }
-//        pTurnService.removeTurnEndListener(this);
-        if (getTurnService().isAllTurnsOver()) {
+
+        if (turnService.isAllTurnsOver()) {
             getContext().showScreen("auction.fxml");
         } else {
             getContext().showScreen("map_grid.fxml");

@@ -351,7 +351,7 @@ public class DefaultTurnService {
         stopTimers();
         Player player = currentPlayer;
         calculateRank();
-        //currentPlayer = null;
+        currentPlayer = null;
         turnInProgress = false;
         finishedPlayerIds.add(player.getId());
         turnStartTime = -1;
@@ -376,5 +376,9 @@ public class DefaultTurnService {
 
     public void setInvertTurnOrderThreshold(int pInvertTurnOrderThreshold) {
         this.invertTurnOrderThreshold = pInvertTurnOrderThreshold;
+    }
+
+    public boolean isListening(TurnEndListener object) {
+        return turnInProgress && turnEndListeners.contains(object);
     }
 }

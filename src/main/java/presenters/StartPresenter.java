@@ -69,7 +69,11 @@ public class StartPresenter extends Presenter {
     @FXML
     protected final void handleLoadEvent(ActionEvent event) {
         turnService.initializeFromDatasource();
-        getContext().showScreen("map_grid_tile_select.fxml");
+        if (turnService.isAllTurnsOver()) {
+            getContext().showScreen("map_grid_tile_select.fxml");
+        } else {
+            getContext().showScreen("map_grid.fxml");
+        }
     }
 
 
