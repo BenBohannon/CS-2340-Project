@@ -304,7 +304,7 @@ public class DefaultTurnService {
         Player player = currentPlayer;
         calculateRank();
         System.out.println(currentPlayer.getRank());
-        //currentPlayer = null;
+        currentPlayer = null;
         turnInProgress = false;
         finishedPlayerIds.add(player.getId());
         turnStartTime = -1;
@@ -325,5 +325,9 @@ public class DefaultTurnService {
     public void initializeFromDatasource() {
         flushRound(turnDatasource.getRound());
         finishedPlayerIds = turnDatasource.getFinishedPlayerIds();
+    }
+
+    public boolean isListening(TurnEndListener object) {
+        return turnInProgress && turnEndListeners.contains(object);
     }
 }

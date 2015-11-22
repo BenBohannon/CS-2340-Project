@@ -36,6 +36,7 @@ public class Start extends Application {
     @Override
     public void start(Stage stage) {
 
+        boolean db = checkForDB();
         // A SessionFactory is set up once for an application //
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure(new File(getClass().getResource(
@@ -97,7 +98,7 @@ public class Start extends Application {
     }
 
     private boolean checkForDB() {
-        return new File("~/.mule.h2.db").exists();
+        return new File(System.getProperty("user.home") + "/.mule.h2.db").exists();
     }
 
 }
