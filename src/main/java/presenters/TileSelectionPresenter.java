@@ -49,7 +49,7 @@ public class TileSelectionPresenter extends Presenter {
     @FXML
     private Pane pane;
 
-    private final Group border = createBorder(0, 0, Color.WHITE);
+    private Group border;
     private Timer timer;
     private volatile boolean hasSwappedScreens;
 
@@ -66,9 +66,9 @@ public class TileSelectionPresenter extends Presenter {
     @Inject @Named("MapCols")
     private int cols;
     @Inject @Named("TileDimensions")
-    private int tileDimensions;
+    public int tileDimensions;
     @Inject @Named("OwnershipRectWidth")
-    private int ownershipRectThickness;
+    public int ownershipRectThickness;
     @Inject @Named("TileIterationInterval")
     private int tileIterationInterval;
     @Inject @Named("TileIterationStartDelay")
@@ -86,11 +86,6 @@ public class TileSelectionPresenter extends Presenter {
 
         tileID = 0;
 
-//        pane.setOnMouseMoved(event -> {
-//            mouseX = event.getX();
-//            mouseY = event.getY();
-//        });
-
         for (Player player : getPlayerRepository().getAll()) {
             for (Tile tile : player.getOwnedProperties()) {
                 Point location = getPixelOffset(tile.getLocation().getCol(), tile.getLocation().getRow());
@@ -99,21 +94,7 @@ public class TileSelectionPresenter extends Presenter {
             }
         }
 
-        pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                handleKeyEvent(event);
-            }
-        });
-
-        pane.getChildren().add(border);
-
-        pane.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                TileSelectionPresenter.this.onClick();
-            }
-        });
+        pane.setOnKeyPressed(event -> handleKeyEvent(event));
 
         //Create tiles and draw pMap or just draw pMap if tiles already in place //
         if (getMap().getOccupants(0, 0, Tile.class).length == 0) {
@@ -146,13 +127,18 @@ public class TileSelectionPresenter extends Presenter {
             }
         }
 
+        border = createBorder(0, 0, Color.WHITE);
+
+        pane.getChildren().add(border);
+        border.toFront();
+
         //Start iterating through tiles to select
         iterateTiles();
     }
 
     private void iterateTiles() {
         if (timer == null) {
-            timer = new Timer(true);
+            timer = new Timer();
 
             timer.schedule(new TimerTask() {
                                @Override
@@ -220,6 +206,7 @@ public class TileSelectionPresenter extends Presenter {
     private void update() {
         // jump to the next grid tile
         Platform.runLater(() -> {
+            System.out.println(String.format("col:%d row:%d id:%d", cols, rows, tileID));
             tileID++;
             if (tileID != 1 && tileID % cols == 0) {
                 border.setTranslateX(border.getTranslateX() - (cols * tileDimensions));
@@ -270,18 +257,8 @@ public class TileSelectionPresenter extends Presenter {
         Group tempBorder = new Group();
         tempBorder.getChildren().addAll(top, bottom, right, left);
         tempBorder.getChildren().stream()
-                .map(new Function<Node, Shape>() {
-                    @Override
-                    public Shape apply(Node node) {
-                        return ((Shape) node);
-                    }
-                })
-                .forEach(new Consumer<Shape>() {
-                    @Override
-                    public void accept(Shape shape) {
-                        shape.setFill(color);
-                    }
-                });
+                .map(node -> ((Shape) node))
+                .forEach(shape -> shape.setFill(color));
         return tempBorder;
     }
 
