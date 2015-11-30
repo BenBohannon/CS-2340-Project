@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -20,14 +21,6 @@
             </Button>
          </children>
       </HBox>
-      <ScrollPane prefHeight="425.0" prefWidth="890.0">
-        <content>
-          <AnchorPane>
-               <children>
-                  <ListView fx:id="gameSavesListView" prefHeight="425.0" prefWidth="890.0" />
-               </children>
-            </AnchorPane>
-        </content>
-      </ScrollPane>
+      <ListView fx:id="gameSavesListView" prefHeight="425.0" prefWidth="890.0" />
    </children>
 </VBox>

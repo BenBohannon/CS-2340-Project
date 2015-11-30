@@ -72,12 +72,7 @@ public class SqlPlayerRepository implements Repository<Player> {
         int targetId = (Integer) id;
 
         Optional<Player> p = records.stream()
-                .filter(new Predicate<Player>() {
-                    @Override
-                    public boolean test(Player player) {
-                        return player.getId() == targetId;
-                    }
-                })
+                .filter(player -> player.getId() == targetId)
                 .findFirst();
         return p.isPresent() ? p.get() : null;
     }
@@ -86,12 +81,7 @@ public class SqlPlayerRepository implements Repository<Player> {
     public Player save(Player entity) {
         populateRecords();
         if (records.stream()
-                .anyMatch(new Predicate<Player>() {
-                    @Override
-                    public boolean test(Player player) {
-                        return player.getId() == entity.getId();
-                    }
-                })) {
+                .anyMatch(player -> player.getId() == entity.getId())) {
             records.remove(entity);
         }
 

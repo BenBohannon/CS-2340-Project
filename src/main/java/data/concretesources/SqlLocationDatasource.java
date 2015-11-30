@@ -24,31 +24,31 @@ public class SqlLocationDatasource implements LocationDatasource {
 
     @Inject
     public SqlLocationDatasource(SessionFactory pSessionFactory) {
-        this.setSessionFactory(pSessionFactory);
+        sessionFactory = pSessionFactory;
         populateRecords();
     }
 
     private void populateRecords() {
-        if (getRecords() == null) {
-            setRecords(new HashSet<>());
+        if (records == null) {
+            records = new HashSet<>();
         }
 
-        Session session = getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         Query query = session.createQuery("FROM PersistableLocatable");
 
-        getRecords().clear();
+        records.clear();
         if (query.list() != null) {
-            getRecords().addAll(query.list());
+            records.addAll(query.list());
         }
         session.close();
     }
 
     private void persist() {
-        Session session = getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        if (getRecords() != null) {
-            for (PersistableLocatable entity : getRecords()) {
+        if (records != null) {
+            for (PersistableLocatable entity : records) {
                 session.merge(entity);
             }
         }
@@ -62,7 +62,7 @@ public class SqlLocationDatasource implements LocationDatasource {
     public Collection<Locatable> get(int row, int col) {
         populateRecords();
 
-        return getRecords().stream()
+        return records.stream()
                 .filter(new Predicate<PersistableLocatable>() {
                     @Override
                     public boolean test(PersistableLocatable r) {
@@ -81,11 +81,11 @@ public class SqlLocationDatasource implements LocationDatasource {
             throw new IllegalArgumentException("locatable is null or is not of type PersistableLocatable");
         }
 
-        if (getRecords().contains(persistableLocatable)) {
-            getRecords().remove(persistableLocatable);
+        if (records.contains(persistableLocatable)) {
+            records.remove(persistableLocatable);
         }
 
-        getRecords().add(persistableLocatable);
+        records.add(persistableLocatable);
 
         persist();
     }
@@ -102,11 +102,11 @@ public class SqlLocationDatasource implements LocationDatasource {
                 .collect(Collectors.toSet());
 
         for (PersistableLocatable ele : additions) {
-            if (getRecords().contains(ele)) {
-                getRecords().remove(ele);
+            if (records.contains(ele)) {
+                records.remove(ele);
             }
 
-            getRecords().add(ele);
+            records.add(ele);
         }
 
         persist();
@@ -120,8 +120,8 @@ public class SqlLocationDatasource implements LocationDatasource {
 
         populateRecords();
 
-        if (getRecords().contains(locatable)) {
-            Session session = getSessionFactory().openSession();
+        if (records.contains(locatable)) {
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
 
             session.delete(locatable);
@@ -130,21 +130,5 @@ public class SqlLocationDatasource implements LocationDatasource {
             session.flush();
             session.close();
         }
-    }
-
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
-
-    public void setSessionFactory(SessionFactory pSessionFactory) {
-        this.sessionFactory = pSessionFactory;
-    }
-
-    public final Set<PersistableLocatable> getRecords() {
-        return records;
-    }
-
-    public void setRecords(Set<PersistableLocatable> pRecords) {
-        this.records = pRecords;
     }
 }

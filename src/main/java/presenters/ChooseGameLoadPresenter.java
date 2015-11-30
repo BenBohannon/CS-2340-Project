@@ -7,7 +7,7 @@ import view.ChooseGameLoadView;
  */
 public class ChooseGameLoadPresenter extends Presenter<ChooseGameLoadView> {
 
-   
+
 
     public void onBackToHome() {
         getContext().showScreen("home_screen.fxml");
