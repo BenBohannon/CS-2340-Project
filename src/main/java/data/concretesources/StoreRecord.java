@@ -1,9 +1,8 @@
 package data.concretesources;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import model.entity.GameSaveMetaData;
+
+import javax.persistence.*;
 
 /**
  * Created by brian on 10/29/15.
@@ -13,6 +12,9 @@ public class StoreRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private GameSaveMetaData gameSaveMetaData;
 
     private int food;
     private int crystite;
@@ -103,5 +105,13 @@ public class StoreRecord {
 
     public final void setMuleCount(int pMuleCount) {
         this.muleCount = pMuleCount;
+    }
+
+    public GameSaveMetaData getGameSaveMetaData() {
+        return gameSaveMetaData;
+    }
+
+    public void setGameSaveMetaData(GameSaveMetaData gameSaveMetaData) {
+        this.gameSaveMetaData = gameSaveMetaData;
     }
 }

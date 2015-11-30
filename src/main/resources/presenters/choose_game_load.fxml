@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChooseGameLoadView">
+   <children>
+      <HBox alignment="CENTER" prefHeight="63.0" prefWidth="890.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#handleBackClick" text="Back">
+               <HBox.margin>
+                  <Insets bottom="3.0" left="20.0" right="20.0" top="3.0" />
+               </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#handleLoadClick" text="Load">
+               <HBox.margin>
+                  <Insets bottom="3.0" left="20.0" right="20.0" top="3.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+      <ScrollPane prefHeight="425.0" prefWidth="890.0">
+        <content>
+          <AnchorPane>
+               <children>
+                  <ListView fx:id="gameSavesListView" prefHeight="425.0" prefWidth="890.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</VBox>
