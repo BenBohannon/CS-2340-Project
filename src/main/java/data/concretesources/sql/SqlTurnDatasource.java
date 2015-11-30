@@ -1,4 +1,4 @@
-package data.concretesources;
+package data.concretesources.sql;
 
 import com.google.inject.Inject;
 import data.abstractsources.TurnDatasource;
@@ -14,7 +14,7 @@ public class SqlTurnDatasource implements TurnDatasource {
 
     private SessionFactory sessionFactory;
 
-    private TurnRecord record;
+    private data.concretesources.TurnRecord record;
 
     @Inject
     public SqlTurnDatasource(SessionFactory pSessionFactory) {
@@ -36,9 +36,9 @@ public class SqlTurnDatasource implements TurnDatasource {
     private void populateRecord() {
         Session session = sessionFactory.openSession();
         org.hibernate.Query query = session.createQuery("FROM TurnRecord");
-        List<TurnRecord> list = query.list();
+        List<data.concretesources.TurnRecord> list = query.list();
         if (list == null || list.size() < 1) {
-            record = new TurnRecord();
+            record = new data.concretesources.TurnRecord();
             record.setFinishedPlayerIds(new LinkedList<>());
         } else {
             record = list.get(0);

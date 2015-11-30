@@ -1,4 +1,4 @@
-package data.concretesources;
+package data.concretesources.sql;
 
 import com.google.inject.Inject;
 import data.abstractsources.StoreDatasource;
@@ -15,7 +15,7 @@ public class SqlStoreDatasource implements StoreDatasource {
 
     private SessionFactory sessionFactory;
 
-    private StoreRecord record;
+    private data.concretesources.StoreRecord record;
 
     @Inject
     public SqlStoreDatasource(SessionFactory pSessionFactory) {
@@ -37,9 +37,9 @@ public class SqlStoreDatasource implements StoreDatasource {
     private void populateRecord() {
         Session session = sessionFactory.openSession();
         Query query = session.createQuery("FROM StoreRecord");
-        List<StoreRecord> list = query.list();
+        List<data.concretesources.StoreRecord> list = query.list();
         if (list == null || list.size() < 1) {
-            record = new StoreRecord();
+            record = new data.concretesources.StoreRecord();
         } else {
             record = list.get(0);
         }

@@ -1,10 +1,8 @@
 import com.google.inject.TypeLiteral;
-import data.*;
 import data.abstractsources.LocationDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.StoreDatasource;
 import data.abstractsources.TurnDatasource;
-import data.concretesources.*;
 import javafx.application.Application;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -62,7 +60,7 @@ public class StartTileChoice extends Application {
         };
 
 
-        final MemoryPlayerRepository playerRepository = new MemoryPlayerRepository();
+        final data.concretesources.memory.MemoryPlayerRepository playerRepository = new data.concretesources.memory.MemoryPlayerRepository();
         Player p1 = new Player();
         p1.setName("P1");
         p1.setId(0);
@@ -93,15 +91,15 @@ public class StartTileChoice extends Application {
         final SessionFactory finalSessionFactory = sessionFactory;
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
-                new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository),
-                 new SqlTurnDatasource(finalSessionFactory));
+                new StoreService(new data.concretesources.sql.SqlStoreDatasource(finalSessionFactory), playerRepository),
+                 new data.concretesources.sql.SqlTurnDatasource(finalSessionFactory));
 
         PresenterContext context = new PresenterContext((binder) -> {
-            binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
-            binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
-            binder.bind(new TypeLiteral<Repository<Mule>>(){}).to(SqlMuleRepository.class);
-            binder.bind(new TypeLiteral<Repository<Player>>(){}).to(SqlPlayerRepository.class);
-            binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
+            binder.bind(StoreDatasource.class).to(data.concretesources.sql.SqlStoreDatasource.class);
+            binder.bind(TurnDatasource.class).to(data.concretesources.sql.SqlTurnDatasource.class);
+            binder.bind(new TypeLiteral<Repository<Mule>>(){}).to(data.concretesources.sql.SqlMuleRepository.class);
+            binder.bind(new TypeLiteral<Repository<Player>>(){}).to(data.concretesources.sql.SqlPlayerRepository.class);
+            binder.bind(LocationDatasource.class).to(data.concretesources.sql.SqlLocationDatasource.class);
 
             binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
             binder.bind(DefaultTurnService.class).toInstance(turnService);

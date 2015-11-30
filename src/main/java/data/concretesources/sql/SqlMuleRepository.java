@@ -1,26 +1,28 @@
-package data.concretesources;
+package data.concretesources.sql;
 
 import com.google.inject.Inject;
 import data.abstractsources.Repository;
-import model.entity.Player;
+import model.entity.Mule;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
  * Created by brian on 10/26/15.
  */
-public class SqlPlayerRepository implements Repository<Player> {
+public class SqlMuleRepository implements Repository<Mule> {
 
     private SessionFactory sessionFactory;
 
-    private Set<Player> records;
+    private Set<Mule> records;
 
     @Inject
-    public SqlPlayerRepository(SessionFactory pSessionFactory) {
+    public SqlMuleRepository(SessionFactory pSessionFactory) {
         this.sessionFactory = pSessionFactory;
         populateRecords();
     }
@@ -31,12 +33,13 @@ public class SqlPlayerRepository implements Repository<Player> {
         }
 
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("FROM Player");
+        Query query = session.createQuery("FROM Mule");
 
         records.clear();
-        if (query.list() != null) {
+        if (query != null) {
             records.addAll(query.list());
         }
+
         session.close();
     }
 
@@ -45,8 +48,8 @@ public class SqlPlayerRepository implements Repository<Player> {
         session.beginTransaction();
 
         if (records != null) {
-            for (Player p : records) {
-                session.merge(p);
+            for (Mule m : records) {
+                session.merge(m);
             }
         }
 
@@ -56,13 +59,13 @@ public class SqlPlayerRepository implements Repository<Player> {
     }
 
     @Override
-    public Set<Player> getAll() {
+    public Set<Mule> getAll() {
         populateRecords();
         return records;
     }
 
     @Override
-    public Player get(Object id) {
+    public Mule get(Object id) {
         populateRecords();
 
         if (!(id instanceof Integer)) {
@@ -71,38 +74,48 @@ public class SqlPlayerRepository implements Repository<Player> {
 
         int targetId = (Integer) id;
 
-        Optional<Player> p = records.stream()
-                .filter(player -> player.getId() == targetId)
+        Optional<Mule> m = records.stream()
+                .filter(new Predicate<Mule>() {
+                    @Override
+                    public boolean test(Mule mule) {
+                        return mule.getId() == targetId;
+                    }
+                })
                 .findFirst();
-        return p.isPresent() ? p.get() : null;
+        return m.isPresent() ? m.get() : null;
     }
 
     @Override
-    public Player save(Player entity) {
+    public Mule save(Mule entity) {
         populateRecords();
         if (records.stream()
-                .anyMatch(player -> player.getId() == entity.getId())) {
+                .anyMatch(new Predicate<Mule>() {
+                    @Override
+                    public boolean test(Mule mule) {
+                        return mule.getId() == entity.getId();
+                    }
+                })) {
             records.remove(entity);
         }
 
         records.add(entity);
         persist();
 
-        return null;
+        return get(entity.getId());
     }
 
     @Override
-    public Player delete(Object id) {
+    public Mule delete(Object id) {
         populateRecords();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        Player p = get(id);
-        if (p != null) {
-            records.remove(p);
+        Mule m = get(id);
+        if (m != null) {
+            records.remove(m);
         }
 
-        session.delete(p);
+        session.delete(m);
 
         session.getTransaction().commit();
         session.flush();
@@ -110,13 +123,12 @@ public class SqlPlayerRepository implements Repository<Player> {
 
         populateRecords();
 
-        return p;
+        return m;
     }
 
     @Override
     public int size() {
         populateRecords();
-
         return records.size();
     }
 }

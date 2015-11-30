@@ -6,7 +6,6 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
-import data.*;
 import data.abstractsources.LocationDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.StoreDatasource;
@@ -62,11 +61,11 @@ public class Start extends Application {
             StandardServiceRegistryBuilder.destroy(registry);
         }
         final SessionFactory finalSessionFactory = sessionFactory;
-        Repository<Player> playerRepository = new SqlPlayerRepository(finalSessionFactory);
+        Repository<Player> playerRepository = new data.concretesources.sql.SqlPlayerRepository(finalSessionFactory);
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
-                new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository)
-                , new SqlTurnDatasource(finalSessionFactory));
+                new StoreService(new data.concretesources.sql.SqlStoreDatasource(finalSessionFactory), playerRepository)
+                , new data.concretesources.sql.SqlTurnDatasource(finalSessionFactory));
 
         final GameSaveMetaHolderService gameSaveMetaHolderService = new GameSaveMetaHolderService();
 
@@ -74,12 +73,12 @@ public class Start extends Application {
             @Override
             public void configure(Binder binder) {
                 // class level bindings //
-                binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
-                binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
-                binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
-                binder.bind(new TypeLiteral<Repository<Player>>() {}).to(SqlPlayerRepository.class);
-                binder.bind(new TypeLiteral<Repository<Mule>>() {}).to(SqlMuleRepository.class);
-                binder.bind(new TypeLiteral<Repository<GameSaveMeta>>() {}).to(SqlGameSaveMetaRepository.class);
+                binder.bind(StoreDatasource.class).to(data.concretesources.sql.SqlStoreDatasource.class);
+                binder.bind(TurnDatasource.class).to(data.concretesources.sql.SqlTurnDatasource.class);
+                binder.bind(LocationDatasource.class).to(data.concretesources.sql.SqlLocationDatasource.class);
+                binder.bind(new TypeLiteral<Repository<Player>>() {}).to(data.concretesources.sql.SqlPlayerRepository.class);
+                binder.bind(new TypeLiteral<Repository<Mule>>() {}).to(data.concretesources.sql.SqlMuleRepository.class);
+                binder.bind(new TypeLiteral<Repository<GameSaveMeta>>() {}).to(data.concretesources.sql.SqlGameSaveMetaRepository.class);
 
                 // instance level bindings //
                 binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
