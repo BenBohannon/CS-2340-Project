@@ -8,7 +8,6 @@ import data.abstractsources.TurnDatasource;
 import model.entity.Player;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -309,7 +308,7 @@ public class DefaultTurnService {
             int big = i;
             for (int j = i; j < playersByRank.length; j++) {
                 Player p1 = (Player) playersByRank[j];
-                Player p2 = (Player) playersByRank[i];
+                Player p2 = (Player) playersByRank[big];
                 if (p1.getMoney() > p2.getMoney()) {
                     big = j;
                 }
