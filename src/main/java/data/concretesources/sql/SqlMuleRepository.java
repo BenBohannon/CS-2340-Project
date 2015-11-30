@@ -3,6 +3,7 @@ package data.concretesources.sql;
 import com.google.inject.Inject;
 import data.abstractsources.Repository;
 import model.entity.Mule;
+import model.service.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,12 +20,14 @@ public class SqlMuleRepository implements Repository<Mule> {
 
     private SessionFactory sessionFactory;
 
+    private GameSaveMetaHolderService gameSaveMetaHolderService;
+
     private Set<Mule> records;
 
     @Inject
-    public SqlMuleRepository(SessionFactory pSessionFactory) {
+    public SqlMuleRepository(SessionFactory pSessionFactory, GameSaveMetaHolderService pGameSaveMetaHolder) {
         this.sessionFactory = pSessionFactory;
-        populateRecords();
+        gameSaveMetaHolderService = pGameSaveMetaHolder;
     }
 
     private void populateRecords() {
@@ -33,7 +36,10 @@ public class SqlMuleRepository implements Repository<Mule> {
         }
 
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("FROM Mule");
+
+        String hqlString = String.format("FROM Mule M WHERE M.gameSaveMeta.id = %d",
+                gameSaveMetaHolderService.getGameSaveMeta().getId());
+        Query query = session.createQuery(hqlString);
 
         records.clear();
         if (query != null) {
@@ -88,13 +94,11 @@ public class SqlMuleRepository implements Repository<Mule> {
     @Override
     public Mule save(Mule entity) {
         populateRecords();
+
+        entity.setGameSaveMeta(gameSaveMetaHolderService.getGameSaveMeta());
+
         if (records.stream()
-                .anyMatch(new Predicate<Mule>() {
-                    @Override
-                    public boolean test(Mule mule) {
-                        return mule.getId() == entity.getId();
-                    }
-                })) {
+                .anyMatch(mule -> mule.getId() == entity.getId())) {
             records.remove(entity);
         }
 

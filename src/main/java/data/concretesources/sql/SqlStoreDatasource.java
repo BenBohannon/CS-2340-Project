@@ -2,6 +2,8 @@ package data.concretesources.sql;
 
 import com.google.inject.Inject;
 import data.abstractsources.StoreDatasource;
+import model.entity.*;
+import model.service.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -15,12 +17,14 @@ public class SqlStoreDatasource implements StoreDatasource {
 
     private SessionFactory sessionFactory;
 
+    private GameSaveMetaHolderService gameSaveMetaHolder;
+
     private data.concretesources.StoreRecord record;
 
     @Inject
-    public SqlStoreDatasource(SessionFactory pSessionFactory) {
+    public SqlStoreDatasource(SessionFactory pSessionFactory, GameSaveMetaHolderService pGameSaveMetaHolder) {
         this.sessionFactory = pSessionFactory;
-        populateRecord();
+        gameSaveMetaHolder = pGameSaveMetaHolder;
     }
 
     private void persist() {
@@ -36,10 +40,17 @@ public class SqlStoreDatasource implements StoreDatasource {
 
     private void populateRecord() {
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("FROM StoreRecord");
+
+        String hqlString = String.format("FROM StoreRecord SR WHERE SR.gameSaveMeta.id = %d",
+                gameSaveMetaHolder.getGameSaveMeta().getId());
+        Query query = session.createQuery(hqlString);
+
         List<data.concretesources.StoreRecord> list = query.list();
         if (list == null || list.size() < 1) {
             record = new data.concretesources.StoreRecord();
+
+            record.setGameSaveMeta(gameSaveMetaHolder.getGameSaveMeta());
+
         } else {
             record = list.get(0);
         }
@@ -48,6 +59,10 @@ public class SqlStoreDatasource implements StoreDatasource {
 
     @Override
     public final void saveAmount(int energy, int food, int smithore, int crystite) {
+        if (record == null) {
+            populateRecord();
+        }
+
         record.setEnergy(energy);
         record.setFood(food);
         record.setSmithore(smithore);
@@ -58,6 +73,10 @@ public class SqlStoreDatasource implements StoreDatasource {
 
     @Override
     public final void savePrice(int energyPrice, int foodPrice, int smithorePrice, int crystitePrice) {
+        if (record == null) {
+            populateRecord();
+        }
+
         record.setEnergyPrice(energyPrice);
         record.setFoodPrice(foodPrice);
         record.setSmithorePrice(smithorePrice);
@@ -131,6 +150,10 @@ public class SqlStoreDatasource implements StoreDatasource {
 
     @Override
     public final void setMuleCount(int muleCount) {
+        if (record == null) {
+            populateRecord();
+        }
+
         record.setMuleCount(muleCount);
 
         persist();
