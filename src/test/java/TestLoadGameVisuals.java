@@ -14,7 +14,7 @@ import data.abstractsources.TurnDatasource;
 import data.concretesources.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import model.entity.GameSaveMetaData;
+import model.entity.GameSaveMeta;
 import model.entity.Mule;
 import model.entity.Player;
 import model.service.DefaultTurnService;
@@ -75,7 +75,7 @@ public class TestLoadGameVisuals extends Application {
                 binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
                 binder.bind(new TypeLiteral<Repository<Player>>() {}).to(SqlPlayerRepository.class);
                 binder.bind(new TypeLiteral<Repository<Mule>>() {}).to(SqlMuleRepository.class);
-                binder.bind(new TypeLiteral<Repository<GameSaveMetaData>>() {}).to(SqlGameSaveMetaDataRepository.class);
+                binder.bind(new TypeLiteral<Repository<GameSaveMeta>>() {}).to(SqlGameSaveMetaRepository.class);
 
                 // instance level bindings //
                 binder.bind(SessionFactory.class).toInstance(finalSessionFactory);

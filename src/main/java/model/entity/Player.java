@@ -29,7 +29,7 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne(fetch = FetchType.EAGER)
-    private GameSaveMetaData gameSaveMetaData;
+    private GameSaveMeta gameSaveMeta;
     private PlayerRace race;
     private String name;
     @Convert(converter = ColorConverter.class)
@@ -355,12 +355,12 @@ public class Player {
         this.mules = pMules;
     }
 
-    public GameSaveMetaData getGameSaveMetaData() {
-        return gameSaveMetaData;
+    public GameSaveMeta getGameSaveMeta() {
+        return gameSaveMeta;
     }
 
-    public void setGameSaveMetaData(GameSaveMetaData gameSaveMetaData) {
-        this.gameSaveMetaData = gameSaveMetaData;
+    public void setGameSaveMeta(GameSaveMeta gameSaveMeta) {
+        this.gameSaveMeta = gameSaveMeta;
     }
 
     @Converter

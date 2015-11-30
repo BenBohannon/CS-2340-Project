@@ -11,10 +11,11 @@ import java.util.Date;
  */
 
 @Entity
-public class GameSaveMetaData {
+public class GameSaveMeta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String name;
     private Date gameStarted;
     private Date lastPlayed;
 
@@ -40,5 +41,29 @@ public class GameSaveMetaData {
 
     public void setLastPlayed(Date lastPlayed) {
         this.lastPlayed = lastPlayed;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GameSaveMeta) {
+            GameSaveMeta other = (GameSaveMeta) obj;
+
+            return other.getId() == getId();
+        }
+
+        return false;
     }
 }

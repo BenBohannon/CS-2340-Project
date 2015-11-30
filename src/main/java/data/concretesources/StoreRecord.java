@@ -1,6 +1,6 @@
 package data.concretesources;
 
-import model.entity.GameSaveMetaData;
+import model.entity.GameSaveMeta;
 
 import javax.persistence.*;
 
@@ -14,7 +14,7 @@ public class StoreRecord {
     private int id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    private GameSaveMetaData gameSaveMetaData;
+    private GameSaveMeta gameSaveMeta;
 
     private int food;
     private int crystite;
@@ -107,11 +107,11 @@ public class StoreRecord {
         this.muleCount = pMuleCount;
     }
 
-    public GameSaveMetaData getGameSaveMetaData() {
-        return gameSaveMetaData;
+    public GameSaveMeta getGameSaveMeta() {
+        return gameSaveMeta;
     }
 
-    public void setGameSaveMetaData(GameSaveMetaData gameSaveMetaData) {
-        this.gameSaveMetaData = gameSaveMetaData;
+    public void setGameSaveMeta(GameSaveMeta gameSaveMeta) {
+        this.gameSaveMeta = gameSaveMeta;
     }
 }

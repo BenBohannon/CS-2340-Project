@@ -101,7 +101,7 @@ public class MapView extends View<MapPresenter> {
 
 
     /**
-     * Constructor which sets up the default model.map.
+     * sets up the default model.map.
      */
     @FXML
     public void initialize() {

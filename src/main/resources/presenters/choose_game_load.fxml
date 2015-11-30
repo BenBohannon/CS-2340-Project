@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChooseGameLoadView">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ChooseGameLoadView">
    <children>
       <HBox alignment="CENTER" prefHeight="63.0" prefWidth="890.0">
          <children>
@@ -21,6 +21,7 @@
             </Button>
          </children>
       </HBox>
+      <Label fx:id="listSelectionValidationLabel" visible="false" text="select one save!" textFill="RED" />
       <ListView fx:id="gameSavesListView" prefHeight="425.0" prefWidth="890.0" />
    </children>
 </VBox>

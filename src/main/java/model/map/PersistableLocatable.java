@@ -1,7 +1,7 @@
 package model.map;
 
 
-import model.entity.GameSaveMetaData;
+import model.entity.GameSaveMeta;
 
 import javax.persistence.*;
 
@@ -15,7 +15,7 @@ public abstract class PersistableLocatable implements Locatable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne(fetch = FetchType.EAGER)
-    private GameSaveMetaData gameSaveMetaData;
+    private GameSaveMeta gameSaveMeta;
 
     public final void setId(int pId) {
         id = pId;
@@ -33,11 +33,11 @@ public abstract class PersistableLocatable implements Locatable {
         return getId();
     }
 
-    public GameSaveMetaData getGameSaveMetaData() {
-        return gameSaveMetaData;
+    public GameSaveMeta getGameSaveMeta() {
+        return gameSaveMeta;
     }
 
-    public void setGameSaveMetaData(GameSaveMetaData gameSaveMetaData) {
-        this.gameSaveMetaData = gameSaveMetaData;
+    public void setGameSaveMeta(GameSaveMeta gameSaveMeta) {
+        this.gameSaveMeta = gameSaveMeta;
     }
 }
