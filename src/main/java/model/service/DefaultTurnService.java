@@ -8,7 +8,6 @@ import data.abstractsources.TurnDatasource;
 import model.entity.Player;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
