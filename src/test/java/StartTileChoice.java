@@ -94,7 +94,7 @@ public class StartTileChoice extends Application {
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
                 new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository),
-                new GameInfoDatasource(), new SqlTurnDatasource(finalSessionFactory));
+                 new SqlTurnDatasource(finalSessionFactory));
 
         PresenterContext context = new PresenterContext((binder) -> {
             binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);

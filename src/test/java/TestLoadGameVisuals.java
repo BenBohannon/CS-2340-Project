@@ -6,7 +6,6 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
-import data.GameInfoDatasource;
 import data.abstractsources.LocationDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.StoreDatasource;
@@ -64,7 +63,7 @@ public class TestLoadGameVisuals extends Application {
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
                 new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository)
-                , new GameInfoDatasource(), new SqlTurnDatasource(finalSessionFactory));
+                , new SqlTurnDatasource(finalSessionFactory));
 
         PresenterContext context = new PresenterContext(new Module() {
             @Override

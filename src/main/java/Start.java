@@ -66,7 +66,7 @@ public class Start extends Application {
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
                 new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository)
-                , new GameInfoDatasource(), new SqlTurnDatasource(finalSessionFactory));
+                , new SqlTurnDatasource(finalSessionFactory));
 
         final GameSaveMetaHolderService gameSaveMetaHolderService = new GameSaveMetaHolderService();
 
@@ -222,6 +222,9 @@ public class Start extends Application {
         binder.bindConstant()
                 .annotatedWith(Names.named("InvertTurnOrderThreshold"))
                 .to(7);
+        binder.bindConstant()
+                .annotatedWith(Names.named("MaxRounds"))
+                .to(12);
 
         binder.requestStaticInjection(MapView.class);
     }
