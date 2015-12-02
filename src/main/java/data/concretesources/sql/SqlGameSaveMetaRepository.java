@@ -19,6 +19,8 @@ public class SqlGameSaveMetaRepository implements Repository<GameSaveMeta> {
 
     private Set<GameSaveMeta> records;
 
+    private GameSaveMeta mostRecentSaved;
+
     @Inject
     public SqlGameSaveMetaRepository(SessionFactory pSessionFactory) {
         sessionFactory = pSessionFactory;
@@ -48,7 +50,11 @@ public class SqlGameSaveMetaRepository implements Repository<GameSaveMeta> {
 
         if (records != null) {
             for (GameSaveMeta entity : records) {
-                session.merge(entity);
+                if (entity.getId() == -1) {
+                    mostRecentSaved = (GameSaveMeta) session.merge(entity);
+                } else {
+                    session.merge(entity);
+                }
             }
         }
 
@@ -105,7 +111,7 @@ public class SqlGameSaveMetaRepository implements Repository<GameSaveMeta> {
         records.add(entity);
         persist();
 
-        return null;
+        return mostRecentSaved;
     }
 
     @Override

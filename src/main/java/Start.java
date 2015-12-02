@@ -11,6 +11,9 @@ import data.abstractsources.Repository;
 import data.abstractsources.StoreDatasource;
 import data.abstractsources.TurnDatasource;
 import data.concretesources.*;
+import data.concretesources.sql.SqlPlayerRepository;
+import data.concretesources.sql.SqlStoreDatasource;
+import data.concretesources.sql.SqlTurnDatasource;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.entity.GameSaveMeta;
@@ -61,32 +64,31 @@ public class Start extends Application {
             StandardServiceRegistryBuilder.destroy(registry);
         }
         final SessionFactory finalSessionFactory = sessionFactory;
-        Repository<Player> playerRepository = new data.concretesources.sql.SqlPlayerRepository(finalSessionFactory);
-
-        final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
-                new StoreService(new data.concretesources.sql.SqlStoreDatasource(finalSessionFactory), playerRepository)
-                , new data.concretesources.sql.SqlTurnDatasource(finalSessionFactory));
-
         final GameSaveMetaHolderService gameSaveMetaHolderService = new GameSaveMetaHolderService();
 
-        PresenterContext context = new PresenterContext(new Module() {
-            @Override
-            public void configure(Binder binder) {
-                // class level bindings //
-                binder.bind(StoreDatasource.class).to(data.concretesources.sql.SqlStoreDatasource.class);
-                binder.bind(TurnDatasource.class).to(data.concretesources.sql.SqlTurnDatasource.class);
-                binder.bind(LocationDatasource.class).to(data.concretesources.sql.SqlLocationDatasource.class);
-                binder.bind(new TypeLiteral<Repository<Player>>() {}).to(data.concretesources.sql.SqlPlayerRepository.class);
-                binder.bind(new TypeLiteral<Repository<Mule>>() {}).to(data.concretesources.sql.SqlMuleRepository.class);
-                binder.bind(new TypeLiteral<Repository<GameSaveMeta>>() {}).to(data.concretesources.sql.SqlGameSaveMetaRepository.class);
+        Repository<Player> playerRepository = new SqlPlayerRepository(finalSessionFactory,
+                                                                             gameSaveMetaHolderService);
 
-                // instance level bindings //
-                binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
-                binder.bind(DefaultTurnService.class).toInstance(turnService);
-                binder.bind(GameSaveMetaHolderService.class).toInstance(gameSaveMetaHolderService);
+        final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
+                new StoreService(new SqlStoreDatasource(finalSessionFactory, gameSaveMetaHolderService), playerRepository)
+                , new SqlTurnDatasource(finalSessionFactory, gameSaveMetaHolderService));
 
-                bindConstants(binder);
-            }
+        PresenterContext context = new PresenterContext(binder -> {
+
+            // class level bindings //
+            binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
+            binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
+            binder.bind(LocationDatasource.class).to(data.concretesources.sql.SqlLocationDatasource.class);
+            binder.bind(new TypeLiteral<Repository<Player>>() {}).to(SqlPlayerRepository.class);
+            binder.bind(new TypeLiteral<Repository<Mule>>() {}).to(data.concretesources.sql.SqlMuleRepository.class);
+            binder.bind(new TypeLiteral<Repository<GameSaveMeta>>() {}).to(data.concretesources.sql.SqlGameSaveMetaRepository.class);
+
+            // instance level bindings //
+            binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
+            binder.bind(DefaultTurnService.class).toInstance(turnService);
+            binder.bind(GameSaveMetaHolderService.class).toInstance(gameSaveMetaHolderService);
+
+            bindConstants(binder);
         }, stage, STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT);
 
         context.showScreen("home_screen.fxml");
