@@ -3,14 +3,12 @@ package view;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -103,7 +101,7 @@ public class MapView extends View<MapPresenter> {
 
 
     /**
-     * Constructor which sets up the default model.map.
+     * sets up the default model.map.
      */
     @FXML
     public void initialize() {

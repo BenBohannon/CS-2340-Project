@@ -10,7 +10,7 @@
             <font><Font size="45.0" />
             </font>
         </Label>
-        <Button contentDisplay="CENTER" mnemonicParsing="false" text="New Game!" GridPane.columnIndex="0" onAction="#handleStartEvent" GridPane.rowIndex="2" />
+        <Button contentDisplay="CENTER" mnemonicParsing="false" text="New Game!" GridPane.columnIndex="0" onAction="#handleNewGameEvent" GridPane.rowIndex="2" />
         <Button contentDisplay="CENTER" mnemonicParsing="false" text="Load Game!" GridPane.columnIndex="0" onAction="#handleLoadEvent" GridPane.rowIndex="3" />
     </children>
     <columnConstraints>

@@ -1,16 +1,15 @@
-package data.concretesources;
+package data.concretesources.sql;
 
 import com.google.inject.Inject;
 import data.abstractsources.LocationDatasource;
 import model.map.Locatable;
 import model.map.PersistableLocatable;
+import model.service.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -20,35 +19,39 @@ public class SqlLocationDatasource implements LocationDatasource {
 
     private SessionFactory sessionFactory;
 
+    private GameSaveMetaHolderService gameSaveMetaHolderService;
+
     private Set<PersistableLocatable> records;
 
     @Inject
-    public SqlLocationDatasource(SessionFactory pSessionFactory) {
-        this.setSessionFactory(pSessionFactory);
-        populateRecords();
+    public SqlLocationDatasource(SessionFactory pSessionFactory, GameSaveMetaHolderService pGameSaveMetaHolder) {
+        sessionFactory = pSessionFactory;
+        gameSaveMetaHolderService = pGameSaveMetaHolder;
     }
 
     private void populateRecords() {
-        if (getRecords() == null) {
-            setRecords(new HashSet<>());
+        if (records == null) {
+            records = new HashSet<>();
         }
 
-        Session session = getSessionFactory().openSession();
-        Query query = session.createQuery("FROM PersistableLocatable");
+        Session session = sessionFactory.openSession();
+        String hqlString = String.format("FROM PersistableLocatable P WHERE P.gameSaveMeta.id = %d",
+                gameSaveMetaHolderService.getGameSaveMeta().getId());
+        Query query = session.createQuery(hqlString);
 
-        getRecords().clear();
+        records.clear();
         if (query.list() != null) {
-            getRecords().addAll(query.list());
+            records.addAll(query.list());
         }
         session.close();
     }
 
     private void persist() {
-        Session session = getSessionFactory().openSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        if (getRecords() != null) {
-            for (PersistableLocatable entity : getRecords()) {
+        if (records != null) {
+            for (PersistableLocatable entity : records) {
                 session.merge(entity);
             }
         }
@@ -62,51 +65,52 @@ public class SqlLocationDatasource implements LocationDatasource {
     public Collection<Locatable> get(int row, int col) {
         populateRecords();
 
-        return getRecords().stream()
-                .filter(new Predicate<PersistableLocatable>() {
-                    @Override
-                    public boolean test(PersistableLocatable r) {
-                        return r.getLocation().getCol() == col && r.getLocation().getRow() == row;
-                    }
-                })
+        return records.stream()
+                .filter(r -> r.getLocation().getCol() == col && r.getLocation().getRow() == row)
                 .collect(Collectors.toSet());
     }
 
     @Override
     public void save(int row, int col, Locatable locatable) {
+        if (records == null) {
+            populateRecords();
+        }
+
         PersistableLocatable persistableLocatable = null;
         if (locatable instanceof PersistableLocatable) {
             persistableLocatable = (PersistableLocatable) locatable;
+            persistableLocatable.setGameSaveMeta(gameSaveMetaHolderService.getGameSaveMeta());
         } else {
             throw new IllegalArgumentException("locatable is null or is not of type PersistableLocatable");
         }
 
-        if (getRecords().contains(persistableLocatable)) {
-            getRecords().remove(persistableLocatable);
+        if (records.contains(persistableLocatable)) {
+            records.remove(persistableLocatable);
         }
 
-        getRecords().add(persistableLocatable);
+        records.add(persistableLocatable);
 
         persist();
     }
 
     @Override
     public void saveAll(int row, int col, Collection<Locatable> locatables) {
+        if (records == null) {
+            populateRecords();
+        }
+
         Set<PersistableLocatable> additions = locatables.stream()
-                .map(new Function<Locatable, PersistableLocatable>() {
-                    @Override
-                    public PersistableLocatable apply(Locatable l) {
-                        return (PersistableLocatable) l;
-                    }
-                })
+                .map(l -> (PersistableLocatable) l)
                 .collect(Collectors.toSet());
 
         for (PersistableLocatable ele : additions) {
-            if (getRecords().contains(ele)) {
-                getRecords().remove(ele);
+            ele.setGameSaveMeta(gameSaveMetaHolderService.getGameSaveMeta());
+
+            if (records.contains(ele)) {
+                records.remove(ele);
             }
 
-            getRecords().add(ele);
+            records.add(ele);
         }
 
         persist();
@@ -120,8 +124,8 @@ public class SqlLocationDatasource implements LocationDatasource {
 
         populateRecords();
 
-        if (getRecords().contains(locatable)) {
-            Session session = getSessionFactory().openSession();
+        if (records.contains(locatable)) {
+            Session session = sessionFactory.openSession();
             session.beginTransaction();
 
             session.delete(locatable);
@@ -130,21 +134,5 @@ public class SqlLocationDatasource implements LocationDatasource {
             session.flush();
             session.close();
         }
-    }
-
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
-
-    public void setSessionFactory(SessionFactory pSessionFactory) {
-        this.sessionFactory = pSessionFactory;
-    }
-
-    public final Set<PersistableLocatable> getRecords() {
-        return records;
-    }
-
-    public void setRecords(Set<PersistableLocatable> pRecords) {
-        this.records = pRecords;
     }
 }

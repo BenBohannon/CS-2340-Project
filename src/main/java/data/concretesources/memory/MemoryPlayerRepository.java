@@ -1,4 +1,4 @@
-package data.concretesources;
+package data.concretesources.memory;
 
 import data.abstractsources.Repository;
 import model.entity.Player;

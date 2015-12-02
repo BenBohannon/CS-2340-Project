@@ -28,6 +28,8 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private GameSaveMeta gameSaveMeta;
     private PlayerRace race;
     private String name;
     @Convert(converter = ColorConverter.class)
@@ -351,6 +353,14 @@ public class Player {
 
     public final void setMules(Collection<Mule> pMules) {
         this.mules = pMules;
+    }
+
+    public GameSaveMeta getGameSaveMeta() {
+        return gameSaveMeta;
+    }
+
+    public void setGameSaveMeta(GameSaveMeta gameSaveMeta) {
+        this.gameSaveMeta = gameSaveMeta;
     }
 
     @Converter
