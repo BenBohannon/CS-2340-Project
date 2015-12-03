@@ -2,7 +2,6 @@ package model.service;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import data.GameInfoDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.TurnDatasource;
 import model.entity.Player;
@@ -72,7 +71,6 @@ public class DefaultTurnService {
 
     private Repository<Player> playerRepository;
     private StoreService storeService;
-    private GameInfoDatasource gameInfoDatasource;
     private TurnDatasource turnDatasource;
 
     //players are added to this list after their turns are complete//
@@ -80,24 +78,23 @@ public class DefaultTurnService {
 
     @Inject @Named("InvertTurnOrderThreshold")
     private int invertTurnOrderThreshold;
+    @Inject @Named("MaxRounds")
+    private int maxRounds;
 
     /**
      * initialises turn service
      * @param pPlayerRepository repository of players
      * @param pStoreService store
-     * @param pGameInfoDatasource save data
      */
     @Inject
     public DefaultTurnService(Repository<Player> pPlayerRepository,
                               StoreService pStoreService,
-                              GameInfoDatasource pGameInfoDatasource,
                               TurnDatasource pTurnDatasource) {
 
         this.playerRepository = pPlayerRepository;
         turnEndListeners = new LinkedList<>();
         finishedPlayerIds = new LinkedList<>();
         this.storeService = pStoreService;
-        this.gameInfoDatasource = pGameInfoDatasource;
         this.turnDatasource = pTurnDatasource;
     }
 
@@ -109,7 +106,7 @@ public class DefaultTurnService {
         if (turnInProgress) {
             throw new IllegalStateException(TURN_IN_PROGRESS);
         }
-        if (roundNumber > gameInfoDatasource.getMaxRounds()) {
+        if (roundNumber > maxRounds) {
             throw new IllegalStateException(
                     "Max rounds exceeded. Game should be over");
         }
@@ -195,8 +192,7 @@ public class DefaultTurnService {
     /**
      * If no rounds have begun, the round is zero.
      * The first round is one, stretching
-     * to the maximum number of rounds, defined in
-     * {@link GameInfoDatasource#getMaxRounds()}
+     * to the maximum number of rounds
      * @return the round number
      */
     public int getRoundNumber() {
@@ -363,5 +359,13 @@ public class DefaultTurnService {
 
     public boolean isListening(TurnEndListener object) {
         return turnInProgress && turnEndListeners.contains(object);
+    }
+
+    public int getMaxRounds() {
+        return maxRounds;
+    }
+
+    public void setMaxRounds(int maxRounds) {
+        this.maxRounds = maxRounds;
     }
 }

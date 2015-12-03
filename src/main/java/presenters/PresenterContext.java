@@ -82,17 +82,10 @@ public class PresenterContext {
      */
     public Presenter showScreenUninitialized(String fxmlFileName) {
         //create fxml loader for this fxml file//
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource(fxmlFileName));
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFileName));
         //tell javafx to use our injector to generate controllers//
         //it will inject this PresenterContext and other dependencies//
-        loader.setControllerFactory(new Callback<Class<?>, Object>() {
-            @Override
-            public Object call(Class<?> type) {
-                return guiceInjector.getInstance(type);
-            }
-        });
+        loader.setControllerFactory(type -> guiceInjector.getInstance(type));
 
         Parent root = null;
 

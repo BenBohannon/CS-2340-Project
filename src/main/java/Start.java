@@ -3,23 +3,26 @@
  */
 
 import com.google.inject.Binder;
-import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
-import data.GameInfoDatasource;
 import data.abstractsources.LocationDatasource;
 import data.abstractsources.Repository;
 import data.abstractsources.StoreDatasource;
 import data.abstractsources.TurnDatasource;
 import data.concretesources.*;
+import data.concretesources.sql.SqlPlayerRepository;
+import data.concretesources.sql.SqlStoreDatasource;
+import data.concretesources.sql.SqlTurnDatasource;
 import javafx.application.Application;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.entity.GameSaveMeta;
 import model.entity.Mule;
 import model.entity.Player;
 import model.service.DefaultTurnService;
+import model.service.GameSaveMetaHolderService;
 import model.service.StoreService;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -46,7 +49,7 @@ public class Start extends Application {
 
     @Override
     public void start(Stage stage) {
-
+        boolean db = checkForDB();
         // A SessionFactory is set up once for an application //
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure(new File(getClass().getResource(
@@ -64,28 +67,31 @@ public class Start extends Application {
             StandardServiceRegistryBuilder.destroy(registry);
         }
         final SessionFactory finalSessionFactory = sessionFactory;
-        Repository<Player> playerRepository = new SqlPlayerRepository(finalSessionFactory);
+        final GameSaveMetaHolderService gameSaveMetaHolderService = new GameSaveMetaHolderService();
+
+        Repository<Player> playerRepository = new SqlPlayerRepository(finalSessionFactory,
+                                                                             gameSaveMetaHolderService);
 
         final DefaultTurnService turnService = new DefaultTurnService(playerRepository,
-                new StoreService(new SqlStoreDatasource(finalSessionFactory), playerRepository)
-                , new GameInfoDatasource(), new SqlTurnDatasource(finalSessionFactory));
+                new StoreService(new SqlStoreDatasource(finalSessionFactory, gameSaveMetaHolderService), playerRepository)
+                , new SqlTurnDatasource(finalSessionFactory, gameSaveMetaHolderService));
 
-        PresenterContext context = new PresenterContext(new Module() {
-            @Override
-            public void configure(Binder binder) {
-                // class level bindings //
-                binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
-                binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
-                binder.bind(LocationDatasource.class).to(SqlLocationDatasource.class);
-                binder.bind(new TypeLiteral<Repository<Player>>() {}).to(SqlPlayerRepository.class);
-                binder.bind(new TypeLiteral<Repository<Mule>>() {}).to(SqlMuleRepository.class);
+        PresenterContext context = new PresenterContext(binder -> {
 
-                // instance level bindings //
-                binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
-                binder.bind(DefaultTurnService.class).toInstance(turnService);
+            // class level bindings //
+            binder.bind(StoreDatasource.class).to(SqlStoreDatasource.class);
+            binder.bind(TurnDatasource.class).to(SqlTurnDatasource.class);
+            binder.bind(LocationDatasource.class).to(data.concretesources.sql.SqlLocationDatasource.class);
+            binder.bind(new TypeLiteral<Repository<Player>>() {}).to(SqlPlayerRepository.class);
+            binder.bind(new TypeLiteral<Repository<Mule>>() {}).to(data.concretesources.sql.SqlMuleRepository.class);
+            binder.bind(new TypeLiteral<Repository<GameSaveMeta>>() {}).to(data.concretesources.sql.SqlGameSaveMetaRepository.class);
 
-                bindConstants(binder);
-            }
+            // instance level bindings //
+            binder.bind(SessionFactory.class).toInstance(finalSessionFactory);
+            binder.bind(DefaultTurnService.class).toInstance(turnService);
+            binder.bind(GameSaveMetaHolderService.class).toInstance(gameSaveMetaHolderService);
+
+            bindConstants(binder);
         }, stage, STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT);
 
         final URL music = getClass().getResource("/music/M.U.L.E. - C64.mp3");
@@ -230,6 +236,9 @@ public class Start extends Application {
         binder.bindConstant()
                 .annotatedWith(Names.named("InvertTurnOrderThreshold"))
                 .to(7);
+        binder.bindConstant()
+                .annotatedWith(Names.named("MaxRounds"))
+                .to(12);
 
         binder.requestStaticInjection(MapView.class);
     }

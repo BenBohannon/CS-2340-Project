@@ -1,5 +1,7 @@
 package data.concretesources;
 
+import model.entity.GameSaveMeta;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -12,6 +14,9 @@ public class TurnRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private
     int id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private GameSaveMeta gameSaveMeta;
 
     private int round;
     @ElementCollection(fetch = FetchType.EAGER)
@@ -40,5 +45,13 @@ public class TurnRecord {
 
     public final void setFinishedPlayerIds(List<Integer> pFinishedPlayerIds) {
         this.finishedPlayerIds = pFinishedPlayerIds;
+    }
+
+    public GameSaveMeta getGameSaveMeta() {
+        return gameSaveMeta;
+    }
+
+    public void setGameSaveMeta(GameSaveMeta gameSaveMeta) {
+        this.gameSaveMeta = gameSaveMeta;
     }
 }
