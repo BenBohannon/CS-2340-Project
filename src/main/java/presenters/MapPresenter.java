@@ -130,6 +130,7 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
 
         mulePlacing = null;
         isPlacingMule = false;
+        isPlacingMule = false;
         view.stopDisplayingMule();
     }
 

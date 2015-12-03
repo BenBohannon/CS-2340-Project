@@ -235,6 +235,9 @@ public class AuctionView extends View<AuctionPresenter> {
 //                    resetPane();
                     canFlip = true;
                     screenText.setText("Buying or selling?");
+                    if(i == 0) {
+                        popUpMessage("QWER to sell | ZXCV to buy", 2000L);
+                    }
 //                    System.out.println(2 + i * 5 + "\n");
 //                    pane2.getChildren().add(new Text("Buying or selling?"));
                     // Handle all movement events and visual timer
@@ -254,7 +257,11 @@ public class AuctionView extends View<AuctionPresenter> {
                     canMove = true;
                     screenText.setText("Start bidding");
                     clockTime = BIDDURATION;
+                    setLines();
                     pane2.getChildren().addAll(topBidLine, bottomBidLine, clock);
+                    if(i == 0) {
+                        popUpMessage("QWER to bid up | ZXCV to bid down", 2000L);
+                    }
 //                    System.out.println(3 + i * 5 + "\n");
                 });
             }
@@ -342,7 +349,10 @@ public class AuctionView extends View<AuctionPresenter> {
         auctionText.setFont(new Font(40));
         auctionText.setFill(Color.BLUE);
         Text money = new Text(80, 450, "MONEY:");
+        isBuying.clear();
         buySell.clear();
+        buyersInTrans.clear();
+        sellersInTrans.clear();
         updateResourcesAndMoney();
         for (int j = 0; j < playerRepository.size(); j++) {
             Text buyText = new Text("BUYING");
@@ -361,18 +371,26 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     public void setLines() {
-        // Occurs every timer a player is moved during the bidding round
-        if (highestBuyer() > topBidLine.getTranslateY() && highestBuyer() > TOPLIMIT) {
-            bottomBidLine.setTranslateY(highestBuyer());
+        // Occurs every timer a player is moved during the bidding round, and before every failed transaction
+        determineBuyersAndSellers();
+        bottomBidLine.setTranslateY(highestBuyer());
+        if (highestBuyer() > BOTTOMLIMIT - 10) {
+            bottomBidLine.setTranslateY(BOTTOMLIMIT - 10);
         }
-        if (lowestSeller() < bottomBidLine.getTranslateY() && lowestSeller() < BOTTOMLIMIT) {
-            topBidLine.setTranslateY(lowestSeller());
+        topBidLine.setTranslateY(lowestSeller());
+        if (lowestSeller() < TOPLIMIT + 60) {
+            topBidLine.setTranslateY(TOPLIMIT + 60);
         }
+        for (int j = 0; j < playerRepository.size(); j++) {
+            System.out.println("Player " + j + " isBuying: " + isBuying.get(j));
+        }
+        System.out.println("Highest Buyer: " + highestBuyer());
+        System.out.println("Lowest Seller: " + lowestSeller() + "\n");
+
         if(bottomBidLine.getTranslateY() - topBidLine.getTranslateY() < 10) {
             greenLine.setTranslateY(topBidLine.getTranslateY());
             transVal = 400 - greenLine.getTranslateY(); // Make sure the 400 - # matches up with the player bid values
 //            System.out.println(transVal);
-            determineBuyersAndSellers();
             if (!pane2.getChildren().contains(greenLine)) {
                 pane2.getChildren().addAll(greenLine);
             }
@@ -380,6 +398,7 @@ public class AuctionView extends View<AuctionPresenter> {
                 && pane2.getChildren().contains(greenLine)) {
             pane2.getChildren().removeAll(greenLine);
         }
+        determineBuyersAndSellers();
     }
 
     private void determineBuyersAndSellers() {
@@ -427,8 +446,9 @@ public class AuctionView extends View<AuctionPresenter> {
 
     private void moveBidderUp(int j) {
         double moveTo = playerImageList.get(j).getTranslateY() - 10;
+        double offset = isBuying.get(j)? 60 : 0;
         if (playerImageList.size() > j
-                && moveTo > TOPLIMIT - 15
+                && moveTo > TOPLIMIT - 10 + offset
                 && (moveTo > topBidLine.getTranslateY()
                 || !isBuying.get(j))) {
             playerImageList.get(j).setTranslateY(moveTo);
@@ -442,8 +462,9 @@ public class AuctionView extends View<AuctionPresenter> {
 
     private void moveBidderDown(int j) {
         double moveTo = playerImageList.get(j).getTranslateY() + 10;
+        double offset = !isBuying.get(j)? 60 : 0;
         if (playerImageList.size() > j
-                && moveTo < BOTTOMLIMIT + 15
+                && moveTo < BOTTOMLIMIT + 10 - offset
                 && (moveTo < bottomBidLine.getTranslateY() - 50
                 || isBuying.get(j))) {
             playerImageList.get(j).setTranslateY(moveTo);
@@ -466,18 +487,37 @@ public class AuctionView extends View<AuctionPresenter> {
     private void makeTransaction() {
         ArrayList<Integer> buyerInds = new ArrayList<Integer>();
         ArrayList<Integer> sellerInds = new ArrayList<Integer>();
+        setLines();
         for (int j = 0; j < playerRepository.size(); j++) {
 //            System.out.println("Gets to determining sellers");
-            System.out.println("Player " + j + " has the right bid: " + buySell.get(j).getText().equals("$" + transVal));
-            System.out.println("Player " + j + " isBuying: " + isBuying.get(j));
+//            System.out.println("Player " + j + " has the right bid: " + buySell.get(j).getText().equals("$" + transVal));
+//            System.out.println("Player " + j + " isBuying: " + isBuying.get(j));
             if(isBuying.get(j) && buySell.get(j).getText().equals("$" + transVal)) {
-                buyerInds.add(j);
+                if (playerRepository.get(j).getMoney() < transVal) {
+                    playerImageList.get(j).setTranslateY(BOTTOMLIMIT - 10);
+                    moveBidderDown(j);
+                    popUpMessage("Player " + (j + 1) + " has insufficient funds", 1000);
+                } else {
+                    buyerInds.add(j);
+                }
             }
             if(!isBuying.get(j) && buySell.get(j).getText().equals("$" + transVal)) {
-                sellerInds.add(j);
+                if ((resource.equals("Smithore") && playerRepository.get(j).getSmithore() <= 0)
+                        || (resource.equals("Food") && playerRepository.get(j).getFood() <= 0)
+                        || (resource.equals("Energy") && playerRepository.get(j).getEnergy() <= 0)) {
+                    playerImageList.get(j).setTranslateY(TOPLIMIT + 10);
+                    moveBidderUp(j);
+                    popUpMessage("Player " + (j + 1) + " has no " + resource + " to sell", 1000);
+                } else {
+                    sellerInds.add(j);
+                }
             }
         }
         //select random array val
+        if (buyerInds.size() < 1 || sellerInds.size() < 1) {
+//            System.out.println("seller or buyer inds is messed up");
+            return;
+        }
         int buyer = buyerInds.get((int) Math.floor(Math.random() * buyerInds.size())); // returns random buyer
         int seller = sellerInds.get((int) Math.floor(Math.random() * sellerInds.size())); // returns random seller
         playerRepository.get(seller).offsetMoney((int) transVal);
@@ -530,5 +570,27 @@ public class AuctionView extends View<AuctionPresenter> {
             moneyTexts.add(moneyText);
             pane2.getChildren().addAll(moneyText, quantText);
         }
+    }
+
+    private void popUpMessage(String msg, long duration) {
+        Text message = new Text(300, 300, msg);
+        message.setFill(Color.RED);
+        double strLen = msg.getBytes().length;
+        Rectangle box = new Rectangle(280, 280, strLen * 6.5 + 40, 30);
+        box.setFill(Color.BLACK);
+        Group messageBox = new Group(box, message);
+        pane2.getChildren().add(messageBox);
+        Timer endTimer = new Timer();
+        endTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() ->
+                {
+                    if(pane2.getChildren().contains(messageBox)) {
+                        pane2.getChildren().remove(messageBox);
+                    }
+                });
+            }
+        }, duration);
     }
 }
