@@ -1,7 +1,7 @@
 package model.service;
 
 import com.google.inject.Inject;
-import data.GameInfoDatasource;
+import com.google.inject.name.Named;
 import data.abstractsources.Repository;
 import data.abstractsources.TurnDatasource;
 import model.entity.Player;
@@ -12,28 +12,37 @@ import java.util.stream.Stream;
 /**
  * Service that will keep track of turns and rounds.
  *
- * Guice should be configured to inject this as a singleton for now, but this
- * can be changed after persistence is added.
+ * Guice should be configured to inject this as a singleton for
+ * now, but this can be changed after persistence is added.
  *
  * To use:
- * Not surprisingly, {@link DefaultTurnService#beginRound()} should be called at the
- * beginning of each round. This sets increments the round, as well as assures that
+ * Not surprisingly, {@link DefaultTurnService#beginRound()}
+ * should be called at the beginning of each round. This sets
+ * increments the round, as well as assures that
  * the TurnService is in the correct state.
  *
- * {@link DefaultTurnService#beginTurn()} should be called at the beginning of each
- * turn. This will calculate which {@link Player} should have the next turn, and begin that
- * turn by starting a countdown timer that lasts the length of the turn.
+ * {@link DefaultTurnService#beginTurn()} should be called at the
+ * beginning of each turn. This will calculate which {@link Player}
+ * should have the next turn, and begin that turn by starting a countdown
+ * timer that lasts the length of the turn.
  *
- * While the Player's turn is ongoing, the methods {@link DefaultTurnService#getTimeLeftInTurn()} and
+ * While the Player's turn is ongoing, the methods
+ * {@link DefaultTurnService#getTimeLeftInTurn()} and
  * {@link DefaultTurnService#getCurrentPlayer()} can be consumed.
  *
- * Additionally, while the turn is in progress, any number of {@link TurnEndListener}s can be added.
- * When the turn ends, the DefaultTurnService will call {@link TurnEndListener#onTurnEnd(Player)} on
- * each registered TurnEndListener.
- * NOTE: {@link presenters.Presenter}s should unregister themselves using {@link DefaultTurnService#removeTurnEndListener(TurnEndListener)}
- * when their views are no longer on screen, as this will impede garbage collection and likely produce unexpected results.
- * Thus, each Presenter that consumes the DefaultTurnService should check it for an ongoing turn and register a listener at the
- * beginning of its lifecycle.
+ * Additionally, while the turn is in progress, any number of
+ * {@link TurnEndListener}s can be added.
+ * When the turn ends, the DefaultTurnService will call
+ * {@link TurnEndListener#onTurnEnd(Player)} on each registered
+ * TurnEndListener.
+ *
+ * NOTE: {@link presenters.Presenter}s should unregister
+ * themselves using
+ * {@link DefaultTurnService#removeTurnEndListener(TurnEndListener)}
+ * when their views are no longer on screen, as this will impede garbage
+ * collection and likely produce unexpected results. Thus, each Presenter
+ * that consumes the DefaultTurnService should check it for an ongoing
+ * turn and register a listener at the beginning of its lifecycle.
  *
  * for other functionality:
  * @see DefaultTurnService#endTurn()
@@ -43,8 +52,10 @@ import java.util.stream.Stream;
  */
 public class DefaultTurnService {
 
-    private static final String TURN_IN_PROGRESS = "A turn is currently in progress.";
-    private static final String TURN_NOT_IN_PROGRESS = "No turn is currently in progress";
+    private static final String TURN_IN_PROGRESS =
+            "A turn is currently in progress.";
+    private static final String TURN_NOT_IN_PROGRESS =
+            "No turn is currently in progress";
     private static final long TURN_LENGTH_DEFAULT = 10000L;
     private static final long TURN_START_DELAY_DEFAULT = 2000L;
 
@@ -60,25 +71,31 @@ public class DefaultTurnService {
 
     private Repository<Player> playerRepository;
     private StoreService storeService;
-    private GameInfoDatasource gameInfoDatasource;
     private TurnDatasource turnDatasource;
 
     //players are added to this list after their turns are complete//
     private volatile List<Integer> finishedPlayerIds;
 
+    @Inject @Named("InvertTurnOrderThreshold")
+    private int invertTurnOrderThreshold;
+    @Inject @Named("MaxRounds")
+    private int maxRounds;
+
+    /**
+     * initialises turn service
+     * @param pPlayerRepository repository of players
+     * @param pStoreService store
+     */
     @Inject
-    public DefaultTurnService(Repository<Player> playerRepository, StoreService storeService,
-                              GameInfoDatasource gameInfoDatasource, TurnDatasource turnDatasource) {
-        this.playerRepository = playerRepository;
+    public DefaultTurnService(Repository<Player> pPlayerRepository,
+                              StoreService pStoreService,
+                              TurnDatasource pTurnDatasource) {
+
+        this.playerRepository = pPlayerRepository;
         turnEndListeners = new LinkedList<>();
         finishedPlayerIds = new LinkedList<>();
-        this.storeService = storeService;
-        this.gameInfoDatasource = gameInfoDatasource;
-        this.turnDatasource = turnDatasource;
-    }
-
-    public static int getFoodRequirement(int round) {
-        return (round / 4) + 3;
+        this.storeService = pStoreService;
+        this.turnDatasource = pTurnDatasource;
     }
 
     /**
@@ -87,15 +104,16 @@ public class DefaultTurnService {
      */
     public Player beginTurn() {
         if (turnInProgress) {
-            throw new RuntimeException(TURN_IN_PROGRESS);
+            throw new IllegalStateException(TURN_IN_PROGRESS);
         }
-        if (roundNumber > gameInfoDatasource.getMaxRounds()) {
-            throw new RuntimeException("Max rounds exceeded. Game should be over");
+        if (roundNumber > maxRounds) {
+            throw new IllegalStateException(
+                    "Max rounds exceeded. Game should be over");
         }
 
         Stream<Player> stream = playerRepository.getAll().stream()
                 .filter(player -> !(finishedPlayerIds.contains(player.getId())));
-        if (storeService.getMuleCount() > 7) {
+        if (storeService.getMuleCount() > invertTurnOrderThreshold) {
             //next player is highest score if mules remaining > 7//
             currentPlayer = stream
                     .max((p1, p2) -> p1.getScore() - p2.getScore())
@@ -107,10 +125,11 @@ public class DefaultTurnService {
                     .get();
         }
 
+//        float foodRatio = (float) currentPlayer.getFood()
+//                / gameInfoDatasource.getFoodRequirement(roundNumber);
 
-        //turn time in millis//
-        //float foodRatio = (float) currentPlayer.getFood() / getFoodRequirement(roundNumber);
-        //turnDuration = (int) (currentPlayer.getPTU(GameInfoDatasource.getBTU(4)) + currentPlayer.getPTU(GameInfoDatasource.getBTU(91)) * foodRatio);
+        //turnDuration = (int) (currentPlayer.getPTU(GameInfoDataSource.BTU(4))
+        // + currentPlayer.getPTU(GameInfoDataSource.BTU(91)) * foodRatio);
         turnDuration = TURN_LENGTH_DEFAULT;
         long delay = TURN_START_DELAY_DEFAULT;
 
@@ -149,7 +168,7 @@ public class DefaultTurnService {
             double elapsed = now - turnStartTime;
             return (turnDuration - elapsed) / turnDuration;
         } else {
-            throw new IllegalStateException("No turn in progress.");
+            return 0.0;
         }
     }
 
@@ -163,15 +182,17 @@ public class DefaultTurnService {
 
     /**
      * The current Player is the Player whose turn is currently in progress
-     * @return the Player whose turn is in progress, or null if none are in progress
+     * @return the Player whose turn is in progress,
+     *              or null if none are in progress
      */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
     /**
-     * If no rounds have begun, the round is zero. The first round is one, stretching
-     * to the maximum number of rounds, defined in {@link GameInfoDatasource#getMaxRounds()}
+     * If no rounds have begun, the round is zero.
+     * The first round is one, stretching
+     * to the maximum number of rounds
      * @return the round number
      */
     public int getRoundNumber() {
@@ -180,12 +201,10 @@ public class DefaultTurnService {
 
     /**
      * @see DefaultTurnService#isTurnInProgress()
-     * @return true if all Players' turns have ended, false otherwise
+     * @return true if all Players' turns have ended,
+     *          false otherwise
      */
     public boolean isAllTurnsOver() {
-//        System.out.println("finished ids size: " + finishedPlayerIds.size());
-//        System.out.println("player repository size: " + playerRepository.getAll().size());
-        //TODO something null here
         return finishedPlayerIds.size() == playerRepository.getAll().size();
     }
 
@@ -200,7 +219,9 @@ public class DefaultTurnService {
     public int beginRound() {
         if (timer != null
                 || turnInProgress
-                || !((finishedPlayerIds.size() == 0) || (finishedPlayerIds.size() == playerRepository.getAll().size()))) {
+                || !((finishedPlayerIds.size() == 0) || (
+                finishedPlayerIds.size()
+                        == playerRepository.getAll().size()))) {
             throw new IllegalStateException(TURN_IN_PROGRESS);
         }
         flushRound(roundNumber + 1);
@@ -221,11 +242,13 @@ public class DefaultTurnService {
     }
 
     /**
-     * Adds a listener that will be invoked when the currently ongoing turn ends.
+     * Adds a listener that will be invoked
+     * when the currently ongoing turn ends.
      *
      * All {@link TurnEndListener}s are removed after the end of the turn
      *
-     * TurnEndListeners will be invoked before the {@link #endTurn()} method returns.
+     * TurnEndListeners will be invoked
+     * before the {@link #endTurn()} method returns.
      *
      * @param listener the listener that will be notified of the turn end
      * @throws IllegalStateException if no turn is ongoing
@@ -252,7 +275,8 @@ public class DefaultTurnService {
     }
 
     /**
-     * Cancels this round and sets the turnmanager's state as if the round had just begun.
+     * Cancels this round and sets the
+     * turnmanager's state as if the round had just begun.
      * This includes removing all TurnEndListeners.
      * Additionally, sets the round number.
      * @param pRoundNumber the new round number
@@ -271,13 +295,16 @@ public class DefaultTurnService {
         this.roundNumber = pRoundNumber;
     }
 
+    /**
+     * calculates rank of all players
+     */
     public void calculateRank() {
         Object[] playersByRank = playerRepository.getAll().toArray();
         for (int i = 0; i < playersByRank.length; i++) {
             int big = i;
             for (int j = i; j < playersByRank.length; j++) {
                 Player p1 = (Player) playersByRank[j];
-                Player p2 = (Player) playersByRank[i];
+                Player p2 = (Player) playersByRank[big];
                 if (p1.getMoney() > p2.getMoney()) {
                     big = j;
                 }
@@ -303,8 +330,7 @@ public class DefaultTurnService {
         stopTimers();
         Player player = currentPlayer;
         calculateRank();
-        System.out.println(currentPlayer.getRank());
-        //currentPlayer = null;
+        currentPlayer = null;
         turnInProgress = false;
         finishedPlayerIds.add(player.getId());
         turnStartTime = -1;
@@ -325,5 +351,21 @@ public class DefaultTurnService {
     public void initializeFromDatasource() {
         flushRound(turnDatasource.getRound());
         finishedPlayerIds = turnDatasource.getFinishedPlayerIds();
+    }
+
+    public void setInvertTurnOrderThreshold(int pInvertTurnOrderThreshold) {
+        this.invertTurnOrderThreshold = pInvertTurnOrderThreshold;
+    }
+
+    public boolean isListening(TurnEndListener object) {
+        return turnInProgress && turnEndListeners.contains(object);
+    }
+
+    public int getMaxRounds() {
+        return maxRounds;
+    }
+
+    public void setMaxRounds(int maxRounds) {
+        this.maxRounds = maxRounds;
     }
 }

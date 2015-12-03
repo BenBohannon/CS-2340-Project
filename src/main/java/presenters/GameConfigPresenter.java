@@ -25,6 +25,12 @@ public class GameConfigPresenter extends Presenter<GameConfigView> {
         initialStoreState = pInitialStoreState;
     }
 
+    /**
+     * switches presenter to player config screen
+     * @param difficulty selected difficulty
+     * @param map selected map
+     * @param numPlayers selected num of players
+     */
     public final void finishConfigure(String difficulty, String map, int numPlayers) {
         startTransaction();
         initStoreState();
@@ -39,7 +45,7 @@ public class GameConfigPresenter extends Presenter<GameConfigView> {
 
     private void startTransaction() {
         if (session != null) {
-            throw new RuntimeException("Session instance already created; something's up.");
+            throw new IllegalStateException("Session instance already created; something's up.");
         }
         session = sessionFactory.openSession();
         session.beginTransaction();
@@ -47,7 +53,7 @@ public class GameConfigPresenter extends Presenter<GameConfigView> {
 
     private void closeTransaction() {
         if (session == null) {
-            throw new RuntimeException("Session is null; something's up.");
+            throw new IllegalStateException("Session is null; something's up.");
         }
         session.getTransaction().commit();
         session.flush();

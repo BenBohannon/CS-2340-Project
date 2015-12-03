@@ -1,9 +1,10 @@
-package data.concretesources;
+package data.concretesources.sql;
 
 import com.google.inject.Inject;
 import data.abstractsources.LocationDatasource;
 import model.map.Locatable;
 import model.map.PersistableLocatable;
+import model.service.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,14 +17,16 @@ import java.util.stream.Collectors;
  */
 public class SqlLocationDatasource implements LocationDatasource {
 
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-    Set<PersistableLocatable> records;
+    private GameSaveMetaHolderService gameSaveMetaHolderService;
+
+    private Set<PersistableLocatable> records;
 
     @Inject
-    public SqlLocationDatasource(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-        populateRecords();
+    public SqlLocationDatasource(SessionFactory pSessionFactory, GameSaveMetaHolderService pGameSaveMetaHolder) {
+        sessionFactory = pSessionFactory;
+        gameSaveMetaHolderService = pGameSaveMetaHolder;
     }
 
     private void populateRecords() {
@@ -32,7 +35,9 @@ public class SqlLocationDatasource implements LocationDatasource {
         }
 
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("FROM PersistableLocatable");
+        String hqlString = String.format("FROM PersistableLocatable P WHERE P.gameSaveMeta.id = %d",
+                gameSaveMetaHolderService.getGameSaveMeta().getId());
+        Query query = session.createQuery(hqlString);
 
         records.clear();
         if (query.list() != null) {
@@ -67,9 +72,14 @@ public class SqlLocationDatasource implements LocationDatasource {
 
     @Override
     public void save(int row, int col, Locatable locatable) {
+        if (records == null) {
+            populateRecords();
+        }
+
         PersistableLocatable persistableLocatable = null;
-        if (locatable != null && locatable instanceof PersistableLocatable) {
+        if (locatable instanceof PersistableLocatable) {
             persistableLocatable = (PersistableLocatable) locatable;
+            persistableLocatable.setGameSaveMeta(gameSaveMetaHolderService.getGameSaveMeta());
         } else {
             throw new IllegalArgumentException("locatable is null or is not of type PersistableLocatable");
         }
@@ -85,11 +95,17 @@ public class SqlLocationDatasource implements LocationDatasource {
 
     @Override
     public void saveAll(int row, int col, Collection<Locatable> locatables) {
+        if (records == null) {
+            populateRecords();
+        }
+
         Set<PersistableLocatable> additions = locatables.stream()
                 .map(l -> (PersistableLocatable) l)
                 .collect(Collectors.toSet());
 
         for (PersistableLocatable ele : additions) {
+            ele.setGameSaveMeta(gameSaveMetaHolderService.getGameSaveMeta());
+
             if (records.contains(ele)) {
                 records.remove(ele);
             }
@@ -102,7 +118,7 @@ public class SqlLocationDatasource implements LocationDatasource {
 
     @Override
     public void remove(Locatable locatable) {
-        if (locatable == null || !(locatable instanceof PersistableLocatable)) {
+        if (!(locatable instanceof PersistableLocatable)) {
             throw new IllegalArgumentException("argument must be non-null instance of PersistableLocatable");
         }
 

@@ -1,7 +1,9 @@
-package data.concretesources;
+package data.concretesources.sql;
 
 import com.google.inject.Inject;
 import data.abstractsources.TurnDatasource;
+import model.entity.*;
+import model.service.*;
 import org.hibernate.*;
 
 import java.util.LinkedList;
@@ -14,12 +16,15 @@ public class SqlTurnDatasource implements TurnDatasource {
 
     private SessionFactory sessionFactory;
 
-    private TurnRecord record;
+    private GameSaveMetaHolderService gameSaveMetaHolder;
+
+    private data.concretesources.TurnRecord record;
 
     @Inject
-    public SqlTurnDatasource(SessionFactory pSessionFactory) {
+    public SqlTurnDatasource(SessionFactory pSessionFactory,
+                             GameSaveMetaHolderService pGameSaveMetaHolder) {
         this.sessionFactory = pSessionFactory;
-        populateRecord();
+        gameSaveMetaHolder = pGameSaveMetaHolder;
     }
 
     private void persist() {
@@ -35,11 +40,18 @@ public class SqlTurnDatasource implements TurnDatasource {
 
     private void populateRecord() {
         Session session = sessionFactory.openSession();
-        org.hibernate.Query query = session.createQuery("FROM TurnRecord");
-        List<TurnRecord> list = query.list();
+
+        String hqlString = String.format("FROM TurnRecord TR WHERE TR.gameSaveMeta.id = %d",
+                gameSaveMetaHolder.getGameSaveMeta().getId());
+        org.hibernate.Query query = session.createQuery(hqlString);
+
+        List<data.concretesources.TurnRecord> list = query.list();
         if (list == null || list.size() < 1) {
-            record = new TurnRecord();
+            record = new data.concretesources.TurnRecord();
+
             record.setFinishedPlayerIds(new LinkedList<>());
+            record.setGameSaveMeta(gameSaveMetaHolder.getGameSaveMeta());
+
         } else {
             record = list.get(0);
         }
@@ -48,6 +60,10 @@ public class SqlTurnDatasource implements TurnDatasource {
 
     @Override
     public final void saveRound(int round) {
+        if (record == null) {
+            populateRecord();
+        }
+
         record.setRound(round);
 
         persist();
@@ -55,6 +71,10 @@ public class SqlTurnDatasource implements TurnDatasource {
 
     @Override
     public final void saveFinishedPlayerIds(List<Integer> finishedPlayerIds) {
+        if (record == null) {
+            populateRecord();
+        }
+
         record.setFinishedPlayerIds(finishedPlayerIds);
 
         persist();

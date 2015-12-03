@@ -1,13 +1,15 @@
-package data.concretesources;
+package data.concretesources.sql;
 
 import com.google.inject.Inject;
 import data.abstractsources.Repository;
-import model.entity.Player;
+import model.entity.*;
+import model.service.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Created by brian on 10/26/15.
@@ -16,12 +18,15 @@ public class SqlPlayerRepository implements Repository<Player> {
 
     private SessionFactory sessionFactory;
 
+    private GameSaveMetaHolderService gameSaveMetaHolder;
+
     private Set<Player> records;
 
     @Inject
-    public SqlPlayerRepository(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-        populateRecords();
+    public SqlPlayerRepository(SessionFactory pSessionFactory,
+                               GameSaveMetaHolderService pGameSaveMetaHolder) {
+        this.sessionFactory = pSessionFactory;
+        gameSaveMetaHolder = pGameSaveMetaHolder;
     }
 
     private void populateRecords() {
@@ -30,7 +35,10 @@ public class SqlPlayerRepository implements Repository<Player> {
         }
 
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("FROM Player");
+
+        String hqlString = String.format("FROM Player P WHERE P.gameSaveMeta.id = %d",
+                gameSaveMetaHolder.getGameSaveMeta().getId());
+        Query query = session.createQuery(hqlString);
 
         records.clear();
         if (query.list() != null) {
@@ -64,7 +72,7 @@ public class SqlPlayerRepository implements Repository<Player> {
     public Player get(Object id) {
         populateRecords();
 
-        if (id == null || !(id instanceof Integer)) {
+        if (!(id instanceof Integer)) {
             throw new IllegalArgumentException("id null or not int");
         }
 
@@ -79,6 +87,9 @@ public class SqlPlayerRepository implements Repository<Player> {
     @Override
     public Player save(Player entity) {
         populateRecords();
+
+        entity.setGameSaveMeta(gameSaveMetaHolder.getGameSaveMeta());
+
         if (records.stream()
                 .anyMatch(player -> player.getId() == entity.getId())) {
             records.remove(entity);

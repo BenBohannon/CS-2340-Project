@@ -2,7 +2,11 @@ package view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TextField;
+import javafx.scene.control.RadioButton;
 import javafx.scene.paint.Color;
 import presenters.PlayerConfigPresenter;
 
@@ -40,17 +44,25 @@ public class PlayerConfigView extends View<PlayerConfigPresenter> {
 
     /**
      * event handler wired into the fxml control thanks to the fxml file
+     * @param event event handler
      */
     @FXML
     public final void handleFinishButtonAction(ActionEvent event) {
         if (validateForm()) {
             //can make calls on presenter//
-            //notice that the presenter is already of the correct type, because it was injected into the View class.//
+            //notice that the presenter is already of the correct type,
+            // because it was injected into the View class.//
 
-            getPresenter().finish(colorPicker.getValue(), nameTextField.getText(), ((RadioButton) raceToggleGroup.getSelectedToggle()).getText());
+            getPresenter().finish(colorPicker.getValue(),
+                    nameTextField.getText(),
+                    ((RadioButton) raceToggleGroup.getSelectedToggle()).getText());
         }
     }
 
+    /**
+     * checks for form correctness
+     * @return if form is properly filled out
+     */
     private boolean validateForm() {
         boolean allValid = true;
 
@@ -73,19 +85,26 @@ public class PlayerConfigView extends View<PlayerConfigPresenter> {
     }
 
     /**
-     * called from the presenter
+     * shows color already chosen error
      */
     public final void showColorAlreadyChosen() {
         colorValidationLabel.setTextFill(red);
         mainValidationLabel.setTextFill(red);
     }
 
+
+    /**
+     * shows name already chosen error
+     */
     public final void showNameAlreadyChosen() {
         nameValidationLabel.setTextFill(red);
         nameValidationLabel.setText("name already used!");
         mainValidationLabel.setTextFill(red);
     }
 
+    /**
+     * shows race already chosen error
+     */
     public final void showRaceAlreadyChosen() {
         raceValidationLabel.setTextFill(red);
         mainValidationLabel.setTextFill(red);

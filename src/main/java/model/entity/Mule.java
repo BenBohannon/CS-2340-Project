@@ -17,6 +17,9 @@ public class Mule extends PersistableLocatable {
     @Enumerated
     private MuleType type;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private GameSaveMeta gameSaveMeta;
+
     public Mule() {
         //Required default constructor for hibernate//
     }
@@ -25,7 +28,11 @@ public class Mule extends PersistableLocatable {
         this.type = pType;
     }
 
-    public final MuleType getType() {
+    /**
+     * gets type of mule
+     * @return type of mule
+     */
+    public MuleType getType() {
         return type;
     }
 
@@ -56,5 +63,15 @@ public class Mule extends PersistableLocatable {
         Mule other = (Mule) obj;
 
         return other.getId() == getId();
+    }
+
+    @Override
+    public GameSaveMeta getGameSaveMeta() {
+        return gameSaveMeta;
+    }
+
+    @Override
+    public void setGameSaveMeta(GameSaveMeta gameSaveMeta) {
+        this.gameSaveMeta = gameSaveMeta;
     }
 }

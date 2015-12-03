@@ -1,4 +1,4 @@
-package data.concretesources;
+package data.concretesources.memory;
 
 import data.abstractsources.Repository;
 import model.entity.Player;
@@ -6,7 +6,9 @@ import model.entity.Player;
 import java.util.ArrayList;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Temporary implementation of a Repository<Player> that we can use
@@ -20,8 +22,11 @@ public class MemoryPlayerRepository implements Repository<Player> {
         return nextPlayerId++;
     }
 
-    private ArrayList<Player> players;
+    private List<Player> players;
 
+    /**
+     * initialises an ArrayList of players
+     */
     public MemoryPlayerRepository() {
         players = new ArrayList<>();
     }
@@ -40,7 +45,12 @@ public class MemoryPlayerRepository implements Repository<Player> {
         }
         int playerId = (int) id;
         return players.stream()
-                .filter(player -> player.getId() == playerId)
+                .filter(new Predicate<Player>() {
+                    @Override
+                    public boolean test(Player player) {
+                        return player.getId() == playerId;
+                    }
+                })
                 .findAny()
                 .get();
     }
@@ -50,9 +60,7 @@ public class MemoryPlayerRepository implements Repository<Player> {
         if (entity.getId() == -1) {
             entity.setId(getNextPlayerId());
         }
-        if (players.contains(entity)) {
-            //no action needed in memory//
-        } else {
+        if (!(players.contains(entity))) {
             players.add(entity);
         }
         return entity;
@@ -65,7 +73,12 @@ public class MemoryPlayerRepository implements Repository<Player> {
         }
         int playerId = (int) id;
         Player p = players.stream()
-                .filter(player -> player.getId() == playerId)
+                .filter(new Predicate<Player>() {
+                    @Override
+                    public boolean test(Player player) {
+                        return player.getId() == playerId;
+                    }
+                })
                 .findAny()
                 .get();
         players.remove(p);
@@ -74,7 +87,6 @@ public class MemoryPlayerRepository implements Repository<Player> {
 
     @Override
     public int size() {
-        int size = players.size();
-        return size;
+        return players.size();
     }
 }
