@@ -3,7 +3,6 @@
  */
 
 import com.google.inject.Binder;
-import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import data.abstractsources.LocationDatasource;
@@ -15,7 +14,10 @@ import data.concretesources.sql.SqlPlayerRepository;
 import data.concretesources.sql.SqlStoreDatasource;
 import data.concretesources.sql.SqlTurnDatasource;
 import javafx.application.Application;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.entity.GameSaveMeta;
 import model.entity.Mule;
 import model.entity.Player;
@@ -30,6 +32,7 @@ import presenters.PresenterContext;
 import view.MapView;
 
 import java.io.File;
+import java.net.URL;
 
 public class Start extends Application {
 
@@ -91,6 +94,16 @@ public class Start extends Application {
             bindConstants(binder);
         }, stage, STARTING_WINDOW_WIDTH, STARTING_WINDOW_HEIGHT);
 
+        final URL music = getClass().getResource("/music/M.U.L.E. - C64.mp3");
+        final Media m = new Media(music.toString());
+        final MediaPlayer mp = new MediaPlayer(m);
+        mp.setOnEndOfMedia(new Runnable() {
+            @Override
+            public void run() {
+                mp.seek(Duration.ZERO);
+            }
+        });
+        mp.play();
         context.showScreen("home_screen.fxml");
     }
 
