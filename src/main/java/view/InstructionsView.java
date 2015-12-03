@@ -12,12 +12,8 @@ import presenters.InstructionsPresenter;
 public class InstructionsView extends View<InstructionsPresenter> {
 
     @FXML
-    private Button start;
-    @FXML
-    private Button cancel;
-
-    @FXML
-    public final void handleFinishButtonAction(ActionEvent event) throws NotFoundException {
-        getPresenter().finish(start.isPressed(), cancel.isPressed());
+    public final void handleFinishButtonAction(ActionEvent event) {
+            getPresenter().finish();
     }
+
 }
