@@ -108,21 +108,21 @@ public class DefaultTurnService {
         }
         if (roundNumber > maxRounds) {
             throw new IllegalStateException(
-                    "Max rounds exceeded. Game should be over");
+                                                   "Max rounds exceeded. Game should be over");
         }
 
         Stream<Player> stream = playerRepository.getAll().stream()
-                .filter(player -> !(finishedPlayerIds.contains(player.getId())));
+                                        .filter(player -> !(finishedPlayerIds.contains(player.getId())));
         if (storeService.getMuleCount() > invertTurnOrderThreshold) {
             //next player is highest score if mules remaining > 7//
             currentPlayer = stream
-                    .max((p1, p2) -> p1.getScore() - p2.getScore())
-                    .get();
+                                    .max((p1, p2) -> p1.getScore() - p2.getScore())
+                                    .get();
         } else {
             //next player is lowest score if mules remaining <= 7//
             currentPlayer = stream
-                    .min((p1, p2) -> p1.getScore() - p2.getScore())
-                    .get();
+                                    .min((p1, p2) -> p1.getScore() - p2.getScore())
+                                    .get();
         }
 
 //        float foodRatio = (float) currentPlayer.getFood()
@@ -218,10 +218,10 @@ public class DefaultTurnService {
      */
     public int beginRound() {
         if (timer != null
-                || turnInProgress
-                || !((finishedPlayerIds.size() == 0) || (
-                finishedPlayerIds.size()
-                        == playerRepository.getAll().size()))) {
+                    || turnInProgress
+                    || !((finishedPlayerIds.size() == 0) || (
+                                                                    finishedPlayerIds.size()
+                                                                            == playerRepository.getAll().size()))) {
             throw new IllegalStateException(TURN_IN_PROGRESS);
         }
         flushRound(roundNumber + 1);

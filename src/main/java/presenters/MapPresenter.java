@@ -66,7 +66,7 @@ public class MapPresenter extends Presenter<MapView>
                 //Get random money to add/subtract from a player.
                 Random rand = new Random();
                 int deltaMoney = rand.nextInt(getMaxRandomEventMoney() - getMinRandomEventMoney())
-                        + getMinRandomEventMoney();
+                                         + getMinRandomEventMoney();
 
                 //Get a winning player.
                 Player eventPlayer = getWinningPlayer();
@@ -81,10 +81,10 @@ public class MapPresenter extends Presenter<MapView>
 
                     if (deltaMoney < 0) {
                         getView().showRandomEventText("Random event! "
-                                + eventPlayer.getName() + " loses " + deltaMoney + " money!");
+                                                              + eventPlayer.getName() + " loses " + deltaMoney + " money!");
                     } else {
                         getView().showRandomEventText("Random event! "
-                                + eventPlayer.getName() + " gains " + deltaMoney + " money!");
+                                                              + eventPlayer.getName() + " gains " + deltaMoney + " money!");
                     }
 
                     //Start the turn after the text has disappeared.

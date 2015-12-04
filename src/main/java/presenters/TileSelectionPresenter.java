@@ -154,12 +154,12 @@ public class TileSelectionPresenter extends Presenter {
         players.addAll(getPlayerRepository().getAll());
 
         boolean tileIsOwned = players.stream()
-                .anyMatch(new Predicate<Player>() {
-                    @Override
-                    public boolean test(Player p) {
-                        return p.getOwnedProperties().contains(tile);
-                    }
-                });
+                                      .anyMatch(new Predicate<Player>() {
+                                          @Override
+                                          public boolean test(Player p) {
+                                              return p.getOwnedProperties().contains(tile);
+                                          }
+                                      });
         if (!tileIsOwned && tileID != (rows * cols) / 2) {
             switch (event.getCode()) {
                 case A:
@@ -285,7 +285,7 @@ public class TileSelectionPresenter extends Presenter {
         ImageView img = MapView.createImageView(type.getImagePath(), tileDimensions, tileDimensions);
         addImageToPane(img, (int) p.getX(), (int) p.getY());
     }
-    
+
     private void addImageToPane(ImageView view, int x, int y) {
         view.setX(x);
         view.setY(y);
