@@ -83,6 +83,7 @@ public class AuctionView extends View<AuctionPresenter> {
     /**
      * initialises window.
      */
+    @FXML
     public void initialize() {
         pane.getChildren().add(pane2);
         List<Player> playerList = new LinkedList<>(playerRepository.getAll());
@@ -105,9 +106,9 @@ public class AuctionView extends View<AuctionPresenter> {
 
             playerName.setTranslateX(X_OFFSET + X_OFFSET * i);
             playerName.setTranslateY(370);
-            Text resources = new Text(playerRepository.get(i).getSmithore() + " Smithore\n"
-                    + playerRepository.get(i).getEnergy() + " Energy\n"
-                    + playerRepository.get(i).getFood() + " Food");
+            Text resources = new Text(playerList.get(i).getSmithore() + " Smithore\n"
+                    + playerList.get(i).getEnergy() + " Energy\n"
+                    + playerList.get(i).getFood() + " Food");
             resourceLists.add(resources);
             resources.setTranslateX(150 + 150 * i);
             resources.setTranslateY(450);
@@ -447,9 +448,9 @@ public class AuctionView extends View<AuctionPresenter> {
             Text buyText = new Text("BUYING");
             buyText.setFill(Color.GREEN);
             buySell.add(buyText);
-            isBuying.add(new Boolean(true));
-            buyersInTrans.add(new Boolean(false));
-            sellersInTrans.add(new Boolean(false));
+            isBuying.add(true);
+            buyersInTrans.add(false);
+            sellersInTrans.add(false);
             buyText.setTranslateX(150 + 150 * j);
             buyText.setTranslateY(450);
             resetCharacters();
@@ -574,15 +575,16 @@ public class AuctionView extends View<AuctionPresenter> {
     }
 
     private void makeTransaction() {
-        ArrayList<Integer> buyerInds = new ArrayList<Integer>();
-        ArrayList<Integer> sellerInds = new ArrayList<Integer>();
+        ArrayList<Integer> buyerInds = new ArrayList<>();
+        ArrayList<Integer> sellerInds = new ArrayList<>();
         setLines();
+        List<Player> playerList = new ArrayList<>(playerRepository.getAll());
         for (int j = 0; j < playerRepository.size(); j++) {
 //            System.out.println("Gets to determining sellers");
 //            System.out.println("Player " + j + " has the right bid: " + buySell.get(j).getText().equals("$" + transVal));
 //            System.out.println("Player " + j + " isBuying: " + isBuying.get(j));
             if(isBuying.get(j) && buySell.get(j).getText().equals("$" + transVal)) {
-                if (playerRepository.get(j).getMoney() < transVal) {
+                if (playerList.get(j).getMoney() < transVal) {
                     playerImageList.get(j).setTranslateY(BOTTOMLIMIT - 10);
                     moveBidderDown(j);
                     popUpMessage("Player " + (j + 1) + " has insufficient funds", 1000);
@@ -591,9 +593,9 @@ public class AuctionView extends View<AuctionPresenter> {
                 }
             }
             if(!isBuying.get(j) && buySell.get(j).getText().equals("$" + transVal)) {
-                if ((resource.equals("Smithore") && playerRepository.get(j).getSmithore() <= 0)
-                        || (resource.equals("Food") && playerRepository.get(j).getFood() <= 0)
-                        || (resource.equals("Energy") && playerRepository.get(j).getEnergy() <= 0)) {
+                if ((resource.equals("Smithore") && playerList.get(j).getSmithore() <= 0)
+                        || (resource.equals("Food") && playerList.get(j).getFood() <= 0)
+                        || (resource.equals("Energy") && playerList.get(j).getEnergy() <= 0)) {
                     playerImageList.get(j).setTranslateY(TOPLIMIT + 10);
                     moveBidderUp(j);
                     popUpMessage("Player " + (j + 1) + " has no " + resource + " to sell", 1000);
@@ -609,18 +611,20 @@ public class AuctionView extends View<AuctionPresenter> {
         }
         int buyer = buyerInds.get((int) Math.floor(Math.random() * buyerInds.size())); // returns random buyer
         int seller = sellerInds.get((int) Math.floor(Math.random() * sellerInds.size())); // returns random seller
-        playerRepository.get(seller).offsetMoney((int) transVal);
-        playerRepository.get(buyer).offsetMoney(- (int) transVal);
+        playerList.get(seller).offsetMoney((int) transVal);
+        playerList.get(buyer).offsetMoney(- (int) transVal);
         if(resource.equals("Smithore")) {
-            playerRepository.get(buyer).offsetSmithore(1);
-            playerRepository.get(seller).offsetSmithore(-1);
+            playerList.get(buyer).offsetSmithore(1);
+            playerList.get(seller).offsetSmithore(-1);
         } else if(resource.equals("Food")) {
-            playerRepository.get(buyer).offsetFood(1);
-            playerRepository.get(seller).offsetFood(-1);
+            playerList.get(buyer).offsetFood(1);
+            playerList.get(seller).offsetFood(-1);
         } else if(resource.equals("Energy")) {
-            playerRepository.get(buyer).offsetEnergy(1);
-            playerRepository.get(seller).offsetEnergy(-1);
+            playerList.get(buyer).offsetEnergy(1);
+            playerList.get(seller).offsetEnergy(-1);
         }
+        playerRepository.save(playerList.get(buyer));
+        playerRepository.save(playerList.get(seller));
 //        System.out.println("Transaction Occured!!!");
         updateResourcesAndMoney();
     }
@@ -639,17 +643,18 @@ public class AuctionView extends View<AuctionPresenter> {
         }
         resourceTexts.clear();
         moneyTexts.clear();
+        List<Player> playerList = new ArrayList<>(playerRepository.getAll());
         for (int j = 0; j < playerRepository.size(); j++) {
-            Text moneyText = new Text("$" + playerRepository.get(j).getMoney());
+            Text moneyText = new Text("$" + playerList.get(j).getMoney());
             moneyText.setTranslateX(150 + 150 * j);
             moneyText.setTranslateY(470);
             Text quantText;
             if (resource.equals("Smithore")) {
-                quantText = new Text(playerRepository.get(j).getSmithore() + " " + resource);
+                quantText = new Text(playerList.get(j).getSmithore() + " " + resource);
             } else if(resource.equals("Food")) {
-                quantText = new Text(playerRepository.get(j).getFood() + " " + resource);
+                quantText = new Text(playerList.get(j).getFood() + " " + resource);
             } else if(resource.equals("Energy")){
-                quantText = new Text(playerRepository.get(j).getEnergy() + " " + resource);
+                quantText = new Text(playerList.get(j).getEnergy() + " " + resource);
             } else {
                 quantText = new Text("dawg wtf check line 355 of AuctionView");
             }
