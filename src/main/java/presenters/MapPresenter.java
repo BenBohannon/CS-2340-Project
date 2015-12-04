@@ -104,9 +104,10 @@ public class MapPresenter extends Presenter<MapView>
             } else {
                 beginTurn();
             }
-            if (isPlacingMule) {
-                getView().displayMule();
-            }
+        }
+
+        if (isPlacingMule) {
+            getView().displayMule();
         }
     }
 
