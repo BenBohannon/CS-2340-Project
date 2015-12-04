@@ -24,7 +24,7 @@
       </fx:define>
       <RadioButton text="Easy" toggleGroup="$difficultyToggleGroup" />
       <RadioButton text="Medium" toggleGroup="$difficultyToggleGroup" />
-      <RadioButton text="Large" toggleGroup="$difficultyToggleGroup" />
+      <RadioButton text="Hard" toggleGroup="$difficultyToggleGroup" />
     </VBox>
     <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
       <fx:define>
