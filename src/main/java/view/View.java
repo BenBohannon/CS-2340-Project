@@ -1,7 +1,15 @@
 package view;
 
 import com.google.inject.Inject;
+import javafx.application.Platform;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import presenters.Presenter;
+
+import javafx.scene.text.Font;
+import java.util.Timer;
+import java.util.TimerTask;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -26,5 +34,51 @@ public abstract class View<T extends Presenter> {
 
     public final void setPresenter(T pPresenter) {
         presenter = pPresenter;
+    }
+
+    /**
+     * prints text to screen as an overlay
+     * @param string what you want to print
+     * @param xloc x coordinate
+     * @param yloc y coordinate
+     * @param color color of text, null for default
+     * @param startTime in ms
+     * @param endTime in ms
+     * @param pane pane it is using
+     */
+    public void printTextToScreen(String string, double xloc, double yloc, Color color, long startTime, long endTime, Pane pane) {
+        //startTime tells the timer when to start after being called. Measured in milliseconds
+        Text text = new Text(string);
+        text.setFont(Font.getDefault());
+        if (color != null) { // pass in null to Paint parameter for text to be window default
+            text.setFill(color);
+        }
+        text.setTranslateX(xloc);
+        text.setTranslateY(yloc);
+        Timer timer1 = new Timer();
+        timer1.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                Platform.runLater(() ->
+                                {
+                                    pane.getChildren().add(text);
+                                    //OR replace pane with pane2
+                                });
+                            }
+                        },
+                startTime);
+        Timer timer2 = new Timer();
+        timer2.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                Platform.runLater(() ->
+                                {
+                                    if(!pane.getChildren().isEmpty() && pane.getChildren().contains(text)) {
+                                        pane.getChildren().remove(text);
+                                    }
+                                });
+                            }
+                        },
+                endTime);
     }
 }

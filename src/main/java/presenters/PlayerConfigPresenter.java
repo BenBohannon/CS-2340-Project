@@ -98,7 +98,7 @@ public class PlayerConfigPresenter extends Presenter<PlayerConfigView> {
                 PlayerConfigPresenter nextPresenter = (PlayerConfigPresenter) getContext().showScreen("player_config.fxml");
                 nextPresenter.setNumPlayersLeft(--numPlayersLeft);
             } else {
-                getContext().showScreen("map_grid_tile_select.fxml");
+                getContext().showScreen("instructions.fxml");
             }
         }
     }
