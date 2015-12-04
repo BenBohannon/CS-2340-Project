@@ -56,7 +56,7 @@ public class DefaultTurnService {
             "A turn is currently in progress.";
     private static final String TURN_NOT_IN_PROGRESS =
             "No turn is currently in progress";
-    private static final long TURN_LENGTH_DEFAULT = 10000L;
+    private static final long TURN_LENGTH_DEFAULT = 15000L;
     private static final long TURN_START_DELAY_DEFAULT = 2000L;
 
     private volatile int roundNumber;
