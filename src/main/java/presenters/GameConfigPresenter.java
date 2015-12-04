@@ -3,6 +3,7 @@ package presenters;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import data.concretesources.StoreRecord;
+import model.service.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import view.GameConfigView;
@@ -19,10 +20,11 @@ public class GameConfigPresenter extends Presenter<GameConfigView> {
 
 
     @Inject
-    public GameConfigPresenter(SessionFactory pSessionFactory,
-                               @Named("InitialStoreState")StoreRecord pInitialStoreState) {
+    public GameConfigPresenter(SessionFactory pSessionFactory, @Named("InitialStoreState")StoreRecord pInitialStoreState,
+                               GameSaveMetaHolderService pGameSaveHolderService) {
         sessionFactory = pSessionFactory;
         initialStoreState = pInitialStoreState;
+        initialStoreState.setGameSaveMeta(pGameSaveHolderService.getGameSaveMeta());
     }
 
     /**

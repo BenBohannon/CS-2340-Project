@@ -97,12 +97,7 @@ public class Start extends Application {
         final URL music = getClass().getResource("/music/M.U.L.E. - C64.mp3");
         final Media m = new Media(music.toString());
         final MediaPlayer mp = new MediaPlayer(m);
-        mp.setOnEndOfMedia(new Runnable() {
-            @Override
-            public void run() {
-                mp.seek(Duration.ZERO);
-            }
-        });
+        mp.setOnEndOfMedia(() -> mp.seek(Duration.ZERO));
         mp.play();
         context.showScreen("home_screen.fxml");
     }
