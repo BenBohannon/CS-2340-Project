@@ -7,70 +7,80 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 import presenters.GameConfigPresenter;
-import presenters.PlayerConfigPresenter;
 
 /**
- * Created by brian on 10/18/15.
+ * View that manages the validation and other UI elements for the screen that allows
+ * players to configure the game.
  */
 public class GameConfigView extends View<GameConfigPresenter> {
 
     //FXML textFills//
+    // not using getters and setters to avoid clutter //
     @FXML
-    Color transparent;
+    private Color transparent;
     @FXML
-    Color red;
+    private Color red;
 
     @FXML
-    Label difficulty_validation_label;
+    private Label difficultyValidationLabel;
     @FXML
-    Label map_validation_label;
+    private Label mapValidationLabel;
     @FXML
-    Label numPlayers_validation_label;
+    private Label numPlayersValidationLabel;
     @FXML
-    Label main_validation_label;
+    private Label mainValidationLabel;
 
     @FXML
-    ToggleGroup difficultyToggleGroup;
+    private ToggleGroup difficultyToggleGroup;
     @FXML
-    ToggleGroup mapToggleGroup;
+    private ToggleGroup mapToggleGroup;
     @FXML
-    ToggleGroup numPlayersToggleGroup;
+    private ToggleGroup numPlayersToggleGroup;
 
+    /**
+     * Called when the finish button is clicked.
+     * @param event event of clicking the finish button.
+     */
     @FXML
-    protected void handleFinishButtonAction(ActionEvent event) {
+    protected void handleFinishButtonAction(final ActionEvent event) {
         if (validateForm()) {
-            presenter.finishConfigure(((RadioButton) difficultyToggleGroup.getSelectedToggle()).getText(),
-                ((RadioButton) mapToggleGroup.getSelectedToggle()).getText(),
-                Integer.parseInt(((RadioButton) numPlayersToggleGroup.getSelectedToggle()).getText()));
+            getPresenter().finishConfigure(((RadioButton) difficultyToggleGroup
+                            .getSelectedToggle()).getText(),
+                    ((RadioButton) mapToggleGroup.getSelectedToggle()).getText(),
+                    Integer.parseInt(((RadioButton) numPlayersToggleGroup
+                            .getSelectedToggle()).getText()));
         }
     }
 
-
+    /**
+     * Validates that the input data is acceptable.
+     * @return true, if the input is acceptable.
+     */
     private boolean validateForm() {
         boolean allValid = true;
 
         if (difficultyToggleGroup.getSelectedToggle() == null) {
-            difficulty_validation_label.setTextFill(red);
+            difficultyValidationLabel.setTextFill(red);
             allValid = false;
         } else {
-            difficulty_validation_label.setTextFill(transparent);
+            difficultyValidationLabel.setTextFill(transparent);
         }
 
         if (mapToggleGroup.getSelectedToggle() == null) {
-            map_validation_label.setTextFill(red);
+            mapValidationLabel.setTextFill(red);
             allValid = false;
         } else {
-            map_validation_label.setTextFill(transparent);
+            mapValidationLabel.setTextFill(transparent);
         }
 
         if (numPlayersToggleGroup.getSelectedToggle() == null) {
-            numPlayers_validation_label.setTextFill(red);
+            numPlayersValidationLabel.setTextFill(red);
             allValid = false;
         } else {
-            numPlayers_validation_label.setTextFill(transparent);
+            numPlayersValidationLabel.setTextFill(transparent);
         }
 
-        main_validation_label.setTextFill(allValid ? transparent : red);
+        mainValidationLabel.setTextFill(allValid ? transparent : red);
         return allValid;
     }
 }

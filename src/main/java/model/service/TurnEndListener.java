@@ -1,4 +1,4 @@
-package data;
+package model.service;
 
 import model.entity.Player;
 
@@ -7,5 +7,5 @@ import model.entity.Player;
  */
 @FunctionalInterface
 public interface TurnEndListener {
-    public void onTurnEnd(Player player);
+    void onTurnEnd(Player player);
 }

@@ -1,7 +1,8 @@
 package view;
 
 import com.google.inject.Inject;
-import data.Repository;
+import com.google.inject.name.Named;
+import data.abstractsources.Repository;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,23 +16,19 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import model.entity.Player;
-import model.service.DefaultTurnService;
 import presenters.AuctionPresenter;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
- * Created by kylemurray on 10/7/15.
+ * View that manages the UI for the Auction screen, where players can buy and sell items
  */
 public class AuctionView extends View<AuctionPresenter> {
 
     //TODO: Make resources and money update immediately, don't allow money or resources to drop below 0
     //TODO: When resources or money is too low, player is pushed back, introduce a store
-
     @Inject
-    private DefaultTurnService turnService;
+    private Repository<Player> playerRepository;
     @FXML
     private Pane pane;
 
@@ -40,7 +37,6 @@ public class AuctionView extends View<AuctionPresenter> {
     private ArrayList<ImageView> playerImageList;
     private ArrayList<Text> resourceLists = new ArrayList<Text>();
     private ArrayList<Text> names = new ArrayList<Text>();
-    private Repository<Player> playerRepository;
     private boolean canMove;
     private boolean canFlip;
     private double BOTTOMLIMIT = 385;
@@ -64,20 +60,50 @@ public class AuctionView extends View<AuctionPresenter> {
     private Rectangle greenLine = new Rectangle(650, 5, Color.GREEN);
     private double transVal = 0;
 
+    @Inject @Named("TextInitialX")
+    private int textInitialX;
+    @Inject @Named("TextInitialY")
+    private int textInitialY;
+    @Inject @Named("MainFontSize")
+    private int fontSize;
+    @Inject @Named("StartBiddingDelay")
+    private int startBiddingDelay;
+
+    private static final double BOTTOM_LIMIT = 390;
+    private static final double TOP_LIMIT = 150;
+    // keep this here with the rest of the constants //
+    private static final long DURATION = 10000L;
+    private static final int PLAYER_IMAGE_SIZE = 50;
+
+    private static final int MARGIN = 16;
+
+    private static final int X_OFFSET = 150;
+
+
+    /**
+     * initialises window.
+     */
     public void initialize() {
         pane.getChildren().add(pane2);
-        playerRepository = turnService.getAllPlayers();
+        List<Player> playerList = new LinkedList<>(playerRepository.getAll());
         playerImageList = new ArrayList<>();
+
         for (int i = 0; i < playerRepository.size(); i++) {
-            ImageView playerImage = MapView.createImageView(playerRepository.get(i).getRace().getImagePath(), 50, 50);
+
+            ImageView playerImage = MapView.createImageView(playerList.get(i).getRace().getImagePath(),
+                    PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
             playerImageList.add(playerImage);
-                double deltaX = playerImage.getImage().getWidth()/2 - 16;
-            playerImage.setTranslateX(150 + 150 * i - deltaX);
-                double deltaY = playerImage.getImage().getHeight()/2 - 16;
+
+            double deltaX = playerImage.getImage().getWidth() / 2 - MARGIN;
+            playerImage.setTranslateX(X_OFFSET + X_OFFSET * i - deltaX);
+            double deltaY = playerImage.getImage().getHeight() / 2 - MARGIN;
             playerImage.setTranslateY(390 - deltaY);
-            Text playerName = new Text("Player " + (i + 1) + "\n\"" + playerRepository.get(i).getName() + "\"");
+
+            Text playerName = new Text("Player " + (i + 1) + "\n\""
+                    + playerList.get(i).getName() + "\"");
             names.add(playerName);
-            playerName.setTranslateX(150 + 150 * i);
+
+            playerName.setTranslateX(X_OFFSET + X_OFFSET * i);
             playerName.setTranslateY(370);
             Text resources = new Text(playerRepository.get(i).getSmithore() + " Smithore\n"
                     + playerRepository.get(i).getEnergy() + " Energy\n"
@@ -183,8 +209,62 @@ public class AuctionView extends View<AuctionPresenter> {
         });
     }
 
+    /**
+     * switches presenter to map.
+     */
     public void handleContinueButtonAction() {
-        presenter.switchPresenter("map_grid_tile_select.fxml");
+        getPresenter().switchPresenter("map_grid_tile_select.fxml");
+    }
+
+    private void translateUp(int playerImageIndex) {
+        if (playerImageList.size() > playerImageIndex
+                && playerImageList.get(playerImageIndex).getTranslateY() > TOP_LIMIT) {
+
+            playerImageList.get(playerImageIndex).setTranslateY(
+                    playerImageList.get(playerImageIndex).getTranslateY() - 10);
+        }
+    }
+
+    private void translateDown(int playerImageIndex) {
+        if (playerImageList.size() > playerImageIndex
+                && playerImageList.get(playerImageIndex).getTranslateY() < BOTTOM_LIMIT) {
+
+                playerImageList.get(playerImageIndex).setTranslateY(
+                        playerImageList.get(playerImageIndex).getTranslateY() + 10);
+        }
+    }
+
+    private void handleKeyPressed(KeyEvent event) {
+        if (canMove) {
+            switch (event.getCode()) {
+                case Q:
+                    translateUp(0);
+                    break;
+                case Z:
+                    translateDown(0);
+                    break;
+                case W:
+                    translateUp(1);
+                    break;
+                case X:
+                    translateDown(1);
+                    break;
+                case E:
+                    translateUp(2);
+                    break;
+                case C:
+                    translateDown(2);
+                    break;
+                case R:
+                    translateUp(3);
+                    break;
+                case V:
+                    translateDown(3);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public void startResourceBidding(long i) {
@@ -202,6 +282,7 @@ public class AuctionView extends View<AuctionPresenter> {
         Long TOTALDELAY = SHOWRESOURCEDURATION + BUYORSELLDURATION + BIDDURATION;
         resource = new String();
         // First timer says when to reset the auction screen to next resource and show quantities. No movement
+
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -225,6 +306,7 @@ public class AuctionView extends View<AuctionPresenter> {
             }
         }, TOTALDELAY * i + 2005L);
         // Second timer says when to make players choose buy or sell
+
         timer2 = new Timer();
         timer2.schedule(new TimerTask() {
             @Override
@@ -312,33 +394,40 @@ public class AuctionView extends View<AuctionPresenter> {
                     // Reset everything and cancel timer3
 //                    timer4.cancel();
                     if (i >= 2) {
-                        presenter.switchPresenter("map_grid_tile_select.fxml");
+                        getPresenter().switchPresenter("map_grid_tile_select.fxml");
                     }
                 });
             }
         }, TOTALDELAY * i + BIDDURATION + BUYORSELLDURATION + SHOWRESOURCEDURATION + 2000L);
     }
 
+    /**
+     * start bidding of energy.
+     */
     public void startEnergyBidding() {
-
     }
 
-    public void quantifyResources() {
-//        Text player1quant = new Text(playerRepository.get(0).getFood());
-        // show how much resource each player has
-    }
-
+    /**
+     * players choose whether they are buying or selling.
+     */
     public void buyOrSell() {
-        // players choose whether they are buying or selling
     }
 
+    /**
+     * walk up and down to sell/buy.
+     */
     public void auctioning() {
-        // walk up and down to sell/buy
     }
 
+    /**
+     * reset characters to default.
+     */
     public void resetCharacters() {
         for (int i = 0; i < playerRepository.size(); i++) {
-//            double deltaY = (new Image(playerRepository.get(i).getRace().getImagePath())).getHeight()/2 - 16;
+//            double deltaY = (new Image(playerRepository.
+//                                  get(i).getRace().getImagePath())).
+//                                      getHeight()/2 - 16;
+//            double deltaY = (new Image(playerList.get(i).getRace().getImagePath())).getHeight()/2 - 16;
             playerImageList.get(i).setTranslateY(385);
         }
     }

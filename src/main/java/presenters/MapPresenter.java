@@ -1,26 +1,29 @@
 package presenters;
 
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import data.MapInfoHolder;
-import data.Repository;
-import data.TurnEndListener;
+import data.abstractsources.Repository;
+import model.service.TurnEndListener;
 import javafx.application.Platform;
 import model.entity.Mule;
 import model.entity.MuleType;
 import model.entity.Player;
 import model.map.Map;
 import model.map.Tile;
-import model.map.TileType;
 import model.service.DefaultTurnService;
 import view.MapView;
 
-import java.awt.*;
+import java.awt.Point;
+import java.util.*;
 
 
 /**
- * Created by Ben 9/14/2015
+ * Presenter that displays the screen that allows the player to move about
+ * the map.
  */
-public class MapPresenter extends Presenter<MapView> implements TurnEndListener {
+public class MapPresenter extends Presenter<MapView>
+        implements TurnEndListener {
 
     @Inject
     private Map map;
@@ -32,6 +35,16 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
     @Inject
     private DefaultTurnService turnService;
 
+    @Inject
+    @Named("MaxRandomEventMoney")
+    private int maxRandomEventMoney;
+    @Inject
+    @Named("MinRandomEventMoney")
+    private int minRandomEventMoney;
+    @Inject
+    @Named("TurnStartDelay")
+    private int turnStartDelay;
+
     private boolean isListening;
     private boolean isPlacingMule;
     private Mule mulePlacing;
@@ -40,66 +53,125 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
     @Override
     public void initialize() {
         if (turnService.isTurnInProgress()) {
-            turnService.addTurnEndListener(this); // Make sure this only happens ONCE
-            isListening = true;
-        } else {
-            if (turnService.isAllTurnsOver()) {
-                turnService.beginRound();
+            if (!turnService.isListening(this)) {
+                turnService.addTurnEndListener(this); // Make sure this only happens ONCE
             }
-            beginTurn();
+        } else {
+            boolean temp = turnService.isAllTurnsOver();
+            if (temp) {
+                turnService.beginRound();
+
+                //RANDOM EVENT CODE
+
+                //Get random money to add/subtract from a player.
+                Random rand = new Random();
+                int deltaMoney = rand.nextInt(getMaxRandomEventMoney() - getMinRandomEventMoney())
+                                         + getMinRandomEventMoney();
+
+                //Get a winning player.
+                Player eventPlayer = getWinningPlayer();
+
+                //If we failed to pick a player,
+                // just start the turn without random events.
+                if (eventPlayer == null) {
+                    beginTurn();
+
+                } else {
+                    //Print the random event to the screen.
+
+                    if (deltaMoney < 0) {
+                        getView().showRandomEventText("Random event! "
+                                                              + eventPlayer.getName() + " loses " + deltaMoney + " money!");
+                    } else {
+                        getView().showRandomEventText("Random event! "
+                                                              + eventPlayer.getName() + " gains " + deltaMoney + " money!");
+                    }
+
+                    //Start the turn after the text has disappeared.
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Platform.runLater(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    beginTurn();
+                                }
+                            });
+                        }
+                    }, getTurnStartDelay());
+                }
+            } else {
+                beginTurn();
+            }
+            if (isPlacingMule) {
+                getView().displayMule();
+            }
         }
-        
-        if (isPlacingMule) {
-            view.displayMule();
+    }
+
+    private Player getWinningPlayer() {
+        Random rand = new Random();
+        Player eventPlayer = null;
+        Set<Player> players = playerRepository.getAll();
+        for (Player p : players) {
+            if (p.getRank() >= players.size() / 2) {
+                if (eventPlayer == null) {
+                    eventPlayer = p;
+                } else if (rand.nextBoolean()) {
+                    eventPlayer = p;
+                }
+            }
         }
+        return eventPlayer;
     }
 
     /**
      * Loads the input .fxml file and gives up control to it.
-     * @param str
+     * @param str the path of the fxml file relative to the presenters directory
      */
     private void switchPresenter(String str) {
-        if (isListening) {
+        if (turnService.isTurnInProgress() && turnService.isListening(this)) {
             turnService.removeTurnEndListener(this);
-            isListening = false;
         }
 //        turnService.stopTimers();
-        context.showScreen(str);
+        getContext().showScreen(str);
     }
 
     /**
      * Turns control over to the TownPresenter, and stops character movement.
      */
     public void enterCity() {
-        view.stopMovement();
+        getView().stopMovement();
 
         switchPresenter("town.fxml");
     }
 
     @Override
     public void onTurnEnd(Player player) {
-        isListening = false;
+
         Platform.runLater(() -> {
-            view.stopMovement();
+            getView().stopMovement();
 
             //Mule is lost if not placed//
             if (isPlacingMule) {
-                player.mules.remove(mulePlacing);
-                view.stopDisplayingMule();
+                player.getMules().remove(mulePlacing);
+                getView().stopDisplayingMule();
                 isPlacingMule = false;
             }
 
             if (turnService.isAllTurnsOver()) {
-                calcProduction();
-                switchPresenter("auction.fxml");
+                MapPresenter.this.calcProduction();
+                MapPresenter.this.switchPresenter("auction.fxml");
             } else {
-                beginTurn();
+                MapPresenter.this.beginTurn();
             }
         });
     }
 
     /**
-     * Computes what should be done to the input tile, based on model information.
+     * Computes what should be done to the input tile,
+     * based on model information.
      * @param tileCoord Coordinate of the tile to affect
      */
     public void onClick(Point tileCoord) {
@@ -111,136 +183,153 @@ public class MapPresenter extends Presenter<MapView> implements TurnEndListener 
         //check if player owns tile//
         boolean owned = playerRepository.getAll().stream()
                 .flatMap(p -> p.getOwnedProperties().stream())
-                .anyMatch(t -> t.getLocation().getCol() == tileCoord.y && t.getLocation().getRow() == tileCoord.x);
+                .anyMatch(t -> t.getLocation().getCol()
+                == tileCoord.y && t.getLocation().getRow() == tileCoord.x);
         */
         Tile[] tile = map.getOccupants(tileCoord.x, tileCoord.y, Tile.class);
-        boolean owned = (getCurrentPlayer() == tile[0].ownedBy());
+        boolean owned = (getCurrentPlayer().equals(tile[0].ownedBy()));
 
         //check for another mule//
-        boolean occupied = map.getOccupants(tileCoord.x, tileCoord.y, Mule.class).length > 0;
+        boolean occupied = map.getOccupants(tileCoord.x,
+                tileCoord.y, Mule.class).length > 0;
 
-        System.out.println(tileCoord.x + ", " + tileCoord.y);
-        System.out.println("owned: "+ owned + " occupied: " + occupied);
         if (owned && !occupied) {
             map.add(mulePlacing, tileCoord.x, tileCoord.y);
-            view.placeMuleGraphic(tileCoord.y, tileCoord.x, mulePlacing.getType());
+            getView().placeMuleGraphic(tileCoord.y,
+                    tileCoord.x, mulePlacing.getType());
         } else {
-            System.out.println("Mule Lost");
+            turnService.getCurrentPlayer().getMules().remove(mulePlacing);
         }
 
         mulePlacing = null;
         isPlacingMule = false;
-        isPlacingMule = false;
-        view.stopDisplayingMule();
+        getView().stopDisplayingMule();
     }
 
+    /**
+     * check if turn is in progress
+     * @return if in progress
+     */
     public boolean isTurnInProgress() {
         return turnService.isTurnInProgress();
     }
 
+    /**
+     * gets map being used by game
+     * @return map
+     */
     public Map getMap() {
         return map;
     }
 
+    /**
+     * gets all players currently in game
+     * @return all players
+     */
     public Repository<Player> getPlayerRepository() {
         return playerRepository;
     }
 
+    /**
+     * if current player is placing mule
+     * @return if placing mule
+     */
     public boolean isPlacingMule() {
         return isPlacingMule;
     }
+
+    /**
+     * gets current player
+     * @return current player
+     */
     public Player getCurrentPlayer() {
         return turnService.getCurrentPlayer();
     }
 
-    public double getTimeRemaining() { return turnService.getTimeRemaining(); }
+    /**
+     * gets time remaining in turn
+     * @return time remaining
+     */
+    public double getFractionRemaining() {
+        return turnService.getFractionRemaining();
+    }
 
     /**
      * should be called by townPresenter
-     * @param isPlacingMule
+     * @param pIsPlacingMule the boolean of whether this mule is being placed or not.
      */
-    public void setIsPlacingMule(boolean isPlacingMule, Mule mule) {
+    public void setIsPlacingMule(boolean pIsPlacingMule, Mule mule) {
         this.mulePlacing = mule;
-        this.isPlacingMule = isPlacingMule;
+        this.isPlacingMule = pIsPlacingMule;
     }
 
+    /**
+     * begins turn.
+     */
     private void beginTurn() {
         turnService.beginTurn();
-//        turnService.addTurnEndListener(this);
-        isListening = true;
-        view.setCharacterImage(turnService.getCurrentPlayer().getRace().getImagePath());
-        view.showTurnStartText();
+        turnService.addTurnEndListener(this);
+
+        getView().setCharacterImage(turnService.getCurrentPlayer().getRace().getImagePath());
+        getView().showTurnStartText();
     }
 
-//    public void nextTurn() {
-//        isListening = false;
-//        Platform.runLater(() -> {
-//            view.stopMovement();
-//            if (!turnService.isAllTurnsOver()) {
-//                context.showScreen("map_grid.fxml");
-////                beginTurn();
-////                view.startTurn();
-//            } else {
-//                switchPresenter("auction.fxml");
-//            }
-//        });
-//    }
-
-    private void addPlayerToRepo() {
-        turnService.addPlayer();
-    }
-
+    /**
+     * calcuates production of resources from tiles and mules.
+     */
     private void calcProduction() {
         for (int i = 0; i < map.getRows(); i++) {
             for (int j = 0; j < map.getCols(); j++) {
 
-                Mule[] mule = map.getOccupants(i, j, Mule.class);
-                if (mule.length < 1) {
+                Mule[] mules = map.getOccupants(i, j, Mule.class);
+                if (mules.length < 1) {
                     continue;
                 }
+                Mule mule = mules[0];
 
-                Tile[] tile = map.getOccupants(i, j, Tile.class);
+                Tile[] tiles = map.getOccupants(i, j, Tile.class);
+                Tile tile = tiles[0];
 
-                int amount = 1;
 
-                if (mule[0].getType() == MuleType.Crysite) {
-                    tile[0].ownedBy().offsetCrystite(amount);
+                if (mule.getType() == MuleType.Crysite) {
+                    // crystite production always 1 //
+                    tile.ownedBy().offsetCrystite(1);
 
-                } else if (mule[0].getType() == MuleType.Energy) {
+                } else if (mule.getType() == MuleType.Energy) {
+                    tile.ownedBy().offsetEnergy(tile.getTileType().getEnergyPC());
 
-                    if (tile[0].getTileType() == TileType.PLAIN) {
-                        amount = 3;
-                    } else if (tile[0].getTileType() == TileType.RIVER) {
-                        amount = 2;
-                    }
+                } else if (mule.getType() == MuleType.Food) {
+                    tile.ownedBy().offsetFood(tile.getTileType().getFoodPC());
 
-                    tile[0].ownedBy().offsetEnergy(amount);
-
-                } else if (mule[0].getType() == MuleType.Food) {
-                    if (tile[0].getTileType() == TileType.RIVER) {
-                        amount = 4;
-                    } else if (tile[0].getTileType() == TileType.PLAIN) {
-                        amount = 2;
-                    }
-
-                    tile[0].ownedBy().offsetFood(amount);
-
-                } else if (mule[0].getType() == MuleType.Smithore) {
-                    if (tile[0].getTileType() == TileType.MOUNTAIN_3) {
-                        amount = 4;
-                    } else if (tile[0].getTileType() == TileType.MOUNTAIN_2) {
-                        amount = 3;
-                    } else if (tile[0].getTileType() == TileType.MOUNTAIN_1) {
-                        amount = 2;
-                    } else if (tile[0].getTileType() == TileType.RIVER) {
-                        amount = 0;
-                    }
-
-                    tile[0].ownedBy().offsetSmithore(amount);
+                } else if (mule.getType() == MuleType.Smithore) {
+                    tile.ownedBy().offsetSmithore(tile.getTileType().getSmithorePC());
                 }
 
             }
         }
     }
 
+    public int getMaxRandomEventMoney() {
+        return maxRandomEventMoney;
+    }
+
+    public void setMaxRandomEventMoney(int pMaxRandomEventMoney) {
+        this.maxRandomEventMoney = pMaxRandomEventMoney;
+    }
+
+    public int getMinRandomEventMoney() {
+        return minRandomEventMoney;
+    }
+
+    public void setMinRandomEventMoney(int pMinRandomEventMoney) {
+        this.minRandomEventMoney = pMinRandomEventMoney;
+    }
+
+    public int getTurnStartDelay() {
+        return turnStartDelay;
+    }
+
+    public void setTurnStartDelay(int pTurnStartDelay) {
+        this.turnStartDelay = pTurnStartDelay;
+    }
 }

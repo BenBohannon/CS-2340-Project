@@ -18,5 +18,13 @@ import presenters.Presenter;
 public abstract class View<T extends Presenter> {
 
     @Inject
-    public T presenter;
+    private T presenter;
+
+    public final T getPresenter() {
+        return presenter;
+    }
+
+    public final void setPresenter(T pPresenter) {
+        presenter = pPresenter;
+    }
 }

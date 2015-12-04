@@ -1,7 +1,9 @@
 package presenters;
 
 import com.google.inject.Inject;
-import data.TurnEndListener;
+import com.google.inject.name.Named;
+import model.service.StoreService;
+import model.service.TurnEndListener;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import model.entity.Player;
@@ -16,12 +18,26 @@ import model.entity.MuleType;
 public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Inject
-    DefaultTurnService turnService;
+    private DefaultTurnService turnService;
+
+    @Inject
+    private StoreService storeService;
+
+    @Inject @Named("FirstPubRoundThreshold")
+    private int firstPubRoundThreshold;
+    @Inject @Named("SecondPubRoundThreshold")
+    private int secondPubRoundThreshold;
+    @Inject @Named("FirstPubWinningLimit")
+    private int firstPubWinningLimit;
+    @Inject @Named("SecondPubWinningLimit")
+    private int secondPubWinningLimit;
+    @Inject @Named("ThirdPubWinningLimit")
+    private int thirdPubWinningLimit;
+
 
     @Override
     public void initialize() {
-//        turnService.addTurnEndListener(this);
-        // We had 3 turn end listeners lol. Make sure we don't do this
+        turnService.addTurnEndListener(this);
     }
 
     public void handleMuleClick(ActionEvent event) {
@@ -33,10 +49,11 @@ public class TownPresenter extends Presenter implements TurnEndListener {
             mule = new Mule(MuleType.Food);
         } else if (buttonText.equals("SMITHORE MULES")) {
             mule = new Mule(MuleType.Smithore);
-        } else if (buttonText.equals("CRYSTITE MULES")) {
+        } else {
             mule = new Mule(MuleType.Crysite);
         }
-        turnService.getCurrentPlayer().addMule(mule);
+        getStoreService().decrementMuleCount();
+        getTurnService().getCurrentPlayer().addMule(mule);
         MapPresenter presenter = returnToMapUninitialized();
         presenter.setIsPlacingMule(true, mule);
         presenter.initialize();
@@ -47,7 +64,7 @@ public class TownPresenter extends Presenter implements TurnEndListener {
     }
 
     public void handleStoreClick(ActionEvent event) {
-        context.showScreen("store.fxml");
+        getContext().showScreen("store.fxml");
     }
 
     /**
@@ -55,32 +72,35 @@ public class TownPresenter extends Presenter implements TurnEndListener {
      * UPDATE: now returns to model.map
      */
     private MapPresenter returnToMapUninitialized() {
-        if (turnService.isTurnInProgress()) {
-            turnService.removeTurnEndListener(this);
+        if (getTurnService().isTurnInProgress()) {
+            getTurnService().removeTurnEndListener(this);
         }
-        return (MapPresenter) context.showScreenUninitialized("map_grid.fxml");
+        return (MapPresenter) getContext().showScreenUninitialized("map_grid.fxml");
     }
 
     public void handlePubClick(ActionEvent event) {
         int amountToAdd;
-        if (turnService.getRoundNumber() < 3) {
-            amountToAdd = 50;
-        } else if (turnService.getRoundNumber() > 6) {
-            amountToAdd = 100;
+        if (getTurnService().getRoundNumber() < firstPubRoundThreshold) {
+            amountToAdd = firstPubWinningLimit;
+        } else if (getTurnService().getRoundNumber() > secondPubRoundThreshold) {
+            amountToAdd = secondPubWinningLimit;
         } else {
-            amountToAdd = 150;
+            amountToAdd = thirdPubWinningLimit;
         }
 
         if (turnService.isTurnInProgress()) {
             turnService.getCurrentPlayer().offsetMoney(amountToAdd + (int) (Math.random() * turnService.getTimeLeftInTurn()));
+
+            // must remove so we have the chance to open auction screen //
+            turnService.removeTurnEndListener(this);
+
             turnService.endTurn();
         }
-//        turnService.removeTurnEndListener(this);
+
         if (turnService.isAllTurnsOver()) {
-            System.out.println("show auction screen");
-            context.showScreen("auction.fxml");
+            getContext().showScreen("auction.fxml");
         } else {
-            context.showScreen("map_grid.fxml");
+            getContext().showScreen("map_grid.fxml");
             //Turn seems to end on its own idk how
         }
 
@@ -88,6 +108,35 @@ public class TownPresenter extends Presenter implements TurnEndListener {
 
     @Override
     public void onTurnEnd(Player player) {
-        Platform.runLater(() -> returnToMapUninitialized().initialize());
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                TownPresenter.this.getContext().showScreen("map_grid.fxml");
+            }
+        });
+    }
+
+    public DefaultTurnService getTurnService() {
+        return turnService;
+    }
+
+    public void setTurnService(DefaultTurnService pTurnService) {
+        this.turnService = pTurnService;
+    }
+
+    public StoreService getStoreService() {
+        return storeService;
+    }
+
+    public void setStoreService(StoreService pStoreService) {
+        this.storeService = pStoreService;
+    }
+
+    public void setSecondPubRoundThreshold(int pSecondPubRoundThreshold) {
+        this.secondPubRoundThreshold = pSecondPubRoundThreshold;
+    }
+
+    public void setFirstPubRoundThreshold(int pFirstPubRoundThreshold) {
+        this.firstPubRoundThreshold = pFirstPubRoundThreshold;
     }
 }

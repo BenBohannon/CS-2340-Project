@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <GridPane alignment="CENTER" prefHeight="180.0" prefWidth="183.0" xmlns:fx="http://javafx.com/fxml/1" fx:id="grid" xmlns="http://javafx.com/javafx/2.2" fx:controller="presenters.StartPresenter">
-  <children>
-    <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="165.0" text="MULE" GridPane.columnIndex="0" GridPane.rowIndex="0">
-      <font>
-        <Font size="45.0" />
-      </font>
-    </Label>
-    <Button contentDisplay="CENTER" mnemonicParsing="false" text="Start!" GridPane.columnIndex="0" onAction="#handleStartEvent" GridPane.rowIndex="2" />
-  </children>
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
+    <children>
+        <Label alignment="CENTER" contentDisplay="CENTER" prefWidth="165.0" text="MULE" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <font><Font size="45.0" />
+            </font>
+        </Label>
+        <Button contentDisplay="CENTER" mnemonicParsing="false" text="New Game!" GridPane.columnIndex="0" onAction="#handleNewGameEvent" GridPane.rowIndex="2" />
+        <Button contentDisplay="CENTER" mnemonicParsing="false" text="Load Game!" GridPane.columnIndex="0" onAction="#handleLoadEvent" GridPane.rowIndex="3" />
+    </children>
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    </rowConstraints>
 </GridPane>

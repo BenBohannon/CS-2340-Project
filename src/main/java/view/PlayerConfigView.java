@@ -2,7 +2,11 @@ package view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.TextField;
+import javafx.scene.control.RadioButton;
 import javafx.scene.paint.Color;
 import presenters.PlayerConfigPresenter;
 
@@ -13,81 +17,97 @@ import presenters.PlayerConfigPresenter;
 public class PlayerConfigView extends View<PlayerConfigPresenter> {
 
     //FXML textFills//
+    // not using getters and setters to avoid clutter //
     @FXML
-    Color transparent;
+    private Color transparent;
     @FXML
-    Color red;
+    private Color red;
 
     //validation labels//
     @FXML
-    Label main_validation_label;
+    private Label mainValidationLabel;
     @FXML
-    Label race_validation_label;
+    private Label raceValidationLabel;
     @FXML
-    Label name_validation_label;
+    private Label nameValidationLabel;
     @FXML
-    Label color_validation_label;
+    private Label colorValidationLabel;
 
     //controls//
     @FXML
-    ColorPicker colorPicker;
+    private ColorPicker colorPicker;
     @FXML
-    ToggleGroup race_togglegroup;
+    private ToggleGroup raceToggleGroup;
     @FXML
-    TextField name_textfield;
+    private TextField nameTextField;
 
 
     /**
      * event handler wired into the fxml control thanks to the fxml file
+     * @param event event handler
      */
     @FXML
-    public void handleFinishButtonAction(ActionEvent event) {
+    public final void handleFinishButtonAction(ActionEvent event) {
         if (validateForm()) {
             //can make calls on presenter//
-            //notice that the presenter is already of the correct type, because it was injected into the View class.//
+            //notice that the presenter is already of the correct type,
+            // because it was injected into the View class.//
 
-            presenter.finish(colorPicker.getValue(), name_textfield.getText(), ((RadioButton) race_togglegroup.getSelectedToggle()).getText());
+            getPresenter().finish(colorPicker.getValue(),
+                    nameTextField.getText(),
+                    ((RadioButton) raceToggleGroup.getSelectedToggle()).getText());
         }
     }
 
+    /**
+     * checks for form correctness
+     * @return if form is properly filled out
+     */
     private boolean validateForm() {
         boolean allValid = true;
 
-        if (race_togglegroup.getSelectedToggle() == null) {
-            race_validation_label.setTextFill(red);
+        if (raceToggleGroup.getSelectedToggle() == null) {
+            raceValidationLabel.setTextFill(red);
             allValid = false;
         } else {
-            race_validation_label.setTextFill(transparent);
+            raceValidationLabel.setTextFill(transparent);
         }
 
-        if (name_textfield.getText() == null || name_textfield.getText().trim().equals("")) {
-            name_validation_label.setTextFill(red);
+        if (nameTextField.getText() == null || nameTextField.getText().trim().equals("")) {
+            nameValidationLabel.setTextFill(red);
             allValid = false;
         } else {
-            name_validation_label.setTextFill(transparent);
+            nameValidationLabel.setTextFill(transparent);
         }
 
-        main_validation_label.setTextFill(allValid ? transparent : red);
+        mainValidationLabel.setTextFill(allValid ? transparent : red);
         return allValid;
     }
 
     /**
-     * called from the presenter
+     * shows color already chosen error
      */
-    public void showColorAlreadyChosen() {
-        color_validation_label.setTextFill(red);
-        main_validation_label.setTextFill(red);
+    public final void showColorAlreadyChosen() {
+        colorValidationLabel.setTextFill(red);
+        mainValidationLabel.setTextFill(red);
     }
 
-    public void showNameAlreadyChosen() {
-        name_validation_label.setTextFill(red);
-        name_validation_label.setText("name already used!");
-        main_validation_label.setTextFill(red);
+
+    /**
+     * shows name already chosen error
+     */
+    public final void showNameAlreadyChosen() {
+        nameValidationLabel.setTextFill(red);
+        nameValidationLabel.setText("name already used!");
+        mainValidationLabel.setTextFill(red);
     }
 
-    public void showRaceAlreadyChosen() {
-        race_validation_label.setTextFill(red);
-        main_validation_label.setTextFill(red);
+    /**
+     * shows race already chosen error
+     */
+    public final void showRaceAlreadyChosen() {
+        raceValidationLabel.setTextFill(red);
+        mainValidationLabel.setTextFill(red);
     }
 
 }
